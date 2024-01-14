@@ -1,3 +1,9 @@
+# How start
+
+OK we have the boilerplate pushed to the repo. Everyone can clone the repo to their machine.
+We have the branch called Dev (notice the capital D) which all of our features will be targetting
+once you clone, switch to the cloned director. Then switch to  Dev branch using git checkout Dev.  cd into travel-event-host-app and then run  npm i to install dependencies. 
+
 # voyage-tasks
 
 Your project's `readme` is as important to success as your code. For 
