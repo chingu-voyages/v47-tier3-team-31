@@ -1,11 +1,11 @@
 enum Category {
-  travelAndOutdoor = 'Travel and Outdoor',
-  socialActivities = 'Social Activities',
-  hobbiesAndPassions = 'Hobbies and Passions',
-  sportAndFitness = 'Sport and Fitness',
-  healthAndWellbeing = 'Health and Wellbeing',
-  technology = 'Technology',
-  artAndCulture = 'Art and Culture',
-  games = 'Games',
+  TravelAndOutdoor = 'travelAndOutdoor',
+  SocialActivities = 'socialActivities',
+  HobbiesAndPassions = 'hobbiesAndPassions',
+  SportAndFitness = 'sportAndFitness',
+  HealthAndWellbeing = 'healthAndWellbeing',
+  Technology = 'technology',
+  ArtAndCulture = 'artandCulture',
+  Games = 'games',
 }
 export default Category;
