@@ -1,10 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@400;500&display=swap');
-
 
 :root {
   margin: 0;
   --background-color-light-purple: #E4D9FF;
   --primary-color-dark-blue:#273469;
+  --primary-color-darker-blue:#242562;
   --secondary-color-dark-black: #30343F;
   --third-color-ice-light: #FAFAFF;
 }

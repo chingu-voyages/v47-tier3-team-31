@@ -1,0 +1,54 @@
+
+.crowd-image {
+  height: unset !important;
+  position: relative !important;
+  grid-area: cimage;
+}
+
+.crowd-image-container {
+  max-width: 1440px;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-areas: "cimage";
+}
+
+.overlay-area {
+  max-width: 1440px;
+  grid-area: cimage;
+  background-color: rgba(0, 0, 60, 0.5);
+  z-index: 1;
+}
+
+.passport-image {
+  position: relative !important;
+  max-width: 219px;
+  max-height: 219px;
+  width: 50px;
+}
+
+.passport-image-container {
+  max-width: 219px;
+}
+
+
+/* This holds the passport image and the text */
+.overlay-content-container {
+  padding-left: 10%;
+  padding-right: 10px;  
+}
+
+.cta-container {
+  position: relative;
+  width: 1086px;
+  height: 180px;
+  background-color: var(--primary-color-darker-blue);
+  border-radius: 20px;
+  z-index: 2;
+}
+
+@media screen and (max-width: 639px) {
+  .body-content-container {
+    margin-top: 1rem;
+  }
+  
+}
