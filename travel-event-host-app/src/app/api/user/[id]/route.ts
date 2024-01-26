@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const userFound = await User.findById(id).select('-password');
+  const userFound = await User.findById(id).select('-password -admin -email');
   const secureUser: SecureUser = userFound;
   if (userFound) return NextResponse.json({ secureUser }, { status: 200 });
   else return NextResponse.json({ message: 'user no exist' }, { status: 404 });
