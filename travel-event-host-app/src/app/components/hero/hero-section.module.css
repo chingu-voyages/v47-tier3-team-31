@@ -34,15 +34,36 @@
 .overlayContentContainer {
   padding-left: 10%;  
   padding-right: 10px;  
-  @apply sm:mt-10 lg:mt-44;
+  @apply sm:mt-10 md:mt-20 lg:mt-44;
 }
 
 .bodyContentContainer {
-  @apply flex mt-10;
+  @apply flex;
 }
 
 @media screen and (max-width: 639px) {
   .bodyContentContainer {
     margin-top: 1rem;
   }
+  .overlayContentContainer {
+    margin-top: 5%;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .overlayContentContainer {
+    margin-top: 5%;
+  }
+  .heroTextHeader {
+    font-size: 0.2rem;
+  }
+  .heroTextBody { 
+    font-size: 0.2rem;  
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .bodyContentContainer {
+    margin-top: 2rem;
+  } 
 }
