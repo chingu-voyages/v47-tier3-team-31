@@ -24,11 +24,11 @@ export const HeroSection = () => {
                 />
               </div>
               <div className='bodyTextContainer ml-5 mr-3 sm:mt-2'>
-                <p className='heroTextBody  sm:text-lg md:text-2xl lg:text-4xl'>
+                <p className={`${styles.heroTextBody} sm:text-lg md:text-2xl lg:text-4xl`}>
                   Transform your travel experience with our Travel Event Host App.
                 </p>
                 <br></br>
-                <p className='heroTextBody  sm:text-lg md:text-2xl lg:text-4xl'>
+                <p className={`${styles.heroTextBody} sm:text-lg md:text-2xl lg:text-4xl`}>
                   Whether you're a local looking to showcase your city or a traveller seeking unique
                   experiences, we've got you covered.
                 </p>
