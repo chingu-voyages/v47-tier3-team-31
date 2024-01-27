@@ -33,12 +33,7 @@
 /* This holds the passport image and the text */
 .overlayContentContainer {
   padding-left: 10%;  
-  padding-right: 10px;  
-  @apply sm:mt-10 md:mt-20 lg:mt-44;
-}
-
-.bodyContentContainer {
-  @apply flex;
+  padding-right: 10px;
 }
 
 @media screen and (max-width: 639px) {

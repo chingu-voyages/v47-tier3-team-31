@@ -7,13 +7,13 @@ export const HeroSection = () => {
       <div className={styles.crowdImageContainer}>
         <Image src='/images/hero/crowd.svg' alt='crowd' className={styles.crowdImage} fill />
         <div className={styles.overlayArea}>
-          <div className={styles.overlayContentContainer}>
+          <div className={`${styles.overlayContentContainer} sm:mt-10 md:mt-20 lg:mt-44`}>
             <div className='headerContainer'>
               <p className='heroTextHeader font-bold text-1xl sm:text-xl md:text-3xl lg:text-5xl'>
                 Explore, Host, and Connect
               </p>
             </div>
-            <div className={styles.bodyContentContainer}>
+            <div className={`${styles.bodyContentContainer} flex`}>
               <div className={styles.passportImageContainer}>
                 {/* Image of passport goes here */}
                 <Image
