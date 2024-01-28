@@ -8,11 +8,11 @@ const eventSchema = new Schema<Event>(
       required: false,
     },
     imageUrl: String,
-    eventCreatorId: { type: Schema.Types.ObjectId, ref: 'User' },
+    eventCreatorId: String,
 
     participantIds: [
       {
-        userId: { type: Schema.Types.ObjectId, ref: 'User' },
+        userId: String,
         timeStamp: Date,
       },
     ],
