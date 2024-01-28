@@ -16,12 +16,15 @@ export async function PATCH(req: Request, params: any) {
   const eventFound = await Event.findById(id);
 
   if (eventFound) {
-    eventFound.participantIds.push({ userId, timeStamp: Date.now() });
-
-    await eventFound.save();
-
-    return NextResponse.json({ message: 'User registered' }, { status: 200 });
+    const isUserIdAlreadyPresent = eventFound.participantIds.some(
+      (participant: { userId: string; timeStamp: Date }) => participant.userId === userId,
+    );
+    if (!isUserIdAlreadyPresent) {
+      eventFound.participantIds.push({ userId, timeStamp: Date.now() });
+      await eventFound.save();
+      return NextResponse.json({ message: 'User registered' }, { status: 200 });
+    } else return NextResponse.json({ message: 'User already present' }, { status: 409 });
   } else {
-    return NextResponse.json({ message: 'Event does not exist' }, { status: 500 });
+    return NextResponse.json({ message: 'Event does not exist' }, { status: 400 });
   }
 }
