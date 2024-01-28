@@ -4,9 +4,9 @@ import Category from '@/lib/category';
 interface Event {
   description?: string;
   imageUrl?: string;
-  eventCreatorId: mongoose.Types.ObjectId;
+  eventCreatorId: string;
   participantIds: {
-    userId: mongoose.Types.ObjectId;
+    userId: string;
     timeStamp: Date;
   }[];
   location: {
