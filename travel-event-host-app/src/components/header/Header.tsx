@@ -4,9 +4,9 @@ import styles from './styles.module.css';
 import Link from 'next/link';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
-
+import Language from '@/lib/language';
 export default function Header() {
-  const [lang, setLang] = useState('EN');
+  const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
   const userName = 'Angelo';
