@@ -7,7 +7,7 @@ import CircularProgress, { circularProgressClasses } from '@mui/material/Circula
 
 export default function Header() {
   const [lang, setLang] = useState('EN');
-  const [status, setStatus] = useState('loading');
+  const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
   const userName = 'Angelo';
   return (
