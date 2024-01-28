@@ -5,15 +5,25 @@
 
 :root {
   margin: 0;
-  --background-color-light-purple: #E4D9FF;
-  --primary-color-dark-blue:#273469;
-  --primary-color-darker-blue:#242562;
-  --secondary-color-dark-black: #30343F;
-  --third-color-ice-light: #FAFAFF;
+  --background-color-light-purple: #e4d9ff;
+  --primary-color-dark-blue: #273469;
+  --primary-color-darker-blue: #242562;
+  --secondary-color-dark-black: #30343f;
+  --third-color-light-black: #424755;
+  --third-color-ice-light: #fafaff;
 }
-
 
 body {
   color: var(--third-color-ice-light);
   background: var(--background-color-light-purple);
+}
+.button1 {
+  background-color: var(--primary-color-dark-blue);
+  min-width: 11.375em;
+  min-height: 3.25em;
+}
+@media only screen and (max-width: 610px) {
+  .button1 {
+    min-width: 8em;
+  }
 }
