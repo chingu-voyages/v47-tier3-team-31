@@ -10,10 +10,13 @@
     "prepare": "cd .. && husky install travel-event-host-app/.husky"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.6",
     "bcrypt": "^5.1.1",
     "mongoose": "^8.1.0",
-    "next-auth": "^4.24.5",
     "next": "14.0.4",
+    "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18"
   },
