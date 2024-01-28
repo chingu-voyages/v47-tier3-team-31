@@ -3,6 +3,10 @@ import mongoose, { Schema, models } from 'mongoose';
 import Event from '@/models/event';
 const eventSchema = new Schema<Event>(
   {
+    title: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: false,

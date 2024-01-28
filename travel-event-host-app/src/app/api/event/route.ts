@@ -4,6 +4,7 @@ import Event from '@/schemas/event';
 
 export async function POST(req: Request) {
   let {
+    title = '',
     description = '',
     eventCreatorId,
     location /* {
