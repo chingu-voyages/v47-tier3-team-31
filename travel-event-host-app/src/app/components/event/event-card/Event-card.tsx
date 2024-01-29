@@ -23,6 +23,9 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
           margin: '1%',
           [theme.breakpoints.down(720)]: {
             maxWidth: '100%',
+            boxShadow: 'none',
+            borderRadius: '0px',
+            marginRight: 0,
           },
         }}
       >
