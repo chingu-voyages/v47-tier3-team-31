@@ -3,6 +3,7 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@400;500&display=swap');
 
+/* Remember to add any global colors or color name changes the MaterialUI theme definitions */
 :root {
   margin: 0;
   --background-color-light-purple: #E4D9FF;
@@ -10,6 +11,7 @@
   --primary-color-darker-blue:#242562;
   --secondary-color-dark-black: #30343F;
   --third-color-ice-light: #FAFAFF;
+  --color-light-night-blue: #3D37F1;
 }
 
 
