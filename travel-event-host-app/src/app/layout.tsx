@@ -1,6 +1,7 @@
+import { MuiThemeProvider } from '@/providers/muiThemeProvider';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-
 import './globals.css';
 
 const roboto = Roboto({
@@ -16,7 +17,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        <AppRouterCacheProvider>
+          <MuiThemeProvider>{children}</MuiThemeProvider>
+        </AppRouterCacheProvider>
+      </body>
     </html>
   );
 }
