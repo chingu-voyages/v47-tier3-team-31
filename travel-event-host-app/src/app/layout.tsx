@@ -1,12 +1,13 @@
 import { MuiThemeProvider } from '@/providers/muiThemeProvider';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
+import { Roboto_Flex } from 'next/font/google';
+
+import Header from '@/components/header/Header';
 import './globals.css';
 
-const roboto = Roboto({
+const roboto = Roboto_Flex({
   subsets: ['latin'],
-  weight: '400',
 });
 
 export const metadata: Metadata = {
@@ -19,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en'>
       <body className={roboto.className}>
         <AppRouterCacheProvider>
-          <MuiThemeProvider>{children}</MuiThemeProvider>
+          <MuiThemeProvider>
+            <Header />
+            {children}
+          </MuiThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
