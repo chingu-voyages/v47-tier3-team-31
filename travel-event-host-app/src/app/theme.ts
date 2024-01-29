@@ -11,6 +11,7 @@ export enum ColorPalette {
   DarkBlack = '#30343F',
   IceLight = '#FAFAFF',
   LightNightBlue = '#3D37F1',
+  LightBlack = '#424755',
 }
 
 // Module augmentation to make sure our custom colors types are available for MaterialUI components
@@ -21,7 +22,8 @@ declare module '@mui/material/styles' {
     primaryColorDarkerBlue: string;
     secondaryColorDarkBlack: string;
     thirdColorIceLight: string;
-    LightNightBlue: string;
+    lightNightBlue: string;
+    thirdColorlightBlack: string;
   }
 
   interface SimplePaletteColorOptions {
@@ -30,7 +32,8 @@ declare module '@mui/material/styles' {
     primaryColorDarkerBlue: string;
     secondaryColorDarkBlack: string;
     thirdColorIceLight: string;
-    LightNightBlue: string;
+    lightNightBlue: string;
+    thirdColorlightBlack: string;
   }
 }
 
@@ -44,7 +47,8 @@ const theme = createTheme({
       primaryColorDarkerBlue: ColorPalette.DarkerBlue,
       secondaryColorDarkBlack: ColorPalette.DarkBlack,
       thirdColorIceLight: ColorPalette.IceLight,
-      LightNightBlue: ColorPalette.LightNightBlue,
+      lightNightBlue: ColorPalette.LightNightBlue,
+      thirdColorlightBlack: ColorPalette.LightBlack,
     },
   },
 });

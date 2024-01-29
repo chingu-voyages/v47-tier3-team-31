@@ -64,8 +64,8 @@ export default function EventsSection({
             '&.MuiButtonBase-root': {
               borderRadius: '50px',
               borderWidth: '2px',
-              color: theme.palette.primary.LightNightBlue,
-              borderColor: theme.palette.primary.LightNightBlue,
+              color: theme.palette.primary.lightNightBlue,
+              borderColor: theme.palette.primary.lightNightBlue,
               fontWeight: 'bold',
               textTransform: 'none',
             },
