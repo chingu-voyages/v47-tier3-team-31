@@ -1,6 +1,6 @@
 'use client';
 import { Box, Button, Typography, useTheme } from '@mui/material';
-import HostedEvent from '../../../models/event';
+import HostedEvent from '../../models/event';
 import EventCard from '../event/event-card/Event-card';
 
 /**

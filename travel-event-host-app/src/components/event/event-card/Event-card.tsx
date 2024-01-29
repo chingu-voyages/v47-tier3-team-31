@@ -2,7 +2,7 @@
 import { Box, Card, CardContent, Typography, styled, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import HostedEvent from '../../../../models/event';
+import HostedEvent from '../../../models/event';
 import styles from './event-card.module.css';
 
 interface EventCardProps {
