@@ -1,7 +1,8 @@
-import mongoose from 'mongoose';
 import Category from '@/lib/category';
+import mongoose from 'mongoose';
 
 interface Event {
+  id: string;
   title: string;
   description?: string;
   imageUrl?: string;
