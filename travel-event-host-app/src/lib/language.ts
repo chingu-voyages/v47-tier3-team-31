@@ -1,8 +1,8 @@
 enum Language {
-  En = 'English',
-  Fr = 'Français',
-  Es = 'Español',
-  Pt = 'Português',
+  En = 'En',
+  Fr = 'Fra',
+  Es = 'Es',
+  Pt = 'Por',
 }
 
 export default Language;
