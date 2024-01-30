@@ -4,7 +4,7 @@ import { createTheme } from '@mui/material';
   Remember when adding/changing any colors or color names to make sure global.css matches with this
 */
 
-export enum ColorPalette {
+enum ColorPalette {
   LightPurple = '#E4D9FF',
   DarkBlue = '#273469',
   DarkerBlue = '#242562',
