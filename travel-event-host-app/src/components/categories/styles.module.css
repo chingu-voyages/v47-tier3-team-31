@@ -54,3 +54,9 @@
     font-size: 10px;
   }
 }
+@media only screen and (max-width: 384px) {
+  .categoriesUl {
+    gap: 1.5em;
+    font-size: 9px;
+  }
+}
