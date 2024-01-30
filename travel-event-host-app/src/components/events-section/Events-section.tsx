@@ -1,6 +1,8 @@
 'use client';
-import { Box, Button, Typography, useTheme } from '@mui/material';
+import theme from '@/app/theme';
+import { Box, Typography, useTheme } from '@mui/material';
 import HostedEvent from '../../models/event';
+import CommonButton from '../common-button/Common-Button';
 import EventCard from '../event/event-card/Event-card';
 
 /**
@@ -56,19 +58,10 @@ export default function EventsSection({
       </Box>
       {/* This will be the button to load more events */}
       <Box display='flex' justifyContent={'center'} mt={3}>
-        {/* TODO: This button could be extracted as a shared component */}
-        <Button
-          variant='outlined'
-          onClick={handleOnLoadMoreButtonClick}
-          sx={{
-            '&.MuiButtonBase-root': {
-              borderRadius: '50px',
-              borderWidth: '2px',
-              color: theme.palette.primary.lightNightBlue,
-              borderColor: theme.palette.primary.lightNightBlue,
-              fontWeight: 'bold',
-              textTransform: 'none',
-            },
+        <CommonButton
+          label='Load More'
+          onButtonClick={handleOnLoadMoreButtonClick}
+          additionalStyles={{
             [theme.breakpoints.down(720)]: {
               maxWidth: '100px',
               maxHeight: '40px',
@@ -79,9 +72,7 @@ export default function EventsSection({
               },
             },
           }}
-        >
-          Load More
-        </Button>
+        />
       </Box>
     </Box>
   );
@@ -92,7 +83,12 @@ const renderEventCards = (
   hostedEvents: HostedEvent[],
   onEventClickAction: (eventId: string) => void,
 ) => {
-  if (hostedEvents.length === 0) return <Typography variant='h5'>No events to show</Typography>;
+  if (hostedEvents.length === 0)
+    return (
+      <Typography variant='h5' color={theme.palette.primary.primaryColorDarkerBlue}>
+        No events to show
+      </Typography>
+    );
   return hostedEvents.map((hostedEvent) => (
     <EventCard
       hostedEvent={hostedEvent}
