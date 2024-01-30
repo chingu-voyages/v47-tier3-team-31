@@ -15,7 +15,7 @@ interface User {
       long: number;
     };
   };
-  eventIds: mongoose.Types.ObjectId[];
+  eventIds: string[];
   admin?: boolean;
 }
 export default User;

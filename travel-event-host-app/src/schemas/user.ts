@@ -24,7 +24,7 @@ const userSchema = new Schema<User>(
       city: String,
       coords: { lat: Number, long: Number },
     },
-    eventIds: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
+    eventIds: [String],
 
     admin: {
       type: Boolean,
