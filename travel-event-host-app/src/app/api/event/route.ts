@@ -30,11 +30,24 @@ export async function POST(req: Request) {
   return NextResponse.json({ message: 'event created the id is ' + newEvent.id }, { status: 201 });
 }
 export async function GET(req: Request) {
-  //to get query use this, here you get query1 for example
   const { searchParams } = new URL(req.url);
-  const query1 = searchParams.get('query1');
-  await connectMongoDB();
-  const allEvents = await Event.find({});
 
-  return NextResponse.json({ allEvents }, { status: 200 });
+  let page: number = parseInt(searchParams.get('page') || '1', 10);
+  let pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
+
+  const allEvents = await Event.aggregate([
+    {
+      $facet: {
+        metadata: [{ $count: 'totalCount' }],
+        data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      },
+    },
+  ]);
+
+  await connectMongoDB();
+
+  return NextResponse.json(
+    { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },
+    { status: 200 },
+  );
 }
