@@ -6,7 +6,7 @@ export default function Categories() {
     <section className={styles.section}>
       <h2>Categories</h2>
       <ul className={styles.categoriesUl}>
-        {categoriesArr.map((category) => (
+        {Object.values(categoriesArr).map((category) => (
           <li key={category}>{category}</li>
         ))}
       </ul>
