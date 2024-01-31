@@ -89,7 +89,13 @@ export function CreateEventSection() {
               margin: '20px 0',
               padding: '15px 30px',
               minWidth: '302px',
+              fontSize: '1rem',
               [theme.breakpoints.down(880)]: { minWidth: 0, padding: '5px 20px' },
+              [theme.breakpoints.down(720)]: {
+                '&.MuiButtonBase-root': {
+                  fontWeight: '400',
+                },
+              },
             }}
           />
         </Box>
