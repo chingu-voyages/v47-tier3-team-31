@@ -77,7 +77,7 @@ export function CreateEventSection() {
         <Box
           mt={2}
           sx={{
-            [theme.breakpoints.down(720)]: { marginTop: '0px    ' },
+            [theme.breakpoints.down(720)]: { marginTop: '0px' },
           }}
         >
           <CommonButton
