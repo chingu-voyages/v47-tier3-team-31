@@ -1,0 +1,13 @@
+.createEventImage {
+  position: relative !important;
+  max-width: 544px !important;
+  max-height: 303px !important;
+}
+
+
+@media screen and (max-width: 720px) {
+  .createEventImage {
+    width: 380px !important;
+    height: 200px !important;
+  }
+}
