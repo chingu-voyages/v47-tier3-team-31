@@ -1,5 +1,5 @@
 .header {
-  position: fixed;
+  position: sticky;
   padding: 1.875em;
   width: 100%;
   background-color: var(--secondary-color-dark-black);
