@@ -1,5 +1,8 @@
 import { Box, Typography } from '@mui/material';
 
+/**
+ * Renders error text under the input field when validation fails
+ */
 export const ErrorComponent = ({
   fieldName,
   errors,

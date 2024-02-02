@@ -1,8 +1,11 @@
-import { BaseRuleValidator } from '../base-rule-validator/base-rule-validator';
+import { BaseRule } from '../base-rule/base-rule';
 
+/**
+ * This loops through all the rules for a field and validates the value
+ */
 export class RuleValidator {
-  private validationRules: BaseRuleValidator[] = [];
-  constructor(rules: BaseRuleValidator[]) {
+  private validationRules: BaseRule[] = [];
+  constructor(rules: BaseRule[]) {
     this.validationRules = rules;
   }
 

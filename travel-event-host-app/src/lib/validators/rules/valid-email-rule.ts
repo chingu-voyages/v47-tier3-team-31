@@ -1,7 +1,7 @@
-import { BaseRuleValidator } from '../base-rule-validator/base-rule-validator';
+import { BaseRule } from '../base-rule/base-rule';
 import { ValidationError } from '../validation-error/validation-error';
 
-export class ValidEmailRule extends BaseRuleValidator {
+export class ValidEmailRule extends BaseRule {
   constructor(fieldName: string) {
     super('Enter a valid e-mail address', fieldName);
   }
