@@ -5,6 +5,7 @@ import { Roboto_Flex } from 'next/font/google';
 
 import Header from '@/components/header/Header';
 import './globals.css';
+import { OnboardingProvider } from '@/lib/context';
 
 const roboto = Roboto_Flex({
   subsets: ['latin'],
@@ -19,12 +20,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <body className={roboto.className}>
-        <AppRouterCacheProvider>
-          <MuiThemeProvider>
-            <Header />
-            {children}
-          </MuiThemeProvider>
-        </AppRouterCacheProvider>
+        <OnboardingProvider>
+          <AppRouterCacheProvider>
+            <MuiThemeProvider>
+              <Header />
+              {children}
+            </MuiThemeProvider>
+          </AppRouterCacheProvider>
+        </OnboardingProvider>
       </body>
     </html>
   );
