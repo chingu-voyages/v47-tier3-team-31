@@ -1,14 +1,18 @@
 'use client';
-import { useState } from 'react';
-import styles from './styles.module.css';
-import Link from 'next/link';
+import Language from '@/lib/language';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
-import Language from '@/lib/language';
+import Link from 'next/link';
+import { useState } from 'react';
+import AuthDialog from '../auth-dialog/AuthDialog';
+import styles from './styles.module.css';
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
-  const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
+  const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
+  const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
+  const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
+
   const userName = 'Angelo';
   return (
     <header className={styles.header}>
@@ -53,10 +57,10 @@ export default function Header() {
             </div>
             <input className={styles.langInput} id='lang' type='checkbox' required />
             <div className={styles.langDropdownOptionBox}>
-              <div className={styles.langDropdownOption}>EN</div>
-              <div className={styles.langDropdownOption}>ES</div>
-              <div className={styles.langDropdownOption}>FR</div>
-              <div className={styles.langDropdownOption}>POR</div>
+              <div className={styles.langDropdownOption}>{Language.En}</div>
+              <div className={styles.langDropdownOption}>{Language.Es}</div>
+              <div className={styles.langDropdownOption}>{Language.Fr}</div>
+              <div className={styles.langDropdownOption}>{Language.Pt}</div>
             </div>
           </label>
           {status === 'loading' ? (
@@ -101,8 +105,12 @@ export default function Header() {
             </>
           ) : (
             <>
-              <p className='mx-[1.5em] cursor-pointer'>LOGIN</p>
-              <button className='button1'>SIGNUP</button>
+              <p className='mx-[1.5em] cursor-pointer' onClick={() => setloginDialogOpen(true)}>
+                LOGIN
+              </p>
+              <button className='button1' onClick={() => setSignupDialogOpen(true)}>
+                SIGN UP
+              </button>
             </>
           )}
         </div>
@@ -141,6 +149,16 @@ export default function Header() {
           </li>
         </ul>
       </nav>
+      <AuthDialog
+        authDialogType={'signup'}
+        open={signupDialogOpen}
+        onDialogClose={() => setSignupDialogOpen(false)}
+      />
+      <AuthDialog
+        authDialogType={'login'}
+        open={loginDialogOpen}
+        onDialogClose={() => setloginDialogOpen(false)}
+      />
     </header>
   );
 }
