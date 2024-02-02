@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Roboto_Flex } from 'next/font/google';
 
 import Header from '@/components/header/Header';
+
 import { OnboardingProvider } from '@/lib/context';
 import { NextAuthProvider } from '@/providers/nextAuthProvider';
 import './globals.css';
