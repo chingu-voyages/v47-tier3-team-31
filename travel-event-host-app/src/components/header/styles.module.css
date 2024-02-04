@@ -78,12 +78,8 @@
   display: block;
 }
 .avatarBox {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75em;
-  cursor: pointer;
   margin-left: 1rem;
+  align-self: normal;
 }
 .loaderSkeleton {
   background-color: var(--primary-color-dark-blue);

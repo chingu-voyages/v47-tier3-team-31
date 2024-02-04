@@ -1,10 +1,10 @@
 'use client';
-import { useState } from 'react';
-import styles from './styles.module.css';
-import Link from 'next/link';
-import Avatar from '@mui/material/Avatar';
-import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Language from '@/lib/language';
+import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
+import Link from 'next/link';
+import { useState } from 'react';
+import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
+import styles from './styles.module.css';
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
@@ -78,25 +78,10 @@ export default function Header() {
                 thickness={4}
               />
             </div>
-          ) : status === 'authenticated' ? (
+          ) : true ? (
             <>
               <div className={styles.avatarBox}>
-                <p>{userName}</p>
-                <Avatar />
-                <svg
-                  width='1.1em'
-                  height='0.8em'
-                  viewBox='0 0 18 10'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M0.479187 0.00915527L9.22919 9.36283L17.9792 0.00915527H0.479187Z'
-                    fill='#FAFAFF'
-                    stroke='#FAFAFF'
-                    strokeWidth='0.008'
-                  />
-                </svg>
+                <HeaderBarAvatar userName={userName} />
               </div>
             </>
           ) : (

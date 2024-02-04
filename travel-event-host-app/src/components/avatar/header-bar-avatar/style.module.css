@@ -1,0 +1,12 @@
+.headerBarAvatar {
+  height: 44px !important;
+  width: 44px !important;
+  position: relative !important;
+}
+
+@media screen and (max-width: 700px) {
+  .headerBarAvatar {
+    height: 32px !important;
+    width: 32px !important;
+  }
+}
