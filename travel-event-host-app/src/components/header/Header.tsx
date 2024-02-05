@@ -1,5 +1,7 @@
 'use client';
+import theme from '@/app/theme';
 import Language from '@/lib/language';
+import { Box, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -10,6 +12,11 @@ export default function Header() {
   const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
   const userName = 'Angelo';
+
+  const handleLanguageOptionChanged = (event: SelectChangeEvent) => {
+    setLang(event.target.value as Language);
+  };
+
   return (
     <header className={styles.header}>
       <div>
@@ -33,32 +40,81 @@ export default function Header() {
           <h1>Backpack</h1>
         </div>
         <div className={styles.authBox}>
-          <label htmlFor='lang' className={styles.langDropdown}>
-            <div className={styles.selection}>
-              {lang}
-              <svg
-                width='1.1em'
-                height='0.8em'
-                viewBox='0 0 18 10'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
+          <Box>
+            <FormControl
+              variant='filled'
+              sx={{
+                m: 1,
+                maxWidth: 80,
+                '& .MuiInputBase-root': {
+                  fontWeight: '400',
+                  fontSize: '1.25rem',
+                  color: theme.palette.primary.thirdColorIceLight,
+                  backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+                  '&:before': {
+                    borderBottom: 'none',
+                    transition: 'none',
+                  },
+                  '&:after': {
+                    borderBottom: 'none',
+                  },
+                  '&:hover:before': {
+                    borderBottom: 'none',
+                  },
+                },
+                '& .MuiSvgIcon-root': {
+                  color: theme.palette.primary.thirdColorIceLight,
+                },
+                [theme.breakpoints.down(700)]: {
+                  '& .MuiInputBase-root': {
+                    fontSize: '1rem',
+                  },
+                },
+                [theme.breakpoints.down(610)]: {
+                  '& .MuiInputBase-root': {
+                    fontSize: '11px',
+                  },
+                },
+              }}
+            >
+              <Select
+                labelId='selectLanguageDropdown'
+                id='selectLanguageDropdown'
+                value={lang}
+                onChange={handleLanguageOptionChanged}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    paddingBottom: '25px',
+                  },
+                }}
+                inputProps={{
+                  paddingTop: 0,
+                  MenuProps: {
+                    sx: {
+                      '& .MuiPaper-root': {
+                        borderRadius: '0',
+                      },
+                    },
+                    MenuListProps: {
+                      sx: {
+                        backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+                        color: theme.palette.primary.thirdColorIceLight,
+                        borderTop: 'none',
+                        '& .MuiButtonBase-root:hover': {
+                          backgroundColor: theme.palette.primary.primaryColorDarkBlue,
+                        },
+                      },
+                    },
+                  },
+                }}
               >
-                <path
-                  d='M0.479187 0.00915527L9.22919 9.36283L17.9792 0.00915527H0.479187Z'
-                  fill='#FAFAFF'
-                  stroke='#FAFAFF'
-                  strokeWidth='0.008'
-                />
-              </svg>
-            </div>
-            <input className={styles.langInput} id='lang' type='checkbox' required />
-            <div className={styles.langDropdownOptionBox}>
-              <div className={styles.langDropdownOption}>EN</div>
-              <div className={styles.langDropdownOption}>ES</div>
-              <div className={styles.langDropdownOption}>FR</div>
-              <div className={styles.langDropdownOption}>POR</div>
-            </div>
-          </label>
+                <MenuItem value={Language.En}>{`${Language.En}`}</MenuItem>
+                <MenuItem value={Language.Es}>{`${Language.Es}`}</MenuItem>
+                <MenuItem value={Language.Fr}>{`${Language.Fr}`}</MenuItem>
+                <MenuItem value={Language.Pt}>{`${Language.Pt}`}</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
           {status === 'loading' ? (
             <div className={styles.spinnerBox}>
               <CircularProgress
@@ -78,7 +134,7 @@ export default function Header() {
                 thickness={4}
               />
             </div>
-          ) : true ? (
+          ) : status === 'authenticated' ? (
             <>
               <div className={styles.avatarBox}>
                 <HeaderBarAvatar userName={userName} />
