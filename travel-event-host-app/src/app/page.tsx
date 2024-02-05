@@ -1,6 +1,6 @@
-import Categories from '@/components/categories/categories';
+import SearchSection from '@/components/searchSection/searchSection';
 import Image from 'next/image';
 
 export default function Home() {
-  return <Categories />;
+  return <SearchSection />;
 }
