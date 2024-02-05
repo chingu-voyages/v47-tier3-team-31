@@ -56,7 +56,16 @@ export default function HeaderBarAvatar({
           >
             {loadAvatarImage(isErrorImage, userName, setIsErrorImage, imageUrl)}
           </Box>
-          <Typography style={{ padding: 0 }}>{userName}</Typography>
+          <Box
+            // Hide the user name on mobile
+            sx={{
+              [theme.breakpoints.down(431)]: {
+                display: 'none',
+              },
+            }}
+          >
+            <Typography style={{ padding: 0 }}>{userName}</Typography>
+          </Box>
         </ButtonBase>
       </Box>
       <Menu
