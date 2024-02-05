@@ -45,7 +45,7 @@ export default function Header() {
               variant='filled'
               sx={{
                 m: 1,
-                maxWidth: 80,
+                maxWidth: 90,
                 '& .MuiInputBase-root': {
                   fontWeight: '400',
                   fontSize: '1.25rem',
@@ -108,10 +108,12 @@ export default function Header() {
                   },
                 }}
               >
-                <MenuItem value={Language.En}>{`${Language.En}`}</MenuItem>
-                <MenuItem value={Language.Es}>{`${Language.Es}`}</MenuItem>
-                <MenuItem value={Language.Fr}>{`${Language.Fr}`}</MenuItem>
-                <MenuItem value={Language.Pt}>{`${Language.Pt}`}</MenuItem>
+                {/* This will render languages as needed */}
+                {Object.entries(Language).map(([key, value]) => (
+                  <MenuItem key={key} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
