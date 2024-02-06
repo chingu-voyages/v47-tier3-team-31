@@ -3,17 +3,26 @@ import { SecureUser } from '@/types/secureUser';
 import { Avatar, Box, ButtonBase, Typography, styled } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
-import style from './style.module.css';
-/**
- * This is the larger version of the user avatar, no dropdown menus
- */
 
+/**
+ * Avatar is used on the event page and the user profile page.
+ * The styling might be different for each, so pass in customMUI and customCss in props
+ */
 interface UserAvatarProps {
+  showName?: boolean;
   user: Partial<SecureUser>;
   onAvatarClicked?: () => void;
+  customMuiStyles?: any;
+  imageClassName?: any;
 }
 
-export default function UserAvatar({ user, onAvatarClicked }: UserAvatarProps) {
+export default function UserAvatar({
+  user,
+  onAvatarClicked,
+  showName,
+  customMuiStyles,
+  imageClassName,
+}: UserAvatarProps) {
   const handleAvatarClicked = () => {
     onAvatarClicked && onAvatarClicked();
   };
@@ -38,13 +47,19 @@ export default function UserAvatar({ user, onAvatarClicked }: UserAvatarProps) {
           borderColor={theme.palette.primary.thirdColorIceLight}
           border={'2px solid'}
         >
-          {loadAvatarImage(isErrorImage, setIsErrorImage, user)}
+          {loadAvatarImage(isErrorImage, setIsErrorImage, user, customMuiStyles, imageClassName)}
         </Box>
-        <CustomResponsiveTypoGraphy
-          style={{ padding: 0, color: theme.palette.primary.secondaryColorDarkBlack, marginTop: 2 }}
-        >
-          {user.firstName}
-        </CustomResponsiveTypoGraphy>
+        {showName && (
+          <CustomResponsiveTypoGraphy
+            style={{
+              padding: 0,
+              color: theme.palette.primary.secondaryColorDarkBlack,
+              marginTop: 2,
+            }}
+          >
+            {user.firstName}
+          </CustomResponsiveTypoGraphy>
+        )}
       </ButtonBase>
     </Box>
   );
@@ -54,22 +69,16 @@ function loadAvatarImage(
   isErrorImage: boolean,
   setIsErrorImage: (isError: boolean) => void,
   user: Partial<SecureUser>,
+  muiStyles?: Record<string, string>,
+  imageClassName?: any,
 ) {
   if (user.imageUrl === undefined || user.imageUrl === null || user.imageUrl === '') {
-    return <StyledAvatar />;
+    return <Avatar sx={{ ...muiStyles }} />;
   }
 
   // If there is an error loading, return the MUI avatar icon
   if (isErrorImage) {
-    return <StyledAvatar />;
-  }
-
-  if (isErrorImage) {
-    return (
-      <CustomResponsiveTypoGraphy sx={{ color: theme.palette.primary.secondaryColorDarkBlack }}>
-        {user.firstName}
-      </CustomResponsiveTypoGraphy>
-    );
+    return <Avatar sx={{ ...muiStyles }} />;
   }
 
   return (
@@ -79,33 +88,10 @@ function loadAvatarImage(
       objectFit='cover'
       alt={user.firstName || 'Participant'}
       onError={() => setIsErrorImage(true)}
-      className={style.userAvatarImage}
+      className={imageClassName}
     />
   );
 }
-
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: '72px',
-  height: '72px',
-  [theme.breakpoints.up(600)]: {
-    '&.MuiAvatar-root': {
-      width: '96px',
-      height: '96px',
-    },
-  },
-  [theme.breakpoints.up(1000)]: {
-    '&.MuiAvatar-root': {
-      width: '150px',
-      height: '150px',
-    },
-  },
-  [theme.breakpoints.up(1400)]: {
-    '&.MuiAvatar-root': {
-      width: '180px',
-      height: '180px',
-    },
-  },
-}));
 
 const CustomResponsiveTypoGraphy = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.secondaryColorDarkBlack,
