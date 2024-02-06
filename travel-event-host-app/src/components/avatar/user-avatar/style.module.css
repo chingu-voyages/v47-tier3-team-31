@@ -1,0 +1,26 @@
+.userAvatarImage {
+  position: relative !important;
+  width: 72px !important;
+  height: 72px !important;
+}
+
+@media only screen and (min-width: 600px) {
+  .userAvatarImage {
+    width: 96px !important;
+    height: 96px !important;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .userAvatarImage {
+    width: 150px !important;
+    height: 150px !important;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .userAvatarImage {
+    width: 180px !important;
+    height: 180px !important;
+  }
+}
