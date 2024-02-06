@@ -120,18 +120,18 @@ export default function HeaderBarAvatar({
 }
 
 function loadAvatarImage(
-  hasError: boolean,
+  isErrorImage: boolean,
   userName: string,
   setIsErrorImage: (value: boolean) => void,
   imageUrl?: string,
 ) {
   // If there is no image url, return the MUI avatar icon
-  if (imageUrl === undefined || imageUrl === null) {
+  if (imageUrl === undefined || imageUrl === null || imageUrl === '') {
     return <StyledAvatar />;
   }
 
   // If there is an error loading, return the MUI  avatar icon
-  if (hasError) {
+  if (isErrorImage) {
     return <StyledAvatar />;
   }
 
