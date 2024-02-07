@@ -5,12 +5,16 @@ import { Box, FormControl, MenuItem, Select } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';
 import { useState } from 'react';
+import AuthDialog from '../auth-dialog/AuthDialog';
 import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import styles from './styles.module.css';
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
-  const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
+  const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
+  const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
+  const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
+
   const userName = 'Angelo';
 
   return (
@@ -140,8 +144,12 @@ export default function Header() {
             </>
           ) : (
             <>
-              <p className='mx-[1.5em] cursor-pointer'>LOGIN</p>
-              <button className='button1'>SIGNUP</button>
+              <p className='mx-[1.5em] cursor-pointer' onClick={() => setloginDialogOpen(true)}>
+                LOGIN
+              </p>
+              <button className='button1' onClick={() => setSignupDialogOpen(true)}>
+                SIGN UP
+              </button>
             </>
           )}
         </div>
@@ -180,6 +188,16 @@ export default function Header() {
           </li>
         </ul>
       </nav>
+      <AuthDialog
+        authDialogType={'signup'}
+        open={signupDialogOpen}
+        onDialogClose={() => setSignupDialogOpen(false)}
+      />
+      <AuthDialog
+        authDialogType={'login'}
+        open={loginDialogOpen}
+        onDialogClose={() => setloginDialogOpen(false)}
+      />
     </header>
   );
 }

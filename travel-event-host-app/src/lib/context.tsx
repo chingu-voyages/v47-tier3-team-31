@@ -1,7 +1,7 @@
 'use client';
 import { useSession } from 'next-auth/react';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 const OnboardingContext = React.createContext<any>(undefined);
 
