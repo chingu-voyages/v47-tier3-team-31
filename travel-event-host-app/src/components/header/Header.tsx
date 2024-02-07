@@ -1,7 +1,7 @@
 'use client';
 import theme from '@/app/theme';
 import Language from '@/lib/language';
-import { Box, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, MenuItem, Select } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -12,10 +12,6 @@ export default function Header() {
   const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState(false);
   const userName = 'Angelo';
-
-  const handleLanguageOptionChanged = (event: SelectChangeEvent) => {
-    setLang(event.target.value as Language);
-  };
 
   return (
     <header className={styles.header}>
