@@ -42,31 +42,6 @@
 .authBox > p {
   cursor: pointer;
 }
-.langDropdown {
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5em;
-  display: inline-block;
-}
-.langInput {
-  display: none;
-}
-.langDropdownOptionBox {
-  display: none;
-  position: absolute;
-}
-.langDropdownOption {
-  padding: 0.5em;
-  text-align: center;
-  background-color: var(--third-color-light-black);
-}
-.langDropdownOption:hover {
-  cursor: pointer;
-  background-color: var(--secondary-color-dark-black);
-}
 
 .selection {
   display: flex;
@@ -74,16 +49,9 @@
   align-items: center;
   gap: 0.5em;
 }
-.langInput:checked ~ .langDropdownOptionBox {
-  display: block;
-}
 .avatarBox {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75em;
-  cursor: pointer;
   margin-left: 1rem;
+  align-self: normal;
 }
 .loaderSkeleton {
   background-color: var(--primary-color-dark-blue);
@@ -168,5 +136,11 @@
   .authBox {
     gap: 0.5em;
     font-size: 11px;
+  }
+}
+
+@media only screen and (max-width: 431px) {
+  .avatarBox {
+    align-self: center;
   }
 }

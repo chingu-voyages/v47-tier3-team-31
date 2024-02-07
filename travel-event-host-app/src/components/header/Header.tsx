@@ -1,10 +1,12 @@
 'use client';
+import theme from '@/app/theme';
 import Language from '@/lib/language';
-import Avatar from '@mui/material/Avatar';
+import { Box, FormControl, MenuItem, Select } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';
 import { useState } from 'react';
 import AuthDialog from '../auth-dialog/AuthDialog';
+import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import styles from './styles.module.css';
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
@@ -14,6 +16,7 @@ export default function Header() {
   const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
 
   const userName = 'Angelo';
+
   return (
     <header className={styles.header}>
       <div>
@@ -37,32 +40,83 @@ export default function Header() {
           <h1>Backpack</h1>
         </div>
         <div className={styles.authBox}>
-          <label htmlFor='lang' className={styles.langDropdown}>
-            <div className={styles.selection}>
-              {lang}
-              <svg
-                width='1.1em'
-                height='0.8em'
-                viewBox='0 0 18 10'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
+          <Box>
+            <FormControl
+              variant='filled'
+              sx={{
+                m: 1,
+                maxWidth: 90,
+                '& .MuiInputBase-root': {
+                  fontWeight: '400',
+                  fontSize: '1.25rem',
+                  color: theme.palette.primary.thirdColorIceLight,
+                  backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+                  '&:before': {
+                    borderBottom: 'none',
+                    transition: 'none',
+                  },
+                  '&:after': {
+                    borderBottom: 'none',
+                  },
+                  '&:hover:before': {
+                    borderBottom: 'none',
+                  },
+                },
+                '& .MuiSvgIcon-root': {
+                  color: theme.palette.primary.thirdColorIceLight,
+                },
+                [theme.breakpoints.down(700)]: {
+                  '& .MuiInputBase-root': {
+                    fontSize: '1rem',
+                  },
+                },
+                [theme.breakpoints.down(610)]: {
+                  '& .MuiInputBase-root': {
+                    fontSize: '11px',
+                  },
+                },
+              }}
+            >
+              <Select
+                labelId='selectLanguageDropdown'
+                id='selectLanguageDropdown'
+                value={lang}
+                onChange={(event) => setLang(event.target.value as Language)}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    paddingBottom: '25px',
+                  },
+                }}
+                inputProps={{
+                  paddingTop: 0,
+                  MenuProps: {
+                    sx: {
+                      '& .MuiPaper-root': {
+                        borderRadius: '0',
+                      },
+                    },
+                    MenuListProps: {
+                      sx: {
+                        backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+                        color: theme.palette.primary.thirdColorIceLight,
+                        borderTop: 'none',
+                        '& .MuiButtonBase-root:hover': {
+                          backgroundColor: theme.palette.primary.primaryColorDarkBlue,
+                        },
+                      },
+                    },
+                  },
+                }}
               >
-                <path
-                  d='M0.479187 0.00915527L9.22919 9.36283L17.9792 0.00915527H0.479187Z'
-                  fill='#FAFAFF'
-                  stroke='#FAFAFF'
-                  strokeWidth='0.008'
-                />
-              </svg>
-            </div>
-            <input className={styles.langInput} id='lang' type='checkbox' required />
-            <div className={styles.langDropdownOptionBox}>
-              <div className={styles.langDropdownOption}>{Language.En}</div>
-              <div className={styles.langDropdownOption}>{Language.Es}</div>
-              <div className={styles.langDropdownOption}>{Language.Fr}</div>
-              <div className={styles.langDropdownOption}>{Language.Pt}</div>
-            </div>
-          </label>
+                {/* This will render languages as needed */}
+                {Object.entries(Language).map(([key, value]) => (
+                  <MenuItem key={key} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
           {status === 'loading' ? (
             <div className={styles.spinnerBox}>
               <CircularProgress
@@ -85,22 +139,7 @@ export default function Header() {
           ) : status === 'authenticated' ? (
             <>
               <div className={styles.avatarBox}>
-                <p>{userName}</p>
-                <Avatar />
-                <svg
-                  width='1.1em'
-                  height='0.8em'
-                  viewBox='0 0 18 10'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M0.479187 0.00915527L9.22919 9.36283L17.9792 0.00915527H0.479187Z'
-                    fill='#FAFAFF'
-                    stroke='#FAFAFF'
-                    strokeWidth='0.008'
-                  />
-                </svg>
+                <HeaderBarAvatar userName={userName} />
               </div>
             </>
           ) : (
