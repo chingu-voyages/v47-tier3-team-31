@@ -81,7 +81,7 @@ export default function Header() {
                 labelId='selectLanguageDropdown'
                 id='selectLanguageDropdown'
                 value={lang}
-                onChange={handleLanguageOptionChanged}
+                onChange={(event) => setLang(event.target.value as Language)}
                 sx={{
                   '& .MuiInputBase-input': {
                     paddingBottom: '25px',
