@@ -1,11 +1,12 @@
 import styles from './footer.module.css'
+import Link from 'next/link'
 
 export default function Footer() {
     return(
         <div className={styles.footer}>
-            <a>About us</a>
-            <a>Chingu</a>
-            <a>Team</a>
+            <Link href="/about">About us</Link>
+            <a href="https://chingu.io/">Chingu</a>
+            <Link href="/team">Team</Link>
         </div>
     )
 }
