@@ -14,6 +14,7 @@ enum ColorPalette {
   LightBlack = '#424755',
   Charcoal = '#272727',
   LightIndigo = '#636EA9',
+  GreyDisabled = '#8b93a7',
 }
 
 // Module augmentation to make sure our custom colors types are available for MaterialUI components
@@ -28,6 +29,7 @@ declare module '@mui/material/styles' {
     thirdColorlightBlack: string;
     charcoal: string;
     lightIndigo: string;
+    greyDisabled: string;
   }
 
   interface SimplePaletteColorOptions extends PaletteColor {}
@@ -47,6 +49,7 @@ const theme = createTheme({
       thirdColorlightBlack: ColorPalette.LightBlack,
       charcoal: ColorPalette.Charcoal,
       lightIndigo: ColorPalette.LightIndigo,
+      greyDisabled: ColorPalette.GreyDisabled,
     },
   },
 });
