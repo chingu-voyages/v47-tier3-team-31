@@ -76,7 +76,7 @@ function loadAvatarImage(
   imageClassName?: any,
   user?: Partial<SecureUser>,
 ) {
-  if (user?.imageUrl === undefined || user.imageUrl === null || user.imageUrl === '') {
+  if (user?.imageUrl === undefined || user.imageUrl === '') {
     return MuiAvatarComponent;
   }
 
