@@ -1,6 +1,6 @@
 'use client';
 import theme from '@/app/theme';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
 import HostedEvent from '../../models/event';
 import CommonButton from '../common-button/Common-Button';
 import EventCard from '../event/event-card/Event-card';
@@ -13,12 +13,14 @@ interface EventsSectionProps {
   title: string;
   hostedEvents: HostedEvent[];
   onLoadMoreEventsButtonClicked: () => void;
+  isLoading?: boolean;
 }
 
 export default function EventsSection({
   title,
   hostedEvents,
   onLoadMoreEventsButtonClicked,
+  isLoading,
 }: EventsSectionProps) {
   const theme = useTheme(); // This is a MaterialUI hook that allows us to access the MUI theme
 
@@ -54,11 +56,16 @@ export default function EventsSection({
           },
         }}
       >
-        {renderEventCards(hostedEvents, handleOnLoadMoreButtonClick)}
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          renderEventCards(hostedEvents, handleOnLoadMoreButtonClick)
+        )}
       </Box>
       {/* This will be the button to load more events */}
       <Box display='flex' justifyContent={'center'} mt={3}>
         <CommonButton
+          disabled={isLoading}
           label='Load More'
           onButtonClick={handleOnLoadMoreButtonClick}
           additionalStyles={{
