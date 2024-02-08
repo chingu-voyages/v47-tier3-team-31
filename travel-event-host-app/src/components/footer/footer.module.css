@@ -6,8 +6,6 @@
     flex-direction: row;
     padding: 20px 0;
     justify-content: center;
-    position: fixed; /* or position: absolute; */
-    bottom: 0;
     width: 100%;
 }
 
