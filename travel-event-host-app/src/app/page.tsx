@@ -4,9 +4,8 @@ import Footer from '@/components/footer/Footer';
 
 export default function Home() {
   return (
-    <div>
+    <main>
       <Categories />
-      <Footer />
-    </div>
+    </main>
   );
 }
