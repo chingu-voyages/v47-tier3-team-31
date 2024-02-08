@@ -1,6 +1,7 @@
+'use client';
 import theme from '@/app/theme';
 import { SecureUser } from '@/types/secureUser';
-import { Avatar, Box, ButtonBase, Typography, styled } from '@mui/material';
+import { Box, ButtonBase, Typography, styled } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -10,18 +11,20 @@ import { useState } from 'react';
  */
 interface UserAvatarProps {
   showName?: boolean;
-  user: Partial<SecureUser>;
+  user?: Partial<SecureUser>;
   onAvatarClicked?: () => void;
-  customMuiStyles?: any;
+  MuiAvatarComponent: JSX.Element;
   imageClassName?: any;
+  nameStyles?: any;
 }
 
 export default function UserAvatar({
   user,
   onAvatarClicked,
   showName,
-  customMuiStyles,
+  MuiAvatarComponent,
   imageClassName,
+  nameStyles,
 }: UserAvatarProps) {
   const handleAvatarClicked = () => {
     onAvatarClicked && onAvatarClicked();
@@ -47,7 +50,7 @@ export default function UserAvatar({
           borderColor={theme.palette.primary.thirdColorIceLight}
           border={'2px solid'}
         >
-          {loadAvatarImage(isErrorImage, setIsErrorImage, user, customMuiStyles, imageClassName)}
+          {loadAvatarImage(isErrorImage, setIsErrorImage, MuiAvatarComponent, imageClassName, user)}
         </Box>
         {showName && (
           <CustomResponsiveTypoGraphy
@@ -55,9 +58,10 @@ export default function UserAvatar({
               padding: 0,
               color: theme.palette.primary.secondaryColorDarkBlack,
               marginTop: 2,
+              ...nameStyles,
             }}
           >
-            {user.firstName}
+            {user?.firstName || 'unknown user'}
           </CustomResponsiveTypoGraphy>
         )}
       </ButtonBase>
@@ -68,17 +72,17 @@ export default function UserAvatar({
 function loadAvatarImage(
   isErrorImage: boolean,
   setIsErrorImage: (isError: boolean) => void,
-  user: Partial<SecureUser>,
-  muiStyles?: Record<string, string>,
+  MuiAvatarComponent: any,
   imageClassName?: any,
+  user?: Partial<SecureUser>,
 ) {
-  if (user.imageUrl === undefined || user.imageUrl === null || user.imageUrl === '') {
-    return <Avatar sx={{ ...muiStyles }} />;
+  if (user?.imageUrl === undefined || user.imageUrl === null || user.imageUrl === '') {
+    return MuiAvatarComponent;
   }
 
   // If there is an error loading, return the MUI avatar icon
   if (isErrorImage) {
-    return <Avatar sx={{ ...muiStyles }} />;
+    return MuiAvatarComponent;
   }
 
   return (
