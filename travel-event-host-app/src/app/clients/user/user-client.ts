@@ -25,7 +25,7 @@ export async function getEventsByUser(user: SecureUser): Promise<Event[] | undef
   if (user?.eventIds?.length === 0) return [];
 
   try {
-    // Fetch all of the events by id. Filter out the resolved promises and then map them to an array of Event objects
+    // Fetch all of the events by id. Filter for the resolved promises and then map them to an array of Event objects
     const results = (
       await Promise.allSettled(user.eventIds.map((eventId) => getEventById(eventId)))
     ).filter((result) => result.status === 'fulfilled') as PromiseFulfilledResult<Event>[];
