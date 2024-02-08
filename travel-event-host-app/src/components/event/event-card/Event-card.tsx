@@ -123,7 +123,7 @@ function CalendarDateComponent({ date }: { date: Date }) {
           sx={{
             textTransform: 'uppercase',
             color: '#3D37F1',
-            textAlign: 'center',
+            textAlign: 'left',
             fontWeight: 'bold',
             fontSize: '11.37px',
             lineHeight: 1,
@@ -156,6 +156,14 @@ function CalendarDateComponent({ date }: { date: Date }) {
         >
           {dayjs(date).format('D')}
         </Typography>
+      </Box>
+      <Box>
+        {/* Event's time section */}
+        <Box className='eventStartTime' mt={1}>
+          <Typography fontSize={'10px'} sx={{ textWrap: 'wrap' }}>
+            {dayjs(date).format('h:mm A')} UTC
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
