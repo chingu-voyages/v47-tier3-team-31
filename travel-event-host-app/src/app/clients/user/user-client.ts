@@ -17,7 +17,7 @@ export async function getUserById(userId: string): Promise<SecureUser | undefine
 }
 
 /**
- * @param userId the user to get events for
+ * @param user the user to get events for
  * @returns {Promise<Event[]>} the events for the user
  */
 export async function getEventsByUser(user: SecureUser): Promise<Event[] | undefined> {
