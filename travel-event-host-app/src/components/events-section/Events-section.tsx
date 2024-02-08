@@ -69,6 +69,11 @@ export default function EventsSection({
           label='Load More'
           onButtonClick={handleOnLoadMoreButtonClick}
           additionalStyles={{
+            '&&&.Mui-disabled': {
+              borderColor: theme.palette.primary.greyDisabled,
+              color: theme.palette.primary.greyDisabled,
+              borderWidth: '0.5px',
+            },
             [theme.breakpoints.down(720)]: {
               maxWidth: '100px',
               maxHeight: '40px',
