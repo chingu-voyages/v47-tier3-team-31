@@ -1,6 +1,5 @@
-import Category from '@/lib/category';
-import mongoose, { Schema, models } from 'mongoose';
 import Event from '@/models/event';
+import mongoose, { Schema, models } from 'mongoose';
 const eventSchema = new Schema<Event>(
   {
     title: {

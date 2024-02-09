@@ -12,6 +12,7 @@ interface CommonButtonProps {
   textTransform?: string; // The text transform of the button
   fontWeight?: string; // The font weight of the button
   additionalStyles?: Record<string, any>; // Any additional styles that you want to add to the button
+  disabled?: boolean; // Whether the button is disabled or not
 }
 
 export default function CommonButton({
@@ -25,6 +26,7 @@ export default function CommonButton({
   borderWidth,
   label,
   additionalStyles,
+  disabled,
 }: CommonButtonProps) {
   const theme = useTheme();
 
@@ -35,6 +37,7 @@ export default function CommonButton({
     <Button
       variant='outlined'
       onClick={handleButtonClick}
+      disabled={disabled}
       sx={{
         '&.MuiButtonBase-root': {
           borderRadius: borderRadius || '50px',

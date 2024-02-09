@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import { connectMongoDB } from '@/lib/mongodb';
 import Event from '@/schemas/event';
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   let {
@@ -19,6 +19,8 @@ export async function POST(req: Request) {
     endDate,
     categories,
   } = await req.json();
+
+  await connectMongoDB();
 
   const newEvent = await Event.create({
     title,

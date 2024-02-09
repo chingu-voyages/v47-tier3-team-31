@@ -1,5 +1,4 @@
 import Category from '@/lib/category';
-import mongoose from 'mongoose';
 
 interface Event {
   _id: string;

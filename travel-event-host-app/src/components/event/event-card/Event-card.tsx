@@ -16,7 +16,14 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
   };
   const theme = useTheme();
   return (
-    <Box onClick={() => handleCardClick(hostedEvent._id)}>
+    <Box
+      onClick={() => handleCardClick(hostedEvent._id)}
+      sx={{
+        '&:hover': {
+          cursor: 'pointer',
+        },
+      }}
+    >
       <Card
         sx={{
           maxWidth: '280px', // Change this value to change the width of the card
@@ -26,6 +33,9 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
             boxShadow: 'none',
             borderRadius: '0px',
             marginRight: 0,
+          },
+          '&:hover': {
+            boxShadow: '0px 0px 10px 10px rgba(0,0,0,0.2)',
           },
         }}
       >
@@ -123,7 +133,7 @@ function CalendarDateComponent({ date }: { date: Date }) {
           sx={{
             textTransform: 'uppercase',
             color: '#3D37F1',
-            textAlign: 'center',
+            textAlign: 'left',
             fontWeight: 'bold',
             fontSize: '11.37px',
             lineHeight: 1,
@@ -156,6 +166,14 @@ function CalendarDateComponent({ date }: { date: Date }) {
         >
           {dayjs(date).format('D')}
         </Typography>
+      </Box>
+      <Box>
+        {/* Event's time section */}
+        <Box className='eventStartTime' mt={1}>
+          <Typography fontSize={'10px'} sx={{ textWrap: 'wrap' }}>
+            {dayjs(date).format('h:mm A')}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
