@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@400;500&display=swap');
+
+.footer {
+    background-color: var(--secondary-color-dark-black);
+    display: flex;
+    flex-direction: row;
+    padding: 20px 0;
+    justify-content: center;
+    width: 100%;
+}
+
+.footer a {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    font-size: 18px;
+}
