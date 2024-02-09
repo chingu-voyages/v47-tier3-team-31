@@ -4,11 +4,23 @@ import { SecureUser } from '@/types/secureUser';
 /**
  *
  * @param userId the id of the user to get
+ * @param scopes the properties to get from the user object
  * @returns {Promise<SecureUser | undefined>} a user object or undefined
  */
-export async function getUserById(userId: string): Promise<SecureUser | undefined> {
+export async function getUserById(
+  userId: string,
+  scopes?: string[],
+): Promise<SecureUser | undefined> {
+  let endPoint: string = `/api/user/${userId}`;
+
+  if (scopes && scopes.length > 0) {
+    const searchParams = new URLSearchParams();
+    scopes.forEach((scope) => searchParams.append('scope', scope));
+    endPoint = endPoint.concat(`?${searchParams.toString()}`);
+  }
+
   try {
-    const response = await fetch(`/api/user/${userId}`);
+    const response = await fetch(endPoint);
     return response.json();
   } catch (error) {
     throw new Error('Error: Cannot fetch user');
