@@ -15,6 +15,13 @@ import CategoriesType from '@/components/searchSection/types';
 import styles from '../styles.module.css';
 import CloseIcon from '@mui/icons-material/Close';
 
+const updateCategories = () => {
+  let updateCategories: { [key: string]: boolean } = {};
+
+  Object.values(categoriesArr).map((category) => (updateCategories[category] = false));
+  return updateCategories;
+};
+
 const FilterBox = ({
   setCategories,
   categories,
@@ -29,15 +36,7 @@ const FilterBox = ({
   const [day, setDay] = useState('Any day');
   const [distance, setDistance] = useState('Any distance');
   useEffect(() => {
-    const updateCategories = () => {
-      const categoryKeys = Object.keys(categoriesArr);
-      let updateCategories: { [key: string]: boolean } = {};
-
-      Object.values(categoriesArr).map((category) => (updateCategories[category] = false));
-      setCategories(updateCategories);
-    };
-
-    updateCategories();
+    setCategories(updateCategories());
   }, []);
 
   const handleDayChange = (event: { target: { value: React.SetStateAction<string> } }) => {

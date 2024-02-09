@@ -70,7 +70,7 @@ export async function GET(req: Request) {
     );
   } else {
     return NextResponse.json(
-      { totalCount: [], events: [], message: 'Not found events' },
+      { totalCount: 0, events: [], message: 'Not found events' },
       { status: 404 },
     );
   }

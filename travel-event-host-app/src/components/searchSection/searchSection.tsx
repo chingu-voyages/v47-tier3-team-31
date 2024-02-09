@@ -9,6 +9,7 @@ import Event from '@/models/event';
 import CategoriesType from '@/components/searchSection/types';
 import { useRouter } from 'next/navigation';
 import { SearchInput } from './searchInput/searchInput';
+import { getEventsBySearchQuery } from '@/app/clients/event/event-client';
 
 export default function SearchSection({ keyword }: { keyword: string }) {
   const [sortBy, setSortBy] = useState<string>('Date');
@@ -23,41 +24,11 @@ export default function SearchSection({ keyword }: { keyword: string }) {
   };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        let queryParams = '';
-
-        Object.entries(categories).forEach(([categoryName, value]) => {
-          if (value) {
-            queryParams += `&Category=${categoryName}`;
-          }
-        });
-
-        if (keyword) {
-          queryParams += `&keyword=${keyword}`;
-        }
-
-        if (queryParams.length > 0) {
-          queryParams = queryParams.substring(1);
-        }
-
-        const apiUrl = `/api/event?${queryParams}`;
-
-        const response = await fetch(apiUrl);
-        if (response.ok) {
-          const data = await response.json();
-          setResultEventList(data.events);
-          console.log(data.events);
-        } else {
-          setResultEventList([]);
-          console.error('Error', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
+    const fetch = async () => {
+      const eventsResultFetch = await getEventsBySearchQuery(keyword, categories);
+      setResultEventList(eventsResultFetch);
     };
-
-    fetchEvents();
+    fetch();
   }, [categories, keyword]);
 
   return (
