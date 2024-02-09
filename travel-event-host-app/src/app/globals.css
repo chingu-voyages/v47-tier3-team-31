@@ -44,5 +44,5 @@ body {
   background-color: var(--primary-color-dark-blue);
 }
 .scrollbar1::-webkit-scrollbar-track {
-  background-color: var(--third-color-ice-light); /* Color de la pista usando la variable */
+  background-color: var(--third-color-ice-light); 
 }
