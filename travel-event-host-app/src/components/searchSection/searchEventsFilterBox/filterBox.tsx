@@ -1,24 +1,26 @@
 'use client';
-import { useEffect, useState } from 'react';
+import CategoriesType from '@/components/searchSection/types';
+import Category from '@/lib/category';
+import CategoryDict from '@/lib/categoryArray';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
   MenuItem,
   Select,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
   Typography,
-  IconButton,
 } from '@mui/material';
-import categoriesArr from '@/lib/categoryArray';
-import CategoriesType from '@/components/searchSection/types';
+import { useEffect, useState } from 'react';
 import styles from '../styles.module.css';
-import CloseIcon from '@mui/icons-material/Close';
 
 const updateCategories = () => {
-  let updateCategories: { [key: string]: boolean } = {};
+  let updateCategories: { [key in string]: boolean } = {};
 
-  Object.values(categoriesArr).map((category) => (updateCategories[category] = false));
+  Object.values(Category).map((category: string) => (updateCategories[category] = false));
+
   return updateCategories;
 };
 
@@ -29,7 +31,7 @@ const FilterBox = ({
   setFilterBoxIsOpen,
 }: {
   setCategories: React.Dispatch<React.SetStateAction<CategoriesType>>;
-  categories: CategoriesType;
+  categories: { [key in string]: boolean };
   filterBoxIsOpen: boolean;
   setFilterBoxIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -100,7 +102,7 @@ const FilterBox = ({
               control={
                 <Checkbox checked={checked} onChange={handleCategoryChange} name={category} />
               }
-              label={category}
+              label={CategoryDict[category as Category]}
             />
           ))}
         </FormGroup>

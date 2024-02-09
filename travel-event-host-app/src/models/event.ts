@@ -21,6 +21,6 @@ interface Event {
   };
   startDate: Date;
   endDate: Date;
-  categories: string[];
+  categories: Category[];
 }
 export default Event;
