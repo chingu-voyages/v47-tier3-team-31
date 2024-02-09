@@ -29,7 +29,7 @@ const eventSchema = new Schema<Event>(
     },
     startDate: Date,
     endDate: Date,
-    category: Category,
+    categories: [String],
   },
 
   { timestamps: true },

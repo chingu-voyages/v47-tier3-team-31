@@ -5,6 +5,10 @@ import Link from 'next/link';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Language from '@/lib/language';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import Image from 'next/image';
+
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
@@ -124,20 +128,24 @@ export default function Header() {
           />
         </svg>
         <ul>
-          <li>
-            <Link href='/'>Home</Link>
-          </li>
-          <li>
-            <Link href='/'>Upcoming Events</Link>
-          </li>
-          <li>
-            <Link href='/'>Categories</Link>
-          </li>
-          <li>
-            <Link href='/'>Create Event</Link>
-          </li>
-          <li>
-            <Link href='/'>About Us</Link>
+          <li className={styles.navList}>
+            <ul>
+              <li>
+                <Link href='/'>Home</Link>
+              </li>
+              <li>
+                <Link href='/'>Upcoming Events</Link>
+              </li>
+              <li>
+                <Link href='/'>Search Events</Link>
+              </li>
+              <li>
+                <Link href='/'>Create Event</Link>
+              </li>
+              <li>
+                <Link href='/'>About Us</Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>

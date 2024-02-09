@@ -7,7 +7,9 @@ export async function POST(req: Request) {
     title = '',
     description = '',
     eventCreatorId,
-    location /* {
+    imageUrl = '',
+    participantIds = [],
+    location = '' /* {
         country: String,
         state: String,
         city: String,
@@ -15,39 +17,59 @@ export async function POST(req: Request) {
       } */,
     startDate,
     endDate,
-    category,
+    categories,
   } = await req.json();
 
   const newEvent = await Event.create({
+    title,
     description,
+    imageUrl,
+    participantIds,
     eventCreatorId,
     location,
     startDate,
     endDate,
-    category,
+    categories,
   });
 
   return NextResponse.json({ message: 'event created the id is ' + newEvent.id }, { status: 201 });
 }
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-
   let page: number = parseInt(searchParams.get('page') || '1', 10);
   let pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
+  let keyword = searchParams.get('keyword');
+  const categories: string[] = Array.from(searchParams.getAll('Category') || []);
 
-  const allEvents = await Event.aggregate([
+  await connectMongoDB();
+  let aggregatePipeline: any[] = [
+    {
+      $match: {
+        title: { $regex: keyword, $options: 'i' },
+      },
+    },
     {
       $facet: {
         metadata: [{ $count: 'totalCount' }],
         data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
       },
     },
-  ]);
+  ];
 
-  await connectMongoDB();
-
-  return NextResponse.json(
-    { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },
-    { status: 200 },
-  );
+  if (categories.length > 0) {
+    aggregatePipeline[0].$match.$or = [{ categories: { $in: categories } }];
+  }
+  const allEvents = await Event.aggregate(aggregatePipeline);
+  console.log(allEvents[0].data);
+  if (allEvents[0].data.length > 0) {
+    return NextResponse.json(
+      { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },
+      { status: 200 },
+    );
+  } else {
+    return NextResponse.json(
+      { totalCount: [], events: [], message: 'Not found events' },
+      { status: 404 },
+    );
+  }
 }

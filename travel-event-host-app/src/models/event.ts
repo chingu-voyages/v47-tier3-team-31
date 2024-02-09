@@ -2,7 +2,7 @@ import Category from '@/lib/category';
 import mongoose from 'mongoose';
 
 interface Event {
-  id: string;
+  _id: string;
   title: string;
   description?: string;
   imageUrl?: string;
@@ -22,6 +22,6 @@ interface Event {
   };
   startDate: Date;
   endDate: Date;
-  category: Category[];
+  categories: String[];
 }
 export default Event;

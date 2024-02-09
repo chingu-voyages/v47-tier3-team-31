@@ -16,7 +16,7 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
   };
   const theme = useTheme();
   return (
-    <Box onClick={() => handleCardClick(hostedEvent.id)}>
+    <Box onClick={() => handleCardClick(hostedEvent._id)}>
       <Card
         sx={{
           maxWidth: '280px', // Change this value to change the width of the card
@@ -68,7 +68,7 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
                 },
               }}
             >
-              <Box>
+              <Box sx={{ textAlign: 'center' }}>
                 <CalendarDateComponent date={hostedEvent.startDate} />
               </Box>
               <Box ml={3}>
@@ -112,7 +112,7 @@ function getEventImage(imageUrl?: string): string {
 /**
  * Returns the month and date element as part of the event card
  * @param {Date} date
- * @returns
+ * @return
  */
 function CalendarDateComponent({ date }: { date: Date }) {
   const theme = useTheme();
