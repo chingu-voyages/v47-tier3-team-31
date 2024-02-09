@@ -171,7 +171,7 @@ function CalendarDateComponent({ date }: { date: Date }) {
         {/* Event's time section */}
         <Box className='eventStartTime' mt={1}>
           <Typography fontSize={'10px'} sx={{ textWrap: 'wrap' }}>
-            {dayjs(date).format('h:mm A')} UTC
+            {dayjs(date).format('h:mm A')}
           </Typography>
         </Box>
       </Box>
