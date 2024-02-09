@@ -1,6 +1,5 @@
 import Event from '@/models/event';
 import { SecureUser } from '@/types/secureUser';
-import { getEventById } from '../event/event-client';
 
 /**
  *
@@ -17,21 +16,15 @@ export async function getUserById(userId: string): Promise<SecureUser | undefine
 }
 
 /**
- * @param user the user to get events for
- * @returns {Promise<Event[]>} the events for the user
+ * Gets the events for a user by their id. V2 will include pagination
+ * @param userId the id of the user to get events for
+ * @returns {Promise<Event[] | undefined>} an array of events
  */
-export async function getEventsByUser(user: SecureUser): Promise<Event[] | undefined> {
-  if (!user) return [];
-  if (user?.eventIds?.length === 0) return [];
-
+export async function getEventsByUserId(userId: string): Promise<Event[] | undefined> {
   try {
-    // Fetch all of the events by id. Filter for the resolved promises and then map them to an array of Event objects
-    const results = (
-      await Promise.allSettled(user.eventIds.map((eventId) => getEventById(eventId)))
-    ).filter((result) => result.status === 'fulfilled') as PromiseFulfilledResult<Event>[];
-
-    return results.map((result) => result.value) as Event[];
+    const response = await fetch(`/api/user/${userId}/events`);
+    return response.json();
   } catch (error) {
-    throw new Error('Error: Cannot fetch events associated with the user.');
+    throw new Error("Error: Cannot fetch user's events");
   }
 }
