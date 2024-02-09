@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
 import { connectMongoDB } from '@/lib/mongodb';
-import mongoose from 'mongoose';
 import User from '@/schemas/user';
 import { SecureUser } from '@/types/secureUser';
+import mongoose from 'mongoose';
+import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: any) {
   //to get query use this, here you get query1 for example
@@ -18,6 +18,6 @@ export async function GET(req: Request, { params }: any) {
 
   const userFound = await User.findById(id).select('-password -admin -email');
   const secureUser: SecureUser = userFound;
-  if (userFound) return NextResponse.json({ secureUser }, { status: 200 });
+  if (userFound) return NextResponse.json(secureUser, { status: 200 });
   else return NextResponse.json({ message: 'user no exist' }, { status: 404 });
 }
