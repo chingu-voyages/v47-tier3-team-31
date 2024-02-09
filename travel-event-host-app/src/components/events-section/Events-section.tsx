@@ -104,8 +104,8 @@ const renderEventCards = (
   return hostedEvents.map((hostedEvent) => (
     <EventCard
       hostedEvent={hostedEvent}
-      key={hostedEvent.id}
-      onCardClick={() => onEventClickAction(hostedEvent.id)}
+      key={hostedEvent._id}
+      onCardClick={() => onEventClickAction(hostedEvent._id)}
     />
   ));
 };

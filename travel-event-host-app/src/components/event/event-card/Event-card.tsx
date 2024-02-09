@@ -16,7 +16,14 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
   };
   const theme = useTheme();
   return (
-    <Box onClick={() => handleCardClick(hostedEvent.id)}>
+    <Box
+      onClick={() => handleCardClick(hostedEvent._id)}
+      sx={{
+        '&:hover': {
+          cursor: 'pointer',
+        },
+      }}
+    >
       <Card
         sx={{
           maxWidth: '280px', // Change this value to change the width of the card
@@ -26,6 +33,9 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
             boxShadow: 'none',
             borderRadius: '0px',
             marginRight: 0,
+          },
+          '&:hover': {
+            boxShadow: '0px 0px 10px 10px rgba(0,0,0,0.2)',
           },
         }}
       >

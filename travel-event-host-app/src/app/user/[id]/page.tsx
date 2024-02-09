@@ -1,5 +1,5 @@
 'use client';
-import { getEventsByUser, getUserById } from '@/app/clients/user/user-client';
+import { getEventsByUserId, getUserById } from '@/app/clients/user/user-client';
 import theme from '@/app/theme';
 import UserAvatar from '@/components/avatar/user-avatar/UserAvatar';
 import EventsSection from '@/components/events-section/Events-section';
@@ -29,7 +29,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
       try {
         setIsLoading(true);
         const fetchedUser = await getUserById(id);
-        const fetchedEvents = await getEventsByUser(fetchedUser!);
+        const fetchedEvents = await getEventsByUserId(id);
         setUser(fetchedUser);
         setUpcomingEvents(fetchedEvents!);
         setPastEvents(fetchedEvents!);
