@@ -1,7 +1,8 @@
 'use client';
-import CategoriesType from '@/components/searchSection/types';
-import Category from '@/lib/category';
-import CategoryDict from '@/lib/categoryArray';
+
+import { Category } from '@/lib/category';
+
+import { CategoryDict } from '@/lib/category-dictionary';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -30,7 +31,7 @@ const FilterBox = ({
   filterBoxIsOpen,
   setFilterBoxIsOpen,
 }: {
-  setCategories: React.Dispatch<React.SetStateAction<CategoriesType>>;
+  setCategories: React.Dispatch<React.SetStateAction<{ [key in string]: boolean }>>;
   categories: { [key in string]: boolean };
   filterBoxIsOpen: boolean;
   setFilterBoxIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

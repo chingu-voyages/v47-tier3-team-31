@@ -1,9 +1,10 @@
 'use client';
-import { getEventsByUserId, getUserById } from '@/app/clients/user/user-client';
+import { getEventsByUserId } from '@/app/clients/event/event-client';
+import { getUserById } from '@/app/clients/user/user-client';
 import theme from '@/app/theme';
 import UserAvatar from '@/components/avatar/user-avatar/UserAvatar';
-import EventsSection from '@/components/events-section/Events-section';
-import Event from '@/models/event';
+import { EventsSection } from '@/components/events-section/Events-section';
+import { UserEvent } from '@/models/user-event';
 import { SecureUser } from '@/types/secureUser';
 import { Alert, Avatar, Box, CircularProgress, Theme, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -19,8 +20,8 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<SecureUser | undefined>(undefined);
 
-  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
-  const [pastEvents, setPastEvents] = useState<Event[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<UserEvent[]>([]);
+  const [pastEvents, setPastEvents] = useState<UserEvent[]>([]);
 
   const [error, setError] = useState<string | undefined>(undefined);
   // Fetch the user by their id when the component mounts

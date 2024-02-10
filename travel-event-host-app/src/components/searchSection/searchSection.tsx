@@ -2,18 +2,19 @@
 import styles from './styles.module.css';
 
 import { getEventsBySearchQuery } from '@/app/clients/event/event-client';
-import Category from '@/lib/category';
-import Event from '@/models/event';
+import { Category } from '@/lib/category';
+
+import { UserEvent } from '@/models/user-event';
 import { Box, MenuItem, Select } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import EventCard from '../event/event-card/Event-card';
+import { EventCard } from '../event/event-card/Event-card';
 import FilterBox from './searchEventsFilterBox/filterBox';
 import { SearchInput } from './searchInput/searchInput';
 
 export default function SearchSection({ keyword }: { keyword: string }) {
   const [sortBy, setSortBy] = useState<string>('Date');
-  const [resultEventList, setResultEventList] = useState<Event[]>([]);
+  const [resultEventList, setResultEventList] = useState<UserEvent[]>([]);
   const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
     {},
   );

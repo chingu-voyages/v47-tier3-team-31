@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
 import { connectMongoDB } from '@/lib/mongodb';
-import Event from '@/schemas/event';
+import { UserEventModel } from '@/schemas/user-event';
 import mongoose from 'mongoose';
+import { NextResponse } from 'next/server';
 
 export async function PATCH(req: Request, params: any) {
   let { userId } = await req.json();
@@ -13,15 +13,15 @@ export async function PATCH(req: Request, params: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const eventFound = await Event.findById(id);
+  const eventFound = await UserEventModel.findById(id);
 
   if (eventFound) {
-    const isUserIdPresent = eventFound.participantIds.some(
+    const isUserIdPresent = eventFound.participants.some(
       (participant: { userId: string; timeStamp: Date }) => participant.userId === userId,
     );
 
     if (isUserIdPresent) {
-      eventFound.participantIds = eventFound.participantIds.filter(
+      eventFound.participants = eventFound.participants.filter(
         (participant: { userId: string; timeStamp: Date }) => participant.userId !== userId,
       );
       await eventFound.save();

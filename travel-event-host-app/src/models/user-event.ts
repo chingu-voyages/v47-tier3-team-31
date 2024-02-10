@@ -1,12 +1,12 @@
 import Category from '@/lib/category';
 
-interface Event {
+export interface UserEvent {
   _id: string;
   title: string;
   description?: string;
   imageUrl?: string;
   eventCreatorId: string;
-  participantIds: {
+  participants: {
     userId: string;
     timeStamp: Date;
   }[];
@@ -23,4 +23,3 @@ interface Event {
   endDate: Date;
   categories: Category[];
 }
-export default Event;

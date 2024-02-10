@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-
-interface User {
+export interface User {
+  _id: string;
+  id: string;
   firstName?: string;
   imageUrl?: string;
   lastName?: string;
@@ -18,4 +18,3 @@ interface User {
   eventIds: string[];
   admin?: boolean;
 }
-export default User;

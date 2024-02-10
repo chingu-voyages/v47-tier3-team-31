@@ -1,6 +1,6 @@
 'use client';
 import theme from '@/app/theme';
-import Language from '@/lib/language';
+import { Language } from '@/lib/language';
 import { Box, FormControl, MenuItem, Select } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';

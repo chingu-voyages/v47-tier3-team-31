@@ -1,7 +1,6 @@
 'use client';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import Image from 'next/image';
 import { useState } from 'react';
 import styles from '../styles.module.css';

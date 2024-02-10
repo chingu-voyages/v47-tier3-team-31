@@ -1,4 +1,4 @@
-enum Category {
+export enum Category {
   TravelAndOutdoor = 'travelAndOutdoor',
   SocialActivities = 'socialActivities',
   HobbiesAndPassions = 'hobbiesAndPassions',
@@ -7,5 +7,5 @@ enum Category {
   Technology = 'technology',
   ArtAndCulture = 'artandCulture',
   Games = 'games',
+  CareerAndNetworking = 'careerAndNetworking',
 }
-export default Category;

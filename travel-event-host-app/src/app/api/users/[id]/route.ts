@@ -1,13 +1,13 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import User from '@/schemas/user';
+import { User } from '@/models/user';
+import { UserModel } from '@/schemas/user';
 import { SecureUser } from '@/types/secureUser';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: any) {
   //to get query use this, here you get query1 for example
-  const { searchParams } = new URL(req.url);
-  const query1 = searchParams.get('query1');
+
   await connectMongoDB();
 
   const id = params.id;
@@ -16,8 +16,8 @@ export async function GET(req: Request, { params }: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const userFound = await User.findById(id).select('-password -admin -email');
-  const secureUser: SecureUser = userFound;
+  const userFound: Partial<User> = await UserModel.findById(id).select('-password -admin -email');
+  const secureUser: Partial<SecureUser> = userFound;
   if (userFound) return NextResponse.json(secureUser, { status: 200 });
   else return NextResponse.json({ message: 'user no exist' }, { status: 404 });
 }

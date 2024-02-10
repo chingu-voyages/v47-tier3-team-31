@@ -2,15 +2,16 @@
 import { Box, Card, CardContent, Typography, styled, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import HostedEvent from '../../../models/event';
+
+import { UserEvent } from '@/models/user-event';
 import styles from './event-card.module.css';
 
 interface EventCardProps {
-  hostedEvent: HostedEvent;
+  hostedEvent: UserEvent;
   onCardClick?: (eventId: string) => void;
 }
 
-export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
+export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
   const handleCardClick = (eventId: string) => {
     onCardClick && onCardClick(eventId);
   };

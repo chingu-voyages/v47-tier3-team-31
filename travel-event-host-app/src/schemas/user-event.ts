@@ -1,6 +1,8 @@
-import Event from '@/models/event';
-import mongoose, { Schema, models } from 'mongoose';
-const eventSchema = new Schema<Event>(
+import { UserEvent } from '@/models/user-event';
+import mongoose, { Schema } from 'mongoose';
+import { EventParticipantSchema } from './event-participant';
+
+const userEventSchema = new Schema<UserEvent>(
   {
     title: {
       type: String,
@@ -13,12 +15,7 @@ const eventSchema = new Schema<Event>(
     imageUrl: String,
     eventCreatorId: String,
 
-    participantIds: [
-      {
-        userId: String,
-        timeStamp: Date,
-      },
-    ],
+    participants: [EventParticipantSchema],
 
     location: {
       country: String,
@@ -34,4 +31,4 @@ const eventSchema = new Schema<Event>(
   { timestamps: true },
 );
 
-export default models.Event || mongoose.model('Event', eventSchema);
+export const UserEventModel = mongoose.model<UserEvent>('UserEvent', userEventSchema);
