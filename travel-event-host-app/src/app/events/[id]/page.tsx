@@ -109,14 +109,20 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
                   textAlign: 'center',
                 },
               }}
+              fontSize={['0.8rem', '1rem', '1.2rem', '1.4rem', '1.6rem']}
             >
               Date and Hour
             </Typography>
           </Box>
           <Box>
             {userEvent ? (
-              <Typography p={2} className='someClass' fontWeight={'semibold'}>
-                {`${formatDate(userEvent.startDate)} to ${formatDate(userEvent.endDate)} - ${userEvent.location.city}, ${userEvent.location.state?.toUpperCase()} ${userEvent.location.country}`}
+              <Typography
+                p={2}
+                className='someClass'
+                fontWeight={'semibold'}
+                fontSize={['0.8rem', '1rem', '1.2rem', '1.4rem', '1.6rem']}
+              >
+                {`${formatDate(userEvent.startDate)} to ${formatDate(userEvent.endDate)} - ${userEvent.location?.city}, ${userEvent.location?.state?.toUpperCase()} ${userEvent.location?.country}`}
               </Typography>
             ) : (
               <Spinner />
@@ -162,6 +168,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
               borderRadius={'10px'}
               baseButtonStyles={{
                 width: '100%',
+                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
               }}
             />
             <CommonButton
@@ -172,6 +179,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
               borderRadius={'10px'}
               baseButtonStyles={{
                 width: '100%',
+                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
               }}
               startIcon={<TravelExploreIcon />}
             />
@@ -182,6 +190,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
               baseButtonStyles={{
                 width: '100%',
                 textDecoration: 'underline',
+                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
               }}
               startIcon={<NotInterestedIcon />}
             />
