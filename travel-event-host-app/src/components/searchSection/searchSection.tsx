@@ -1,20 +1,22 @@
 'use client';
 import styles from './styles.module.css';
 
-import FilterBox from './searchEventsFilterBox/filterBox';
-import { useState, useEffect } from 'react';
-import { Box, MenuItem, Select, Typography } from '@mui/material';
-import EventCard from '../event/event-card/Event-card';
-import Event from '@/models/event';
-import CategoriesType from '@/components/searchSection/types';
-import { useRouter } from 'next/navigation';
-import { SearchInput } from './searchInput/searchInput';
 import { getEventsBySearchQuery } from '@/app/clients/event/event-client';
+import Category from '@/lib/category';
+import Event from '@/models/event';
+import { Box, MenuItem, Select } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import EventCard from '../event/event-card/Event-card';
+import FilterBox from './searchEventsFilterBox/filterBox';
+import { SearchInput } from './searchInput/searchInput';
 
 export default function SearchSection({ keyword }: { keyword: string }) {
   const [sortBy, setSortBy] = useState<string>('Date');
   const [resultEventList, setResultEventList] = useState<Event[]>([]);
-  const [categories, setCategories] = useState<CategoriesType>({});
+  const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
+    {},
+  );
   const [filterBoxIsOpen, setFilterBoxIsOpen] = useState<boolean>(false);
   const router = useRouter();
 
@@ -25,11 +27,24 @@ export default function SearchSection({ keyword }: { keyword: string }) {
 
   useEffect(() => {
     const fetch = async () => {
-      const eventsResultFetch = await getEventsBySearchQuery(keyword, categories);
+      const eventsResultFetch = await getEventsBySearchQuery(
+        keyword,
+        getCheckedCategories(categoryCheckboxState),
+      );
       setResultEventList(eventsResultFetch);
     };
     fetch();
-  }, [categories, keyword]);
+  }, [categoryCheckboxState, keyword]);
+
+  const getCheckedCategories = (checkboxState: { [key in string]: boolean }): Category[] => {
+    // This gets only the checked categories checkboxes
+    return Object.entries(checkboxState).reduce((acc: Category[], [category, checked]) => {
+      if (checked) {
+        acc.push(category as Category);
+      }
+      return acc;
+    }, []);
+  };
 
   return (
     <section className={styles.section}>
@@ -40,8 +55,8 @@ export default function SearchSection({ keyword }: { keyword: string }) {
 
       <FilterBox
         filterBoxIsOpen={filterBoxIsOpen}
-        setCategories={setCategories}
-        categories={categories}
+        setCategories={setCategoryCheckboxState}
+        categories={categoryCheckboxState}
         setFilterBoxIsOpen={setFilterBoxIsOpen}
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>

@@ -1,28 +1,24 @@
-import CategoriesType from '@/components/searchSection/types';
+import Category from '@/lib/category';
 import Event from '@/models/event';
 
 export async function getEventsBySearchQuery(
   keyword: string,
-  categories: CategoriesType,
+  categories: Category[],
 ): Promise<Event[]> {
   try {
-    let queryParams = '';
+    const searchParams = new URLSearchParams();
 
-    Object.entries(categories).forEach(([categoryName, value]) => {
-      if (value) {
-        queryParams += `&Category=${categoryName}`;
-      }
-    });
+    if (categories && categories.length > 0) {
+      categories.forEach((category) => {
+        searchParams.append('category', category);
+      });
+    }
 
     if (keyword) {
-      queryParams += `&keyword=${keyword}`;
+      searchParams.append('keyword', keyword);
     }
 
-    if (queryParams.length > 0) {
-      queryParams = queryParams.substring(1);
-    }
-
-    const apiUrl = `/api/event/search?${queryParams}`;
+    const apiUrl = `/api/event/search?${searchParams.toString()}`;
 
     const response = await fetch(apiUrl);
     if (response.ok) {
