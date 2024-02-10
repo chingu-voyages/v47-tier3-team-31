@@ -8,9 +8,11 @@ import { useState } from 'react';
 import AuthDialog from '../auth-dialog/AuthDialog';
 import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import styles from './styles.module.css';
+import { useOnboardingContext } from '@/lib/context';
+
 export default function Header() {
+  const { session, status } = useOnboardingContext();
   const [lang, setLang] = useState<Language>(Language.En);
-  const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
   const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
   const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
@@ -88,7 +90,7 @@ export default function Header() {
                   },
                 }}
                 inputProps={{
-                  paddingTop: 0,
+                  paddingtop: 0,
                   MenuProps: {
                     sx: {
                       '& .MuiPaper-root': {
@@ -125,8 +127,6 @@ export default function Header() {
                 sx={{
                   color: (theme) => (theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'),
                   animationDuration: '550ms',
-                  position: 'absolute',
-                  left: 0,
                   [`& .${circularProgressClasses.circle}`]: {
                     strokeLinecap: 'round',
                   },
@@ -196,6 +196,7 @@ export default function Header() {
         authDialogType={'signup'}
         open={signupDialogOpen}
         onDialogClose={() => setSignupDialogOpen(false)}
+        onRegisterSuccess={() => setloginDialogOpen(true)}
       />
       <AuthDialog
         authDialogType={'login'}

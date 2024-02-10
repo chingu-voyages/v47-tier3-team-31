@@ -4,8 +4,7 @@ import User from '@/schemas/user';
 import bcrypt from 'bcrypt';
 
 export async function POST(req: Request) {
-  let { email, password, firstName, lastName, location } = await req.json();
-  console.log({ email, password });
+  let { email, password, name } = await req.json();
   email = email.toUpperCase();
 
   let hashedPassword = '';
@@ -22,17 +21,15 @@ export async function POST(req: Request) {
   if (userExist1) {
     console.log('user existed');
 
-    return NextResponse.json({ message: 'Email already in use' }, { status: 403 });
+    return NextResponse.json({ error: { email: ['Email already in use'] } }, { status: 403 });
   } else {
     const newUser = await User.create({
       email,
       password: hashedPassword,
-      firstName,
-      lastName,
-      location,
+      firstName: name,
     });
     console.log('user created');
 
-    return NextResponse.json({ message: 'user created the id is ' + newUser.id }, { status: 201 });
+    return NextResponse.json({ message: 'User Created' }, { status: 201 });
   }
 }
