@@ -78,7 +78,7 @@ export default function EventCard({ hostedEvent, onCardClick }: EventCardProps) 
                 },
               }}
             >
-              <Box>
+              <Box sx={{ textAlign: 'center' }}>
                 <CalendarDateComponent date={hostedEvent.startDate} />
               </Box>
               <Box ml={3}>
@@ -122,7 +122,7 @@ function getEventImage(imageUrl?: string): string {
 /**
  * Returns the month and date element as part of the event card
  * @param {Date} date
- * @returns
+ * @return
  */
 function CalendarDateComponent({ date }: { date: Date }) {
   const theme = useTheme();

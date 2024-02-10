@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 const { MONGODB_URI } = process.env;
-
 if (!MONGODB_URI) {
   throw new Error('Invalid enviroment variable: MONGODB_URI');
 }

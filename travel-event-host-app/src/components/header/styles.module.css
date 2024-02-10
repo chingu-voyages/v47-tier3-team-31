@@ -8,12 +8,26 @@
   display: flex;
   flex-direction: column;
   gap: 2em;
+  z-index: 1;
 }
 .header h1 {
   margin: 0;
   font-size: 1.875em;
   color: var(--third-color-ice-light);
   line-height: 1.3em;
+}
+.navList ul {
+  color: var(--third-color-ice-light);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 1.1em;
+  font-weight: 350;
+}
+.navList {
+  max-width: 773px;
+
+  flex-grow: 1;
 }
 .header nav ul {
   color: var(--third-color-ice-light);
@@ -22,7 +36,6 @@
   justify-content: space-between;
   font-size: 1.1em;
   font-weight: 350;
-  max-width: 773px;
   width: 100%;
 }
 .header > div:first-of-type {
@@ -91,6 +104,12 @@
   .header {
     font-size: 12px;
     padding: 1em;
+  }
+}
+@media only screen and (max-width: 1368px) {
+  .header {
+    font-size: 13px;
+    gap: 1.5rem;
   }
 }
 

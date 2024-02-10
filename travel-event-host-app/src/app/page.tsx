@@ -1,11 +1,7 @@
-import Categories from '@/components/categories/categories';
+import SearchSection from '@/components/searchSection/searchSection';
 import Image from 'next/image';
 import Footer from '@/components/footer/Footer';
 
 export default function Home() {
-  return (
-    <main>
-      <Categories />
-    </main>
-  );
+  return <main></main>;
 }

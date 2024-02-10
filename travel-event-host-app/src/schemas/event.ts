@@ -28,7 +28,7 @@ const eventSchema = new Schema<Event>(
     },
     startDate: Date,
     endDate: Date,
-    category: String,
+    categories: [String],
   },
 
   { timestamps: true },

@@ -171,20 +171,24 @@ export default function Header() {
           />
         </svg>
         <ul>
-          <li>
-            <Link href='/'>Home</Link>
-          </li>
-          <li>
-            <Link href='/'>Upcoming Events</Link>
-          </li>
-          <li>
-            <Link href='/'>Categories</Link>
-          </li>
-          <li>
-            <Link href='/'>Create Event</Link>
-          </li>
-          <li>
-            <Link href='/'>About Us</Link>
+          <li className={styles.navList}>
+            <ul>
+              <li>
+                <Link href='/'>Home</Link>
+              </li>
+              <li>
+                <Link href='/'>Upcoming Events</Link>
+              </li>
+              <li>
+                <Link href='/'>Search Events</Link>
+              </li>
+              <li>
+                <Link href='/'>Create Event</Link>
+              </li>
+              <li>
+                <Link href='/'>About Us</Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>
