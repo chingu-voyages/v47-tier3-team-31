@@ -16,6 +16,9 @@
   --color-charcoal: #272727;
   --light-indigo: #636EA9;
   --grey-disabled: #8b93a7;
+  --navy-blue: #1D275F;
+  --green-confirmation: #64aa76;
+  --burnt-orange-cancel-error: #aa6464;
 }
 
 body {
@@ -31,18 +34,4 @@ body {
   .button1 {
     min-width: 8em;
   }
-}
-.scrollbar1::-webkit-scrollbar {
-  width: 12px;
-}
-
-.scrollbar1::-webkit-scrollbar-thumb {
-  background-color: var(--secondary-color-dark-black);
-}
-
-.scrollbar1::-webkit-scrollbar-thumb:hover {
-  background-color: var(--primary-color-dark-blue);
-}
-.scrollbar1::-webkit-scrollbar-track {
-  background-color: var(--third-color-ice-light); 
 }

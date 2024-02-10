@@ -2,7 +2,7 @@
 
 import { Box, Typography, useTheme } from '@mui/material';
 import Image from 'next/image';
-import CommonButton from '../common-button/Common-Button';
+import { CommonButton } from '../common-button/Common-Button';
 import styles from './create-event.module.css';
 
 export function CreateEventSection() {

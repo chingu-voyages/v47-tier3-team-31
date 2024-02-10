@@ -13,9 +13,12 @@ interface CommonButtonProps {
   fontWeight?: string; // The font weight of the button
   additionalStyles?: Record<string, any>; // Any additional styles that you want to add to the button
   disabled?: boolean; // Whether the button is disabled or not
+  startIcon?: React.ReactNode; // The icon that will be displayed at the start of the button
+  baseButtonStyles?: Record<string, any>; // Any base styles that you want to add to the button
+  variant?: 'text' | 'outlined' | 'contained' | undefined; // The variant of the button
 }
 
-export default function CommonButton({
+export function CommonButton({
   fontWeight,
   onButtonClick,
   backgroundColor,
@@ -25,8 +28,11 @@ export default function CommonButton({
   borderRadius,
   borderWidth,
   label,
+  baseButtonStyles,
   additionalStyles,
   disabled,
+  startIcon,
+  variant,
 }: CommonButtonProps) {
   const theme = useTheme();
 
@@ -35,9 +41,10 @@ export default function CommonButton({
   };
   return (
     <Button
-      variant='outlined'
+      variant={variant || 'outlined'}
       onClick={handleButtonClick}
       disabled={disabled}
+      startIcon={startIcon || null}
       sx={{
         '&.MuiButtonBase-root': {
           borderRadius: borderRadius || '50px',
@@ -47,6 +54,7 @@ export default function CommonButton({
           borderColor: borderColor || theme.palette.primary.lightNightBlue,
           fontWeight: fontWeight || 'bold',
           textTransform: textTransform || 'none',
+          ...baseButtonStyles,
         },
         ...additionalStyles,
       }}

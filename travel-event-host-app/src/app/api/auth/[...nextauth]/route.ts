@@ -1,8 +1,8 @@
+import { connectMongoDB } from '@/lib/mongodb';
+import { UserModel } from '@/schemas/user';
+import { compare } from 'bcrypt';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { connectMongoDB } from '@/lib/mongodb';
-import User from '@/schemas/user';
-import { compare } from 'bcrypt';
 
 const handler = NextAuth({
   callbacks: {
@@ -35,21 +35,25 @@ const handler = NextAuth({
       async authorize(credentials) {
         await connectMongoDB();
 
-        const user = await User.findOne({
-          email: credentials?.email.toUpperCase(),
+        const user = await UserModel.findOne({
+          email: credentials?.email,
         });
 
         if (!user) {
-          console.log('Invalid Email');
-          throw new Error('Wrong credentials');
+          return null;
         }
 
         if (await compare(credentials!.password, user.password)) {
-          console.log('user logged');
-          return user;
+          console.log('user logged in successful');
+          // Right now, let's use this info for the JWT token
+          return {
+            id: user._id,
+            _id: user._id,
+            email: user.email,
+          };
         } else {
           console.log('Invalid Password');
-          throw new Error('Wrong credentials');
+          return null;
         }
       },
     }),

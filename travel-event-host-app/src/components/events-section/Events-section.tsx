@@ -1,9 +1,10 @@
 'use client';
 import theme from '@/app/theme';
 import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
-import HostedEvent from '../../models/event';
-import CommonButton from '../common-button/Common-Button';
-import EventCard from '../event/event-card/Event-card';
+
+import { UserEvent } from '@/models/user-event';
+import { CommonButton } from '../common-button/Common-Button';
+import { EventCard } from '../event/event-card/Event-card';
 
 /**
  * This component is responsible for rendering the events section on the home page.
@@ -11,12 +12,12 @@ import EventCard from '../event/event-card/Event-card';
  */
 interface EventsSectionProps {
   title: string;
-  hostedEvents: HostedEvent[];
+  hostedEvents: UserEvent[];
   onLoadMoreEventsButtonClicked: () => void;
   isLoading?: boolean;
 }
 
-export default function EventsSection({
+export function EventsSection({
   title,
   hostedEvents,
   onLoadMoreEventsButtonClicked,
@@ -92,7 +93,7 @@ export default function EventsSection({
 
 // This function will render the event cards or display a message if there are no events to show
 const renderEventCards = (
-  hostedEvents: HostedEvent[],
+  hostedEvents: UserEvent[],
   onEventClickAction: (eventId: string) => void,
 ) => {
   if (hostedEvents.length === 0)
