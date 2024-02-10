@@ -64,7 +64,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
               showName
               user={user}
               imageClassName={styles.userAvatar}
-              MuiAvatarComponent={<CustomGenericMuiAvatar />}
+              MuiAvatarComponent={<CustomGenericMuiAvatar theme={theme} />}
               nameStyles={{
                 color: theme.palette.primary.thirdColorIceLight,
                 fontWeight: 'bold',
