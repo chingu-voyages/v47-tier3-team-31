@@ -9,10 +9,11 @@ import { Box, MenuItem, Select } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EventCard } from '../event/event-card/Event-card';
-import FilterBox from './searchEventsFilterBox/filterBox';
-import { SearchInput } from './searchInput/searchInput';
 
-export default function SearchSection({ keyword }: { keyword: string }) {
+import { EventSearchFilterBox } from './event-search-filter-box/EventSearchFilterBox';
+import { SearchInputField } from './search-input-field/SearchInputField';
+
+export function EventSearchSection({ keyword }: { keyword: string }) {
   const [sortBy, setSortBy] = useState<string>('Date');
   const [resultEventList, setResultEventList] = useState<UserEvent[]>([]);
   const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
@@ -22,7 +23,7 @@ export default function SearchSection({ keyword }: { keyword: string }) {
   const router = useRouter();
 
   const handleSearch = (searchInput: string) => {
-    const url = `/searchevent/${searchInput}`; // Construct the URL
+    const url = `/event/search/${searchInput}`; // Construct the URL
     router.push(url); // Navigate to the URL
   };
 
@@ -54,7 +55,7 @@ export default function SearchSection({ keyword }: { keyword: string }) {
         className={`${styles.overlay} ${filterBoxIsOpen ? styles.open : ''}`}
       ></div>
 
-      <FilterBox
+      <EventSearchFilterBox
         filterBoxIsOpen={filterBoxIsOpen}
         setCategories={setCategoryCheckboxState}
         categories={categoryCheckboxState}
@@ -62,7 +63,7 @@ export default function SearchSection({ keyword }: { keyword: string }) {
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', gap: '2em' }}>
-          <SearchInput handleSearch={handleSearch} keyword={keyword} />
+          <SearchInputField handleSearch={handleSearch} keyword={keyword} />
           <Select
             sx={{
               backgroundColor: 'white',

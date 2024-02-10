@@ -25,7 +25,7 @@ const updateCategories = () => {
   return updateCategories;
 };
 
-const FilterBox = ({
+export const EventSearchFilterBox = ({
   setCategories,
   categories,
   filterBoxIsOpen,
@@ -111,5 +111,3 @@ const FilterBox = ({
     </div>
   );
 };
-
-export default FilterBox;

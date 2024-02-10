@@ -4,7 +4,8 @@ import TextField from '@mui/material/TextField';
 import Image from 'next/image';
 import { useState } from 'react';
 import styles from '../styles.module.css';
-export function SearchInput({
+
+export function SearchInputField({
   handleSearch,
   keyword,
 }: {
