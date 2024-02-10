@@ -88,7 +88,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
               </li>
             ))
           ) : (
-            <p className={styles.eventNotFound}>Events Not Found</p>
+            <p className={styles.eventNotFound}>No results</p>
           )}
         </ul>
       </Box>

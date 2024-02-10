@@ -30,8 +30,32 @@ export async function GET(req: Request) {
   }
 
   if (categories.length > 0) {
-    aggregatePipeline[0].$match.$or = [{ categories: { $in: categories } }];
+    if (aggregatePipeline.length > 0) {
+      aggregatePipeline[0].$match.$or = [{ categories: { $in: categories } }];
+    } else {
+      aggregatePipeline = aggregatePipeline.concat(
+        {
+          $match: {
+            categories: { $in: categories },
+          },
+        },
+        {
+          $facet: {
+            metadata: [{ $count: 'totalCount' }],
+            data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+          },
+        },
+      );
+    }
   }
+
+  if (aggregatePipeline.length === 0) {
+    return NextResponse.json(
+      { ...nullSearchResponse, message: 'No events found. Aggregation empty' },
+      { status: 200 },
+    );
+  }
+
   const allEvents = await UserEventModel.aggregate(aggregatePipeline);
 
   if (allEvents[0].data.length > 0) {
@@ -39,10 +63,8 @@ export async function GET(req: Request) {
       { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },
       { status: 200 },
     );
-  } else {
-    return NextResponse.json(
-      { totalCount: 0, events: [], message: 'Not found events' },
-      { status: 200 },
-    );
   }
+  return NextResponse.json(nullSearchResponse, { status: 200 });
 }
+
+const nullSearchResponse = { totalCount: 0, events: [], message: 'No events found' };
