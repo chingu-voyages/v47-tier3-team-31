@@ -47,6 +47,9 @@
 .closeIcon {
   display: none !important;
 }
+.filterBox {
+  min-width: 276px;
+}
 @media (max-width: 800px) {
   .closeIcon {
     display: block !important;
