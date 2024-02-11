@@ -4,8 +4,8 @@ import type { Metadata } from 'next';
 import { Roboto_Flex } from 'next/font/google';
 
 import Header from '@/components/header/Header';
-import Footer from '@/components/footer/Footer'
 
+import { Footer } from '@/components/footer/Footer';
 import { OnboardingProvider } from '@/lib/context';
 import { NextAuthProvider } from '@/providers/nextAuthProvider';
 import './globals.css';
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <MuiThemeProvider>
                 <Header />
                 {children}
-                <Footer/>
+                <Footer />
               </MuiThemeProvider>
             </AppRouterCacheProvider>
           </OnboardingProvider>
