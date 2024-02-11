@@ -7,7 +7,6 @@ import { PasswordComplexityRule } from '@/lib/validators/rules/password-complexi
 import { ValidEmailRule } from '@/lib/validators/rules/valid-email-rule';
 import { ValidNameRule } from '@/lib/validators/rules/valid-name-rule';
 
-import CloseIcon from '@mui/icons-material/Close';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -19,7 +18,6 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  IconButton,
   Typography,
   styled,
   useTheme,
@@ -34,8 +32,7 @@ import { LoginFields } from './login-fields/LoginFields';
 
 interface AuthDialogProps {
   open: boolean;
-  onDialogClose: () => void;
-  authDialogType: 'login' | 'signup';
+  authDialogType: 'signin' | 'signup';
 }
 
 export default function AuthDialog(props: AuthDialogProps) {
@@ -133,11 +130,6 @@ export default function AuthDialog(props: AuthDialogProps) {
     >
       <DialogTitle sx={{ backgroundColor: theme.palette.primary.secondaryColorDarkBlack }}>
         <Box>
-          <Box display='flex' justifyContent={'flex-end'}>
-            <IconButton onClick={() => props.onDialogClose()}>
-              <CloseIcon sx={{ color: theme.palette.primary.thirdColorIceLight }} />
-            </IconButton>
-          </Box>
           <Box mt={3}>
             <Box>{/* App logo goes here */}</Box>
             <Box>
@@ -146,7 +138,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 color={theme.palette.primary.thirdColorIceLight}
                 sx={{ fontWeight: 'bold', textAlign: 'center', textTransform: 'uppercase' }}
               >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Log in'}
+                {props.authDialogType === 'signup' ? 'Sign Up' : 'Sign In'}
               </Typography>
             </Box>
           </Box>
@@ -260,7 +252,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 sx={{ marginBottom: '1rem' }}
                 onClick={handleSubmit}
               >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Log in'}
+                {props.authDialogType === 'signup' ? 'Sign Up' : 'Go'}
               </StyledButton>
             </Box>
           </Box>
@@ -271,7 +263,7 @@ export default function AuthDialog(props: AuthDialogProps) {
 }
 
 function renderFormFields(
-  authDialogType: 'login' | 'signup',
+  authDialogType: 'signin' | 'signup',
   handleValueChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
 ) {

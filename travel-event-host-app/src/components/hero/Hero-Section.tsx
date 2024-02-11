@@ -1,17 +1,27 @@
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import styles from './hero-section.module.css';
 
+const heroHeaderResponsiveText = ['1rem', '1.2rem', '1.2rem', '1.4rem', '2.9rem'];
+const heroResponsiveText = ['0.8rem', '1rem', '1.1rem', '1.5rem', '1.8rem'];
 export const HeroSection = () => {
   return (
     <div>
       <div className={styles.crowdImageContainer}>
         <Image src='/images/hero/crowd.svg' alt='crowd' className={styles.crowdImage} fill />
         <div className={styles.overlayArea}>
-          <div className={`${styles.overlayContentContainer} sm:mt-10 md:mt-20 lg:mt-44`}>
+          <Box
+            display='flex'
+            flexDirection={'column'}
+            justifyContent='center'
+            alignItems='center'
+            className={styles.heroContentContainer}
+            pt={['5%', '15%', '15%', '5%']}
+          >
             <div className='headerContainer'>
-              <p className='heroTextHeader font-bold text-1xl sm:text-xl md:text-3xl lg:text-5xl'>
+              <Typography fontWeight={'bold'} fontSize={heroHeaderResponsiveText}>
                 Explore, Host, and Connect
-              </p>
+              </Typography>
             </div>
             <div className={`${styles.bodyContentContainer} flex`}>
               <div className={styles.passportImageContainer}>
@@ -24,17 +34,17 @@ export const HeroSection = () => {
                 />
               </div>
               <div className='bodyTextContainer ml-5 mr-3 sm:mt-2'>
-                <p className={`${styles.heroTextBody} sm:text-lg md:text-2xl lg:text-4xl`}>
+                <Typography fontSize={heroResponsiveText}>
                   Transform your travel experience with our Travel Event Host App.
-                </p>
+                </Typography>
                 <br></br>
-                <p className={`${styles.heroTextBody} sm:text-lg md:text-2xl lg:text-4xl`}>
+                <Typography fontSize={heroResponsiveText}>
                   Whether you're a local looking to showcase your city or a traveller seeking unique
                   experiences, we've got you covered.
-                </p>
+                </Typography>
               </div>
             </div>
-          </div>
+          </Box>
         </div>
       </div>
     </div>

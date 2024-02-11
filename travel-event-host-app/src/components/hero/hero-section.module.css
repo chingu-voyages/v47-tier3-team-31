@@ -6,14 +6,14 @@
 }
 
 .crowdImageContainer {
-  max-width: 1440px;
+  max-width: 2440px;
   display: grid;
   grid-template-columns: auto;
   grid-template-areas: "cimage";
 }
 
 .overlayArea {
-  max-width: 1440px;
+  max-width: 2440px;
   grid-area: cimage;
   background-color: rgba(0, 0, 60, 0.5);
   z-index: 1;
@@ -30,25 +30,8 @@
   max-width: 219px;
 }
 
-/* This holds the passport image and the text */
-.overlayContentContainer {
-  padding-left: 10%;  
-  padding-right: 10px;
-}
-
-@media screen and (max-width: 639px) {
-  .bodyContentContainer {
-    margin-top: 1rem;
-  }
-  .overlayContentContainer {
-    margin-top: 5%;
-  }
-}
-
 @media screen and (max-width: 375px) {
-  .overlayContentContainer {
-    margin-top: 5%;
-  }
+ 
   .heroTextHeader {
     font-size: 0.2rem;
   }
@@ -56,6 +39,15 @@
     font-size: 0.2rem;  
   }
 }
+
+@media screen and (max-width: 639px) {
+  .bodyContentContainer {
+    margin-top: 1rem;
+  }
+ 
+}
+
+
 
 @media screen and (min-width: 640px) {
   .bodyContentContainer {

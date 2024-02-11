@@ -17,6 +17,7 @@ const handler = NextAuth({
       return token;
     },
   },
+
   providers: [
     CredentialsProvider({
       id: 'credentials',
@@ -60,7 +61,7 @@ const handler = NextAuth({
   ],
 
   pages: {
-    signIn: '/auth/login',
+    signIn: '/auth/signin',
   },
 
   session: {
