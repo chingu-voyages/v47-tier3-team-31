@@ -10,7 +10,7 @@ export async function getUserById(
   userId: string,
   scopes?: string[],
 ): Promise<SecureUser | undefined> {
-  let endPoint: string = `/api/user/${userId}`;
+  let endPoint: string = `/api/users/${userId}`;
 
   if (scopes && scopes.length > 0) {
     endPoint = endPoint.concat('?');
