@@ -92,7 +92,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
             isLoading={isLoading}
           />
         </Box>
-        <Box mt={3}>
+        <Box mt={3} mb={5}>
           <EventsSection
             title='Past events'
             hostedEvents={pastEvents}

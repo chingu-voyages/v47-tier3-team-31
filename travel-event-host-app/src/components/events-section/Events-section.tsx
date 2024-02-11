@@ -34,9 +34,14 @@ export function EventsSection({
       <Box>
         {/* Header of the events section*/}
         <Typography
-          variant='h5'
+          fontSize={['0.8rem', '1rem', '1.2rem', '1.5rem', '1.6rem']}
           fontWeight={'bold'}
           color={theme.palette.primary.primaryColorDarkerBlue}
+          sx={{
+            [theme.breakpoints.down(610)]: {
+              textAlign: 'center',
+            },
+          }}
         >
           {title}
         </Typography>
@@ -98,8 +103,16 @@ const renderEventCards = (
 ) => {
   if (hostedEvents.length === 0)
     return (
-      <Typography variant='h5' color={theme.palette.primary.primaryColorDarkerBlue}>
-        No events to show
+      <Typography
+        fontSize={['0.8rem', '1rem', '1.2rem', '1.3rem', '1.4rem']}
+        color={theme.palette.primary.primaryColorDarkerBlue}
+        sx={{
+          [theme.breakpoints.down(610)]: {
+            textAlign: 'center',
+          },
+        }}
+      >
+        Nothing to show
       </Typography>
     );
   return hostedEvents.map((hostedEvent) => (
