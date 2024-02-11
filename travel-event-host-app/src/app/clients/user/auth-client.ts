@@ -26,7 +26,7 @@ export async function clientSignUp(
 export async function clientSignIn(
   email: string,
   password: string,
-): Promise<string | true | undefined> {
+): Promise<string | true | undefined | Record<string, string[]>> {
   const res = await signIn('credentials', {
     password,
     email,
@@ -36,9 +36,15 @@ export async function clientSignIn(
     if (res.ok) {
       return true;
     } else {
-      return 'Email or password was entered incorrectly';
+      return {
+        email: ['Email or password was entered incorrectly'],
+        password1: ['Email or password was entered incorrectly'],
+      };
     }
   } else {
-    return 'Error on signin';
+    return {
+      email: ['Error on signin'],
+      password1: ['Error on signin'],
+    };
   }
 }

@@ -82,8 +82,18 @@ export default function AuthDialog(props: AuthDialogProps) {
         setErrors(loginValidationResult);
         return;
       }
+      const fetch = async () => {
+        const signUpRes = await clientSignIn(formValues.email, formValues.password1);
+        if (signUpRes) {
+          if (signUpRes === true) {
+            window.location.reload();
+          } else {
+            setErrors(signUpRes as Record<string, string[]>);
+          }
+        }
+      };
+      fetch();
       // TODO: submit the form
-      clientSignIn(formValues.email, formValues.password1);
     }
   };
 

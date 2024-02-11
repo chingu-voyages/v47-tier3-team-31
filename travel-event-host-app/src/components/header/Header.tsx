@@ -8,6 +8,7 @@ import { useState } from 'react';
 import AuthDialog from '../auth-dialog/AuthDialog';
 import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import styles from './styles.module.css';
+import { signOut } from 'next-auth/react';
 import { useOnboardingContext } from '@/lib/context';
 
 export default function Header() {
@@ -16,9 +17,7 @@ export default function Header() {
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
   const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
   const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
-
-  const userName = 'Angelo';
-
+  console.log(session);
   return (
     <header className={styles.header}>
       <div>
@@ -139,7 +138,7 @@ export default function Header() {
           ) : status === 'authenticated' ? (
             <>
               <div className={styles.avatarBox}>
-                <HeaderBarAvatar userName={userName} />
+                <HeaderBarAvatar onLogoutClicked={signOut} userName={session.user.firstName} />
               </div>
             </>
           ) : (

@@ -4,17 +4,58 @@ import { connectMongoDB } from '@/lib/mongodb';
 import User from '@/schemas/user';
 import { compare } from 'bcrypt';
 
+type SessionUser = {
+  name?: string | null | undefined;
+  _id: string;
+  firstName?: string;
+  imageUrl?: string;
+  lastName?: string;
+  email: string;
+  location: {
+    country: string;
+    state: string;
+    city: string;
+    coords: {
+      lat: number;
+      long: number;
+    };
+  };
+  eventIds: string[];
+  admin?: boolean;
+};
+
 const handler = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       return true;
     },
     async jwt({ token, account, profile }) {
+      await connectMongoDB();
+
+      const userSession = await User.findOne({
+        email: token.email,
+      }).select('-password');
+
       token = {
         ...token,
-      };
+        ...userSession,
+      } as SessionUser;
 
       return token;
+    },
+    async session({ session, user, token }) {
+      await connectMongoDB();
+
+      const userSession = await User.findOne({
+        email: session.user?.email,
+      }).select('-password');
+
+      session.user = {
+        ...session.user,
+        ...userSession._doc,
+      } as SessionUser;
+
+      return session;
     },
   },
   providers: [
@@ -45,7 +86,7 @@ const handler = NextAuth({
         }
 
         if (await compare(credentials!.password, user.password)) {
-          console.log('user logged');
+          console.log('User logged');
           return user;
         } else {
           console.log('Invalid Password');
