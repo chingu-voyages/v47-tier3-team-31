@@ -1,5 +1,5 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserModel } from '@/schemas/user';
+import { UserRepository } from '@/schemas/user';
 import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   if (password) {
     hashedPassword = await bcrypt.hash(password, 10);
   }
-  const userExist1 = await UserModel.findOne({
+  const userExist1 = await UserRepository.findOne({
     email: email,
   }).select('email');
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: 'Email already in use' }, { status: 403 });
   } else {
-    const newUser = await UserModel.create({
+    const newUser = await UserRepository.create({
       email,
       password: hashedPassword,
       firstName,

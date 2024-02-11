@@ -1,5 +1,5 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserModel } from '@/schemas/user';
+import { UserRepository } from '@/schemas/user';
 import { compare } from 'bcrypt';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -35,7 +35,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         await connectMongoDB();
 
-        const user = await UserModel.findOne({
+        const user = await UserRepository.findOne({
           email: credentials?.email,
         });
 

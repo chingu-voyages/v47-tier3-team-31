@@ -34,4 +34,4 @@ const userSchema = new Schema<User>(
   { timestamps: true },
 );
 
-export const UserModel = mongoose.models.User || mongoose.model<User>('User', userSchema);
+export const UserRepository = mongoose.models.User || mongoose.model<User>('User', userSchema);

@@ -31,5 +31,5 @@ const userEventSchema = new Schema<UserEvent>(
   { timestamps: true },
 );
 
-export const UserEventModel =
+export const EventRepository =
   mongoose.models.UserEvent || mongoose.model<UserEvent>('UserEvent', userEventSchema);

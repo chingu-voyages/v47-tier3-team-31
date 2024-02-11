@@ -1,9 +1,9 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserEvent } from '@/models/user-event';
 
-import { UserModel } from '@/schemas/user';
-import { UserEventModel } from '@/schemas/user-event';
-import { SecureUser } from '@/types/secureUser';
+import { UserRepository } from '@/schemas/user';
+import { EventRepository } from '@/schemas/user-event';
+import { SecureUser } from '@/types/secure-user';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
@@ -22,7 +22,7 @@ export async function GET(req: Request, { params }: any) {
 
   await connectMongoDB();
 
-  const event: UserEvent | null = await UserEventModel.findById(id);
+  const event: UserEvent | null = await EventRepository.findById(id);
   console.log(event);
   if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
 
@@ -35,7 +35,7 @@ export async function GET(req: Request, { params }: any) {
     selectedUserProperties = scope.join(' ').concat(' _id');
   }
 
-  const users: Partial<SecureUser>[] = await UserModel.find({
+  const users: Partial<SecureUser>[] = await UserRepository.find({
     _id: { $in: participants.map(({ userId }) => userId) },
   }).select(selectedUserProperties);
 

@@ -1,7 +1,6 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { User } from '@/models/user';
-import { UserModel } from '@/schemas/user';
-import { SecureUser } from '@/types/secureUser';
+import { UserRepository } from '@/schemas/user';
+import { SecureUser } from '@/types/secure-user';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
@@ -16,7 +15,7 @@ export async function GET(req: Request, { params }: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const userFound: Partial<User> = await UserModel.findById(id).select('-password -admin -email');
+  const userFound = await UserRepository.findById(id).select('-password -admin -email');
   const secureUser: Partial<SecureUser> = userFound;
   if (userFound) return NextResponse.json(secureUser, { status: 200 });
   else return NextResponse.json({ message: 'user no exist' }, { status: 404 });

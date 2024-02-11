@@ -1,6 +1,6 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserModel } from '@/schemas/user';
-import { UserEventModel } from '@/schemas/user-event';
+import { UserRepository } from '@/schemas/user';
+import { EventRepository } from '@/schemas/user-event';
 
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
@@ -17,10 +17,10 @@ export async function GET(req: Request, { params }: any) {
 
   await connectMongoDB();
   // Find the user, then get the events associated with the user
-  const user = await UserModel.findById(id);
+  const user = await UserRepository.findById(id);
   if (user) {
     const { eventIds } = user;
-    const userEvents = await UserEventModel.find({ _id: { $in: eventIds } });
+    const userEvents = await EventRepository.find({ _id: { $in: eventIds } });
     return NextResponse.json(userEvents, { status: 200 });
   }
   return NextResponse.json({ message: 'User not found' }, { status: 404 });

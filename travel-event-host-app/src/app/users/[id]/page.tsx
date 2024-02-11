@@ -5,7 +5,7 @@ import theme from '@/app/theme';
 import UserAvatar from '@/components/avatar/user-avatar/UserAvatar';
 import { EventsSection } from '@/components/events-section/Events-section';
 import { UserEvent } from '@/models/user-event';
-import { SecureUser } from '@/types/secureUser';
+import { SecureUser } from '@/types/secure-user';
 import { Alert, Avatar, Box, CircularProgress, Theme, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
