@@ -55,7 +55,7 @@ export default function AuthDialog(props: AuthDialogProps) {
         return;
       }
       // TODO: submit the form
-      const fetch = async () => {
+      const fetchSignUp = async () => {
         const signUpRes = await clientSignUp(
           formValues.name,
           formValues.email,
@@ -72,7 +72,7 @@ export default function AuthDialog(props: AuthDialogProps) {
           }
         }
       };
-      fetch();
+      fetchSignUp();
       return;
     } else {
       // Validate the login form
@@ -82,17 +82,17 @@ export default function AuthDialog(props: AuthDialogProps) {
         setErrors(loginValidationResult);
         return;
       }
-      const fetch = async () => {
-        const signUpRes = await clientSignIn(formValues.email, formValues.password1);
-        if (signUpRes) {
-          if (signUpRes === true) {
+      const fetchSignIn = async () => {
+        const signInRes = await clientSignIn(formValues.email, formValues.password1);
+        if (signInRes) {
+          if (signInRes === true) {
             window.location.reload();
           } else {
-            setErrors(signUpRes as Record<string, string[]>);
+            setErrors(signInRes as Record<string, string[]>);
           }
         }
       };
-      fetch();
+      fetchSignIn();
       // TODO: submit the form
     }
   };
