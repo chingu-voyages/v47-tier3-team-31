@@ -3,7 +3,8 @@ import { UserEvent } from '@/models/user-event';
 
 export async function getEventById(id: string): Promise<UserEvent | undefined> {
   try {
-    const response = await fetch(`/api/events/${id}`);
+    const endPoint = `/api/events/${id}`;
+    const response = await fetch(endPoint);
     return response.json();
   } catch (error) {
     throw new Error('Error: Cannot fetch event');
@@ -27,9 +28,9 @@ export async function getEventsBySearchQuery(
       searchParams.append('keyword', keyword);
     }
 
-    const apiUrl = `/api/events/search?${searchParams.toString()}`;
+    const endPoint = `/api/events/search?${searchParams.toString()}`;
 
-    const response = await fetch(apiUrl);
+    const response = await fetch(endPoint);
     if (response.ok) {
       const data = await response.json();
       return data.events;
@@ -48,7 +49,8 @@ export async function getEventsBySearchQuery(
  */
 export async function getEventsByUserId(userId: string): Promise<UserEvent[] | undefined> {
   try {
-    const response = await fetch(`/api/user/${userId}/events`);
+    const endPoint = `/api/users/${userId}/events`;
+    const response = await fetch(endPoint);
     return response.json();
   } catch (error) {
     throw new Error("Error: Cannot fetch user's events");
