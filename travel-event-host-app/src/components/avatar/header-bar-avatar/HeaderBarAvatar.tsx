@@ -10,7 +10,7 @@ import styles from './style.module.css';
 interface HeaderBarAvatarProps {
   userName: string;
   imageUrl?: string;
-  onLogoutClicked?: () => void;
+  onLogoutClicked: () => void;
 }
 
 export default function HeaderBarAvatar({
@@ -23,7 +23,6 @@ export default function HeaderBarAvatar({
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    onLogoutClicked && onLogoutClicked();
   };
 
   const handleClose = () => {
@@ -87,7 +86,40 @@ export default function HeaderBarAvatar({
       >
         {/* Add more menu options here as needed */}
         <MenuItem
-          onClick={handleClose}
+          onClick={() => {
+            handleClose();
+          }}
+          sx={{
+            '&.MuiList-root': {
+              background: theme.palette.primary.thirdColorlightBlack,
+            },
+            '&.MuiButtonBase-root': {
+              fontSize: '1.25rem',
+              background: theme.palette.primary.thirdColorlightBlack,
+              color: theme.palette.primary.thirdColorIceLight,
+            },
+            '&.MuiButtonBase-root:hover': {
+              background: theme.palette.primary.secondaryColorDarkBlack,
+            },
+            [theme.breakpoints.down(700)]: {
+              '&.MuiButtonBase-root': {
+                fontSize: '1rem',
+              },
+            },
+            [theme.breakpoints.down(610)]: {
+              '&.MuiButtonBase-root': {
+                fontSize: '11px',
+              },
+            },
+          }}
+        >
+          {userName}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            onLogoutClicked();
+          }}
           sx={{
             '&.MuiList-root': {
               background: theme.palette.primary.thirdColorlightBlack,

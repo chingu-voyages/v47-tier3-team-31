@@ -6,6 +6,8 @@ import { MatchingPasswordsRule } from '@/lib/validators/rules/matching-passwords
 import { PasswordComplexityRule } from '@/lib/validators/rules/password-complexity-rule';
 import { ValidEmailRule } from '@/lib/validators/rules/valid-email-rule';
 import { ValidNameRule } from '@/lib/validators/rules/valid-name-rule';
+import { clientSignIn } from '@/app/clients/user/auth-client';
+import { clientSignUp } from '@/app/clients/user/auth-client';
 
 import CloseIcon from '@mui/icons-material/Close';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -36,6 +38,7 @@ interface AuthDialogProps {
   open: boolean;
   onDialogClose: () => void;
   authDialogType: 'login' | 'signup';
+  onRegisterSuccess?: () => void;
 }
 
 export default function AuthDialog(props: AuthDialogProps) {
@@ -52,16 +55,45 @@ export default function AuthDialog(props: AuthDialogProps) {
         return;
       }
       // TODO: submit the form
-      console.log('Signup form is valid');
+      const fetchSignUp = async () => {
+        const signUpRes = await clientSignUp(
+          formValues.name,
+          formValues.email,
+          formValues.password1,
+        );
+
+        if (signUpRes) {
+          if (signUpRes === true) {
+            setErrors({});
+            props.onDialogClose();
+            props.onRegisterSuccess;
+          } else {
+            setErrors(signUpRes as Record<string, string[]>);
+          }
+        }
+      };
+      fetchSignUp();
+      return;
     } else {
       // Validate the login form
       const loginValidationResult: Record<string, string[]> = validateLogin();
       if (Object.keys(loginValidationResult).length > 0) {
+        console.log(loginValidationResult);
         setErrors(loginValidationResult);
         return;
       }
+      const fetchSignIn = async () => {
+        const signInRes = await clientSignIn(formValues.email, formValues.password1);
+        if (signInRes) {
+          if (signInRes === true) {
+            window.location.reload();
+          } else {
+            setErrors(signInRes as Record<string, string[]>);
+          }
+        }
+      };
+      fetchSignIn();
       // TODO: submit the form
-      console.log('login form is valid');
     }
   };
 
@@ -83,19 +115,18 @@ export default function AuthDialog(props: AuthDialogProps) {
 
     const firstPasswordValidator: RuleValidator = new RuleValidator([
       new EmptyNullStringRule('password1', 'Password field cannot be empty'),
-      new MatchingPasswordsRule('password1'),
       new PasswordComplexityRule('password1'),
     ]);
 
     const secondPasswordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password2', 'Password field cannot be empty'),
+      new MatchingPasswordsRule('password2'),
     ]);
 
     return {
       ...emailAddressValidator.validate(formValues.email),
       ...nameValidator.validate(formValues.name),
       ...firstPasswordValidator.validate([formValues.password1, formValues.password2]),
-      ...secondPasswordValidator.validate(formValues.password2),
+      ...secondPasswordValidator.validate([formValues.password1, formValues.password2]),
     };
   };
 
