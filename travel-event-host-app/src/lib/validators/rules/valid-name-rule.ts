@@ -4,7 +4,7 @@ import { ValidationError } from '../validation-error/validation-error';
 // This should include diacritics, so that names like "José" are allowed.
 export class ValidNameRule extends BaseRule {
   constructor(fieldName: string) {
-    super('Field has invalid characters', fieldName);
+    super('Field has invalid characters.', fieldName);
   }
 
   validate(value: string): ValidationError | undefined {

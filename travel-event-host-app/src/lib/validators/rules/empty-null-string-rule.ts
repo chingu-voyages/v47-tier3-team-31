@@ -7,7 +7,7 @@ export class EmptyNullStringRule extends BaseRule {
   }
 
   validate(value: string): ValidationError | undefined {
-    if (value === undefined || value.trim() === '') {
+    if (value === undefined || value === null || value.trim() === '') {
       return {
         fieldName: this.fieldName,
         errorMessage: this.ruleName,
