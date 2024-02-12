@@ -41,7 +41,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
 
     // Load the user's events
     fetchUser();
-  }, []);
+  }, [id]);
 
   return (
     <Box>
