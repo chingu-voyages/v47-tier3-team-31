@@ -22,7 +22,8 @@
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "yup": "^1.3.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
