@@ -3,21 +3,28 @@ import theme from '@/app/theme';
 import { Language } from '@/lib/language';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, Button, FormControl, IconButton, MenuItem, Select, styled } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  MenuItem,
+  Select,
+  Typography,
+  styled,
+} from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import AuthDialog from '../auth-dialog/AuthDialog';
 import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
+import { CommonButton } from '../common-button/Common-Button';
 import styles from './styles.module.css';
 
 export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
-  const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
-  const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
-
   const userName = 'Angelo';
 
   return (
@@ -30,7 +37,9 @@ export default function Header() {
           >
             <MenuIcon />
           </div>
-          <h1>Backpack</h1>
+          <Typography variant='h4' color={theme.palette.primary.thirdColorIceLight}>
+            Bakpak
+          </Typography>
         </div>
         <div className={styles.authBox}>
           <Box>
@@ -136,17 +145,28 @@ export default function Header() {
               </div>
             </>
           ) : (
-            <>
-              <p className='mx-[1.5em] cursor-pointer' onClick={() => setloginDialogOpen(true)}>
-                LOGIN
-              </p>
-              <button className='button1' onClick={() => setSignupDialogOpen(true)}>
-                SIGN UP
-              </button>
-            </>
+            <Box
+              sx={{
+                [theme.breakpoints.down(410)]: {
+                  display: 'none',
+                },
+              }}
+            >
+              <AuthBox />
+            </Box>
           )}
         </div>
       </div>
+      <Box
+        display='none'
+        sx={{
+          [theme.breakpoints.down(410)]: {
+            display: 'block',
+          },
+        }}
+      >
+        <AuthBox />
+      </Box>
       <div className={`${styles.overlay} ${navMenuIsOpen ? styles.open : ''}`}></div>
       <nav className={`${navMenuIsOpen ? styles.open : ''}`}>
         <Box
@@ -177,51 +197,97 @@ export default function Header() {
           }}
         >
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Home</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Upcoming Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/events/search'>Search Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Create Event</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>About Us</Link>
             </NavButton>
           </Box>
         </Box>
       </nav>
-      <AuthDialog
-        authDialogType={'signup'}
-        open={signupDialogOpen}
-        onDialogClose={() => setSignupDialogOpen(false)}
-      />
-      <AuthDialog
-        authDialogType={'login'}
-        open={loginDialogOpen}
-        onDialogClose={() => setloginDialogOpen(false)}
-      />
     </header>
   );
 }
 
 const NavButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
-  fontSize: '1.25rem',
-
   [theme.breakpoints.up(610)]: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
   },
 }));
+
+const AuthBox = () => {
+  const router = useRouter();
+  return (
+    <Box
+      display='flex'
+      alignContent={'center'}
+      sx={{
+        [theme.breakpoints.down(410)]: {
+          justifyContent: 'space-around',
+        },
+      }}
+    >
+      <Button
+        sx={{
+          color: theme.palette.primary.thirdColorIceLight,
+          marginRight: '10px',
+
+          [theme.breakpoints.up(610)]: {
+            marginRight: '1.5rem',
+          },
+        }}
+      >
+        <Typography
+          sx={{
+            [theme.breakpoints.down(610)]: {
+              fontSize: '0.8rem',
+            },
+          }}
+        >
+          LOG IN
+        </Typography>
+      </Button>
+
+      <CommonButton
+        onButtonClick={() => router.push('/auth/signup')}
+        label='SIGN UP'
+        textColor={theme.palette.primary.thirdColorIceLight}
+        backgroundColor={theme.palette.primary.primaryColorDarkBlue}
+        borderColor={theme.palette.primary.primaryColorDarkBlue}
+        borderRadius={'5px'}
+        fontWeight='400'
+        additionalStyles={{
+          minWidth: '150px',
+          minHeight: '40px',
+          paddingLeft: '1.5em',
+          paddingRight: '1.5em',
+          [theme.breakpoints.down(610)]: {
+            minWidth: '100px',
+            minHeight: '30px',
+            paddingLeft: '1em',
+            paddingRight: '1em',
+          },
+        }}
+      />
+    </Box>
+  );
+};
