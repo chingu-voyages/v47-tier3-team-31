@@ -1,9 +1,9 @@
 'use client';
 import { useSession } from 'next-auth/react';
 
-import React from 'react';
+import React, { useContext } from 'react';
 
-const OnboardingContext = React.createContext<any>(undefined);
+const OnboardingContext = React.createContext<any>(undefined); // Creating the  context
 
 export const OnboardingProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
@@ -20,7 +20,7 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
   );
 };
 export const useOnboardingContext = () => {
-  const onboardingContext = React.useContext(OnboardingContext);
+  const onboardingContext = useContext(OnboardingContext);
   if (onboardingContext === undefined) {
     throw new Error('useOnboardingContext must be inside a OnboardingProvider');
   }
