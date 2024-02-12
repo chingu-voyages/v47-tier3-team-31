@@ -1,12 +1,5 @@
 'use client';
 
-import { RuleValidator } from '@/lib/validators/rule-validator/rule-validator';
-import { EmptyNullStringRule } from '@/lib/validators/rules/empty-null-string-rule';
-import { MatchingPasswordsRule } from '@/lib/validators/rules/matching-passwords-rule';
-import { PasswordComplexityRule } from '@/lib/validators/rules/password-complexity-rule';
-import { ValidEmailRule } from '@/lib/validators/rules/valid-email-rule';
-import { ValidNameRule } from '@/lib/validators/rules/valid-name-rule';
-
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -23,8 +16,10 @@ import {
   useTheme,
 } from '@mui/material';
 import { ChangeEventHandler, useState } from 'react';
-import { SignupFields } from './SignupFields/SignupFields';
-import { LoginFields } from './login-fields/LoginFields';
+import { SignInFields } from './sign-in-fields/SignInFields';
+import { SignUpFields } from './sign-up-fields/SignUpFields';
+import { validateLogin } from './validation/sign-in';
+import { validateSignUp } from './validation/sign-up';
 
 /**
  * Dialog used for signup and login
@@ -38,23 +33,37 @@ interface AuthDialogProps {
 export default function AuthDialog(props: AuthDialogProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const theme = useTheme();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate the signup form
     if (props.authDialogType === 'signup') {
-      const signupValidationResult: Record<string, string[]> = validateSignUp();
-      if (Object.keys(signupValidationResult).length > 0) {
-        setErrors(signupValidationResult);
+      const signupValidationErrors: Record<string, string[]> = validateSignUp({
+        email: formValues.email,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        password1: formValues.password1,
+        password2: formValues.password2,
+      });
+      setErrors(signupValidationErrors); // Show or clear any errors on the form
+
+      if (Object.keys(signupValidationErrors).length > 0) {
+        // There are errors on the form, so we don't submit
         return;
       }
-      // TODO: submit the form
-      console.log('Signup form is valid');
+
+      // Do signup
     } else {
       // Validate the login form
-      const loginValidationResult: Record<string, string[]> = validateLogin();
-      if (Object.keys(loginValidationResult).length > 0) {
-        setErrors(loginValidationResult);
+      const signInValidationErrors: Record<string, string[]> = validateLogin({
+        email: formValues.email,
+        password: formValues.password1,
+      });
+      setErrors(signInValidationErrors);
+
+      if (Object.keys(signInValidationErrors).length > 0) {
         return;
       }
       // TODO: submit the form
@@ -64,53 +73,6 @@ export default function AuthDialog(props: AuthDialogProps) {
 
   const handleFormValueChanged = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
-  const validateSignUp = (): Record<string, string[]> => {
-    // Validate the fields before submitting
-    const emailAddressValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('email'),
-      new ValidEmailRule('email'),
-    ]);
-
-    const nameValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('name'),
-      new ValidNameRule('name'),
-    ]);
-
-    const firstPasswordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password1', 'Password field cannot be empty'),
-      new MatchingPasswordsRule('password1'),
-      new PasswordComplexityRule('password1'),
-    ]);
-
-    const secondPasswordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password2', 'Password field cannot be empty'),
-    ]);
-
-    return {
-      ...emailAddressValidator.validate(formValues.email),
-      ...nameValidator.validate(formValues.name),
-      ...firstPasswordValidator.validate([formValues.password1, formValues.password2]),
-      ...secondPasswordValidator.validate(formValues.password2),
-    };
-  };
-
-  const validateLogin = (): Record<string, string[]> => {
-    // Validate the fields before submitting
-    const emailAddressValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('email'),
-      new ValidEmailRule('email'),
-    ]);
-
-    const passwordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password1', 'Password field cannot be empty'),
-    ]);
-
-    return {
-      ...emailAddressValidator.validate(formValues.email),
-      ...passwordValidator.validate(formValues.password1),
-    };
   };
 
   return (
@@ -268,9 +230,9 @@ function renderFormFields(
   errors: Record<string, string[]>,
 ) {
   if (authDialogType === 'signup') {
-    return SignupFields(handleValueChanged, errors);
+    return SignUpFields(handleValueChanged, errors);
   }
-  return LoginFields(handleValueChanged, errors);
+  return SignInFields(handleValueChanged, errors);
 }
 
 const StyledButton = styled(Button)(({ theme }) => ({
