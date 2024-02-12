@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: any) {
   await connectMongoDB();
 
   const event: UserEvent | null = await EventRepository.findById(id);
-  console.log(event);
+
   if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
 
   const { participants } = event;
