@@ -23,7 +23,7 @@ export function EventsSection({
   onLoadMoreEventsButtonClicked,
   isLoading,
 }: EventsSectionProps) {
-  const theme = useTheme(); // This is a MaterialUI hook that allows us to access the MUI theme
+  const theme = useTheme();
 
   const handleOnLoadMoreButtonClick = () => {
     onLoadMoreEventsButtonClicked();
