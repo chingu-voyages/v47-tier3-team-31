@@ -16,6 +16,7 @@ import {
   styled,
 } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -164,9 +165,11 @@ export default function Header() {
           ) : status === AuthStatus.Authenticated ? (
             <>
               <div className={styles.avatarBox}>
+                {/* Handle signout/sign out here */}
                 <HeaderBarAvatar
                   userName={session?.user?.firstName || 'Default User'}
                   onMyProfileClicked={navigateToMyProfile}
+                  onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
                 />
               </div>
             </>

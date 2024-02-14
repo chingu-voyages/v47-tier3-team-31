@@ -58,10 +58,8 @@ const handler = NextAuth({
         }
 
         if (await compare(credentials!.password, user.password)) {
-          console.log('user logged in successful');
           // Right now, let's use this info for the JWT token
           return {
-            id: user._id,
             _id: user._id,
             email: user.email,
             firstName: user.firstName,

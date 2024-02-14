@@ -11,14 +11,14 @@ import styles from './style.module.css';
 interface HeaderBarAvatarProps {
   userName: string;
   imageUrl?: string;
-  onLogoutClicked?: () => void;
+  onSignOutClicked?: () => void;
   onMyProfileClicked?: () => void;
 }
 
 export function HeaderBarAvatar({
   userName,
   imageUrl,
-  onLogoutClicked,
+  onSignOutClicked,
   onMyProfileClicked,
 }: HeaderBarAvatarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -36,7 +36,7 @@ export function HeaderBarAvatar({
 
   const handleSignoutClicked = async () => {
     setAnchorEl(null);
-    onLogoutClicked && onLogoutClicked();
+    onSignOutClicked && onSignOutClicked();
   };
 
   const handleMyProfileClicked = () => {

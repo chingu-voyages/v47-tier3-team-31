@@ -1,6 +1,10 @@
 import { Category } from '@/lib/category';
 import { UserEvent } from '@/models/user-event';
-import { GetAllEventsAPIResponse } from './models';
+
+export interface GetAllEventsAPIResponse {
+  events: UserEvent[];
+  totalCount: number;
+}
 
 export async function getEventById(id: string): Promise<UserEvent | undefined> {
   try {
@@ -72,7 +76,7 @@ export async function getAllEvents(
       throw new Error(data?.message || 'Error:[101] Cannot fetch events');
     }
 
-    return data;
+    return data as GetAllEventsAPIResponse;
   } catch (error: any) {
     throw new Error(error?.message || 'Error:[102] Cannot fetch events');
   }
