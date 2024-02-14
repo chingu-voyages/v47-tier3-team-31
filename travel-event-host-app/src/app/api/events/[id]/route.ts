@@ -15,5 +15,5 @@ export async function GET(req: Request, { params }: any) {
 
   const eventFound = await EventRepository.findById(id);
   if (eventFound) return NextResponse.json(eventFound, { status: 200 });
-  else return NextResponse.json({ message: 'event no exist' }, { status: 500 });
+  return NextResponse.json({ message: `Event with id ${id} not found` }, { status: 404 });
 }
