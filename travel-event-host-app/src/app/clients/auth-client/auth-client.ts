@@ -51,12 +51,10 @@ export async function signInUser({
   });
 
   if (!res) {
+    // The error
     if (isRegistering) {
-      throw new Error(
-        "Error: Registration was successful, but we couldn't sign you in. Please try again.",
-      );
+      throw new Error('We have experienced an error. Please contact support.');
     }
-    // If we reached this point, res is undefined - likely some other error occured
     return {
       success: false,
       errors: {
