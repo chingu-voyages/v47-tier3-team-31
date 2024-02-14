@@ -1,5 +1,7 @@
 'use client';
 import theme from '@/app/theme';
+import { AuthStatus } from '@/lib/auth-status';
+import { useAuthContext } from '@/lib/context';
 import { Language } from '@/lib/language';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,15 +19,25 @@ import CircularProgress, { circularProgressClasses } from '@mui/material/Circula
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
+import { HeaderBarAvatar } from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import { CommonButton } from '../common-button/Common-Button';
 import styles from './styles.module.css';
 
 export default function Header() {
+  const { session, status } = useAuthContext();
   const [lang, setLang] = useState<Language>(Language.En);
-  const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
-  const userName = 'Angelo';
+  const router = useRouter();
+
+  const navigateToMyProfile = () => {
+    // User is authenticated, so we can navigate to their user portal
+    if (status === AuthStatus.Authenticated && session?.user) {
+      router.push(`/users/${session.user._id}`);
+    } else {
+      // User is not authenticated, so we should navigate to the login page
+      router.push('/auth/signin');
+    }
+  };
 
   return (
     <header className={styles.header}>
@@ -38,7 +50,7 @@ export default function Header() {
             <MenuIcon />
           </div>
           <Typography variant='h4' color={theme.palette.primary.thirdColorIceLight}>
-            Bakpak
+            BakPak
           </Typography>
         </div>
         <div className={styles.authBox}>
@@ -85,6 +97,9 @@ export default function Header() {
                 value={lang}
                 onChange={(event) => setLang(event.target.value as Language)}
                 sx={{
+                  '& .MuiSelect-select': {
+                    fontSize: ['0.8rem', '0.8rem', '1rem'],
+                  },
                   '& .MuiInputBase-input': {
                     paddingBottom: '25px',
                   },
@@ -112,14 +127,22 @@ export default function Header() {
               >
                 {/* This will render languages as needed */}
                 {Object.entries(Language).map(([key, value]) => (
-                  <MenuItem key={key} value={value}>
+                  <MenuItem
+                    sx={{
+                      '&.MuiButtonBase-root': {
+                        fontSize: ['0.8rem', '0.8rem', '1rem'],
+                      },
+                    }}
+                    key={key}
+                    value={value}
+                  >
                     {value}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Box>
-          {status === 'loading' ? (
+          {status === AuthStatus.Loading ? (
             <div className={styles.spinnerBox}>
               <CircularProgress
                 variant='indeterminate'
@@ -138,10 +161,13 @@ export default function Header() {
                 thickness={4}
               />
             </div>
-          ) : status === 'authenticated' ? (
+          ) : status === AuthStatus.Authenticated ? (
             <>
               <div className={styles.avatarBox}>
-                <HeaderBarAvatar userName={userName} />
+                <HeaderBarAvatar
+                  userName={session?.user?.firstName || 'Default User'}
+                  onMyProfileClicked={navigateToMyProfile}
+                />
               </div>
             </>
           ) : (
@@ -157,18 +183,20 @@ export default function Header() {
           )}
         </div>
       </div>
-      <Box
-        display='none'
-        sx={{
-          [theme.breakpoints.down(410)]: {
-            display: 'block',
-          },
-        }}
-      >
-        <AuthBox />
-      </Box>
+      {status === AuthStatus.Unauthenticated && (
+        <Box
+          display='none'
+          sx={{
+            [theme.breakpoints.down(410)]: {
+              display: 'block',
+            },
+          }}
+        >
+          <AuthBox />
+        </Box>
+      )}
       <div className={`${styles.overlay} ${navMenuIsOpen ? styles.open : ''}`}></div>
-      <nav className={`${navMenuIsOpen ? styles.open : ''}`}>
+      <nav className={`${navMenuIsOpen ? styles.open : ''} ${styles.navMain}`}>
         <Box
           display='flex'
           justifyContent={'flex-end'}
@@ -247,6 +275,7 @@ const AuthBox = () => {
       }}
     >
       <Button
+        onClick={() => router.push('/auth/signin')}
         sx={{
           color: theme.palette.primary.thirdColorIceLight,
           marginRight: '10px',
