@@ -24,7 +24,7 @@ export function EventsSection({
   isLoading,
 }: EventsSectionProps) {
   const theme = useTheme();
-  console.log('27 hosted ev', hostedEvents);
+
   const handleOnLoadMoreButtonClick = () => {
     onLoadMoreEventsButtonClicked();
   };
