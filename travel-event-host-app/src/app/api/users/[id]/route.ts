@@ -15,8 +15,8 @@ export async function GET(req: Request, { params }: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const userFound = await UserRepository.findById(id).select('-password -admin -email');
-  const secureUser: Partial<SecureUser> = userFound;
-  if (userFound) return NextResponse.json(secureUser, { status: 200 });
-  else return NextResponse.json({ message: 'user no exist' }, { status: 404 });
+  const userFound: SecureUser = await UserRepository.findById(id).select('-password -admin -email');
+
+  if (userFound) return NextResponse.json(userFound, { status: 200 });
+  else return NextResponse.json({ message: `User with id ${id} not found.` }, { status: 404 });
 }
