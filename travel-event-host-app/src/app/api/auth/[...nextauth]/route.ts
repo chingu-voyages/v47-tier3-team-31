@@ -6,15 +6,28 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 const handler = NextAuth({
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn() {
       return true;
     },
     async jwt({ token, account, profile }) {
+      await connectMongoDB();
+
+      const userSession = await UserRepository.findOne({ email: token.email }).select('-password');
+
+      // Token has the data from sign in (see below in authorize function)
       token = {
         ...token,
+        ...(userSession as any)._doc,
       };
 
       return token;
+    },
+    async session({ session, user, token }) {
+      session.user = {
+        ...session.user,
+        ...token,
+      };
+      return session;
     },
   },
 
@@ -51,6 +64,8 @@ const handler = NextAuth({
             id: user._id,
             _id: user._id,
             email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
           };
         } else {
           console.log('Invalid Password');

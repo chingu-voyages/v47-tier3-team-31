@@ -1,5 +1,7 @@
 'use client';
 
+import { registerUser, signInUser } from '@/app/clients/auth-client/auth-client';
+import { SignInAPIResponse } from '@/app/clients/auth-client/signin-api-response';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -16,6 +18,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { ChangeEventHandler, useState } from 'react';
+import { ErrorComponent } from './ErrorComponent/ErrorComponent';
 import { SignInFields } from './sign-in-fields/SignInFields';
 import { SignUpFields } from './sign-up-fields/SignUpFields';
 import { validateLogin } from './validation/sign-in';
@@ -34,7 +37,7 @@ export default function AuthDialog(props: AuthDialogProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [apiErrors, setApiErrors] = useState<Record<string, string[]> | undefined>(undefined); // Errors returned from the API [
   const theme = useTheme();
 
   const handleSubmit = async () => {
@@ -54,9 +57,31 @@ export default function AuthDialog(props: AuthDialogProps) {
         return;
       }
 
-      // Do signup
+      try {
+        setIsLoading(true);
+        await registerUser({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          password: formValues.password1,
+        });
+
+        console.info('Signup successful - attempting to signin immediately');
+
+        // Attempt to sign in immediately
+        await signInUser({
+          email: formValues.email,
+          password: formValues.password1,
+          isRegistering: true,
+        });
+      } catch (e: any) {
+        console.error(e);
+        setApiErrors({ apiError: [e.message] });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      // Validate the login form
+      // Validate the signin form
       const signInValidationErrors: Record<string, string[]> = validateLogin({
         email: formValues.email,
         password: formValues.password1,
@@ -66,8 +91,18 @@ export default function AuthDialog(props: AuthDialogProps) {
       if (Object.keys(signInValidationErrors).length > 0) {
         return;
       }
-      // TODO: submit the form
-      console.log('login form is valid');
+      console.info('Attempting to sign in');
+      // Complete the signin. The nextAuth signin function will handle the default redirect,
+      // or we can specify a redirect URL in the signInUser function
+      const res: SignInAPIResponse = await signInUser({
+        email: formValues.email,
+        password: formValues.password1,
+      });
+
+      if (!res.success) {
+        setErrors(res.errors || {});
+        setApiErrors(res.errors);
+      }
     }
   };
 
@@ -219,6 +254,11 @@ export default function AuthDialog(props: AuthDialogProps) {
             </Box>
           </Box>
         </DialogActions>
+        {apiErrors && (
+          <Box mb={4}>
+            <ErrorComponent fieldName='apiError' errors={apiErrors} />{' '}
+          </Box>
+        )}
       </Box>
     </Dialog>
   );

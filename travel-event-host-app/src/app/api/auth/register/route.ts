@@ -23,7 +23,10 @@ export async function POST(req: Request) {
   });
 
   if (existingUser) {
-    return NextResponse.json({ message: 'Email already in use' }, { status: 403 });
+    return NextResponse.json(
+      { message: 'Unable to create account. Please try again with a different e-mail address.' },
+      { status: 403 },
+    );
   }
 
   const newUser = await UserRepository.create({
