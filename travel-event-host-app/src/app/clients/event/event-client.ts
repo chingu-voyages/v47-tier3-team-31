@@ -1,5 +1,6 @@
 import { Category } from '@/lib/category';
 import { UserEvent } from '@/models/user-event';
+import { GetAllEventsAPIResponse } from './models';
 
 export async function getEventById(id: string): Promise<UserEvent | undefined> {
   try {
@@ -54,5 +55,25 @@ export async function getEventsByUserId(userId: string): Promise<UserEvent[] | u
     return response.json();
   } catch (error) {
     throw new Error("Error: Cannot fetch user's events");
+  }
+}
+
+export async function getAllEvents(
+  pageNumber: number = 1,
+  pageSize: number = 3,
+): Promise<GetAllEventsAPIResponse> {
+  try {
+    const endPoint = `/api/events?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    const response = await fetch(endPoint);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.message || 'Error:[101] Cannot fetch events');
+    }
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error:[102] Cannot fetch events');
   }
 }

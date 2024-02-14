@@ -24,7 +24,7 @@ export function EventsSection({
   isLoading,
 }: EventsSectionProps) {
   const theme = useTheme();
-
+  console.log('27 hosted ev', hostedEvents);
   const handleOnLoadMoreButtonClick = () => {
     onLoadMoreEventsButtonClicked();
   };
@@ -115,7 +115,7 @@ const renderEventCards = (
         Nothing to show
       </Typography>
     );
-  return hostedEvents.map((hostedEvent) => (
+  return hostedEvents?.map((hostedEvent) => (
     <EventCard
       hostedEvent={hostedEvent}
       key={hostedEvent._id}
