@@ -1,4 +1,4 @@
-import { signIn, signOut } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { SignInAPIResponse } from './signin-api-response';
 
 export async function registerUser({
@@ -81,8 +81,4 @@ export async function signInUser({
       apiError: ['An unknown error occured. Please try again.'],
     },
   };
-}
-
-export async function signOutUser(): Promise<void> {
-  await signOut({ redirect: false, callbackUrl: '/' });
 }
