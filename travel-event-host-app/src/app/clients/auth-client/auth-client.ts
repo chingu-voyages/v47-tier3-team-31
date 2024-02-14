@@ -50,35 +50,28 @@ export async function signInUser({
     callbackUrl: redirectUrl,
   });
 
-  // The user has just completed the registration flow successfully.
-  // Immeidately sign them in
-  if (isRegistering) {
-    if (res) {
-      if (res.ok) return { success: true };
+  if (!res) {
+    if (isRegistering) {
+      throw new Error(
+        "Error: Registration was successful, but we couldn't sign you in. Please try again.",
+      );
     }
-    console.debug(res?.error);
-    throw new Error(
-      "Error: Registration was successful, but we couldn't sign you in. Please try again.",
-    );
-  }
-
-  // This is to handle basic sign in
-  if (res) {
-    if (res.ok) return { success: true };
+    // If we reached this point, res is undefined - likely some other error occured
     return {
       success: false,
       errors: {
-        email: ['Please check your credentials and try again'],
-        password1: ['Please check your credentials and try again'],
+        apiError: ['An unknown error occured. Please try again.'],
       },
     };
   }
 
-  // If we reached this point, res is undefined - likely some other error occured
+  // This is to handle basic sign in
+  if (res.ok) return { success: true };
   return {
     success: false,
     errors: {
-      apiError: ['An unknown error occured. Please try again.'],
+      email: ['Please check your credentials and try again'],
+      password1: ['Please check your credentials and try again'],
     },
   };
 }
