@@ -1,4 +1,5 @@
 import theme from '@/app/theme';
+import { useAuthContext } from '@/lib/context';
 import { Avatar, Box, ButtonBase, Menu, MenuItem, Typography, styled } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -10,24 +11,37 @@ import styles from './style.module.css';
 interface HeaderBarAvatarProps {
   userName: string;
   imageUrl?: string;
-  onLogoutClicked?: () => void;
+  onSignOutClicked?: () => void;
+  onMyProfileClicked?: () => void;
 }
 
-export default function HeaderBarAvatar({
+export function HeaderBarAvatar({
   userName,
   imageUrl,
-  onLogoutClicked,
+  onSignOutClicked,
+  onMyProfileClicked,
 }: HeaderBarAvatarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isErrorImage, setIsErrorImage] = useState<boolean>(false);
   const open = Boolean(anchorEl);
+  const { status } = useAuthContext();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    onLogoutClicked && onLogoutClicked();
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSignoutClicked = async () => {
+    setAnchorEl(null);
+    onSignOutClicked && onSignOutClicked();
+  };
+
+  const handleMyProfileClicked = () => {
+    setAnchorEl(null);
+    onMyProfileClicked && onMyProfileClicked();
   };
 
   return (
@@ -64,7 +78,7 @@ export default function HeaderBarAvatar({
               },
             }}
           >
-            <Typography style={{ padding: 0 }}>{userName}</Typography>
+            <Typography style={{ padding: 0, fontSize: '0.9rem' }}>{userName}</Typography>
           </Box>
         </ButtonBase>
       </Box>
@@ -85,35 +99,27 @@ export default function HeaderBarAvatar({
           },
         }}
       >
-        {/* Add more menu options here as needed */}
         <MenuItem
-          onClick={handleClose}
           sx={{
-            '&.MuiList-root': {
-              background: theme.palette.primary.thirdColorlightBlack,
+            [theme.breakpoints.up(430)]: {
+              display: 'none',
             },
             '&.MuiButtonBase-root': {
-              fontSize: '1.25rem',
-              background: theme.palette.primary.thirdColorlightBlack,
-              color: theme.palette.primary.thirdColorIceLight,
+              fontSize: '0.8rem',
+              color: theme.palette.primary.greyDisabled,
             },
             '&.MuiButtonBase-root:hover': {
-              background: theme.palette.primary.secondaryColorDarkBlack,
-            },
-            [theme.breakpoints.down(700)]: {
-              '&.MuiButtonBase-root': {
-                fontSize: '1rem',
-              },
-            },
-            [theme.breakpoints.down(610)]: {
-              '&.MuiButtonBase-root': {
-                fontSize: '11px',
-              },
+              background: 'none',
             },
           }}
         >
-          Logout
+          {userName}
         </MenuItem>
+        {/* Add more menu options here as needed */}
+        {status === 'authenticated' && (
+          <CustomMenuItem onClick={handleMyProfileClicked}>My Profile</CustomMenuItem>
+        )}
+        <CustomMenuItem onClick={handleSignoutClicked}>Sign out</CustomMenuItem>
       </Menu>
     </Box>
   );
@@ -148,12 +154,25 @@ function loadAvatarImage(
 }
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: '47px',
-  height: '47px',
-  [theme.breakpoints.down(700)]: {
-    '&.MuiAvatar-root': {
-      width: '32px',
-      height: '32px',
+  width: '32px',
+  height: '32px',
+}));
+
+const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
+  '&.MuiList-root': {
+    background: theme.palette.primary.thirdColorlightBlack,
+  },
+  '&.MuiButtonBase-root': {
+    fontSize: '0.9rem',
+    background: theme.palette.primary.thirdColorlightBlack,
+    color: theme.palette.primary.thirdColorIceLight,
+  },
+  '&.MuiButtonBase-root:hover': {
+    background: theme.palette.primary.secondaryColorDarkBlack,
+  },
+  [theme.breakpoints.down(610)]: {
+    '&.MuiButtonBase-root': {
+      fontSize: '11px',
     },
   },
 }));

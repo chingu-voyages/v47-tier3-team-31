@@ -1,5 +1,5 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserEventModel } from '@/schemas/user-event';
+import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const eventFound = await UserEventModel.findById(id);
+  const eventFound = await EventRepository.findById(id);
   if (eventFound) return NextResponse.json(eventFound, { status: 200 });
-  else return NextResponse.json({ message: 'event no exist' }, { status: 500 });
+  return NextResponse.json({ message: `Event with id ${id} not found` }, { status: 404 });
 }

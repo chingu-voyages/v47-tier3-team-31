@@ -1,5 +1,5 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserEventModel } from '@/schemas/user-event';
+import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
@@ -13,7 +13,7 @@ export async function PATCH(req: Request, params: any) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
   }
 
-  const eventFound = await UserEventModel.findById(id);
+  const eventFound = await EventRepository.findById(id);
 
   if (eventFound) {
     const isUserIdPresent = eventFound.participants.some(

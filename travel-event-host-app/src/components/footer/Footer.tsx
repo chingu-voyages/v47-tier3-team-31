@@ -1,12 +1,12 @@
-import styles from './footer.module.css'
-import Link from 'next/link'
+import Link from 'next/link';
+import styles from './footer.module.css';
 
-export default function Footer() {
-    return(
-        <div className={styles.footer}>
-            <Link href="/about">About us</Link>
-            <a href="https://chingu.io/">Chingu</a>
-            <Link href="/team">Team</Link>
-        </div>
-    )
+export function Footer() {
+  return (
+    <div className={styles.footer}>
+      <Link href='/about'>About us</Link>
+      <a href='https://chingu.io/'>Chingu</a>
+      <Link href='/team'>Team</Link>
+    </div>
+  );
 }

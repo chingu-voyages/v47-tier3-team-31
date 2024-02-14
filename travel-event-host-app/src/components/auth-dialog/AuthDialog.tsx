@@ -1,13 +1,7 @@
 'use client';
 
-import { RuleValidator } from '@/lib/validators/rule-validator/rule-validator';
-import { EmptyNullStringRule } from '@/lib/validators/rules/empty-null-string-rule';
-import { MatchingPasswordsRule } from '@/lib/validators/rules/matching-passwords-rule';
-import { PasswordComplexityRule } from '@/lib/validators/rules/password-complexity-rule';
-import { ValidEmailRule } from '@/lib/validators/rules/valid-email-rule';
-import { ValidNameRule } from '@/lib/validators/rules/valid-name-rule';
-
-import CloseIcon from '@mui/icons-material/Close';
+import { registerUser, signInUser } from '@/app/clients/auth-client/auth-client';
+import { SignInAPIResponse } from '@/app/clients/auth-client/signin-api-response';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -19,14 +13,16 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  IconButton,
   Typography,
   styled,
   useTheme,
 } from '@mui/material';
 import { ChangeEventHandler, useState } from 'react';
-import { SignupFields } from './SignupFields/SignupFields';
-import { LoginFields } from './login-fields/LoginFields';
+import { ErrorComponent } from './ErrorComponent/ErrorComponent';
+import { SignInFields } from './sign-in-fields/SignInFields';
+import { SignUpFields } from './sign-up-fields/SignUpFields';
+import { validateLogin } from './validation/sign-in';
+import { validateSignUp } from './validation/sign-up';
 
 /**
  * Dialog used for signup and login
@@ -34,86 +30,84 @@ import { LoginFields } from './login-fields/LoginFields';
 
 interface AuthDialogProps {
   open: boolean;
-  onDialogClose: () => void;
-  authDialogType: 'login' | 'signup';
+  authDialogType: 'signin' | 'signup';
 }
 
 export default function AuthDialog(props: AuthDialogProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [apiErrors, setApiErrors] = useState<Record<string, string[]> | undefined>(undefined); // Errors returned from the API [
   const theme = useTheme();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate the signup form
     if (props.authDialogType === 'signup') {
-      const signupValidationResult: Record<string, string[]> = validateSignUp();
-      if (Object.keys(signupValidationResult).length > 0) {
-        setErrors(signupValidationResult);
+      const signupValidationErrors: Record<string, string[]> = validateSignUp({
+        email: formValues.email,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        password1: formValues.password1,
+        password2: formValues.password2,
+      });
+      setErrors(signupValidationErrors); // Show or clear any errors on the form
+
+      if (Object.keys(signupValidationErrors).length > 0) {
+        // There are errors on the form, so we don't submit
         return;
       }
-      // TODO: submit the form
-      console.log('Signup form is valid');
+
+      try {
+        setIsLoading(true);
+        await registerUser({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          password: formValues.password1,
+        });
+
+        console.info('Signup successful - attempting to signin immediately');
+
+        // Attempt to sign in immediately
+        await signInUser({
+          email: formValues.email,
+          password: formValues.password1,
+          isRegistering: true,
+        });
+      } catch (e: any) {
+        console.error(e.message);
+        setApiErrors({ apiError: [e.message] });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      // Validate the login form
-      const loginValidationResult: Record<string, string[]> = validateLogin();
-      if (Object.keys(loginValidationResult).length > 0) {
-        setErrors(loginValidationResult);
+      // Validate the signin form
+      const signInValidationErrors: Record<string, string[]> = validateLogin({
+        email: formValues.email,
+        password: formValues.password1,
+      });
+      setErrors(signInValidationErrors);
+
+      if (Object.keys(signInValidationErrors).length > 0) {
         return;
       }
-      // TODO: submit the form
-      console.log('login form is valid');
+      console.info('Attempting to sign in...');
+      // Complete the signin. The nextAuth signin function will handle the default redirect,
+      // or we can specify a redirect URL in the signInUser function
+      const res: SignInAPIResponse = await signInUser({
+        email: formValues.email,
+        password: formValues.password1,
+      });
+
+      if (!res.success) {
+        setErrors(res.errors || {});
+        setApiErrors(res.errors);
+      }
     }
   };
 
   const handleFormValueChanged = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
-  const validateSignUp = (): Record<string, string[]> => {
-    // Validate the fields before submitting
-    const emailAddressValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('email'),
-      new ValidEmailRule('email'),
-    ]);
-
-    const nameValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('name'),
-      new ValidNameRule('name'),
-    ]);
-
-    const firstPasswordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password1', 'Password field cannot be empty'),
-      new MatchingPasswordsRule('password1'),
-      new PasswordComplexityRule('password1'),
-    ]);
-
-    const secondPasswordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password2', 'Password field cannot be empty'),
-    ]);
-
-    return {
-      ...emailAddressValidator.validate(formValues.email),
-      ...nameValidator.validate(formValues.name),
-      ...firstPasswordValidator.validate([formValues.password1, formValues.password2]),
-      ...secondPasswordValidator.validate(formValues.password2),
-    };
-  };
-
-  const validateLogin = (): Record<string, string[]> => {
-    // Validate the fields before submitting
-    const emailAddressValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('email'),
-      new ValidEmailRule('email'),
-    ]);
-
-    const passwordValidator: RuleValidator = new RuleValidator([
-      new EmptyNullStringRule('password1', 'Password field cannot be empty'),
-    ]);
-
-    return {
-      ...emailAddressValidator.validate(formValues.email),
-      ...passwordValidator.validate(formValues.password1),
-    };
   };
 
   return (
@@ -133,11 +127,6 @@ export default function AuthDialog(props: AuthDialogProps) {
     >
       <DialogTitle sx={{ backgroundColor: theme.palette.primary.secondaryColorDarkBlack }}>
         <Box>
-          <Box display='flex' justifyContent={'flex-end'}>
-            <IconButton onClick={() => props.onDialogClose()}>
-              <CloseIcon sx={{ color: theme.palette.primary.thirdColorIceLight }} />
-            </IconButton>
-          </Box>
           <Box mt={3}>
             <Box>{/* App logo goes here */}</Box>
             <Box>
@@ -146,7 +135,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 color={theme.palette.primary.thirdColorIceLight}
                 sx={{ fontWeight: 'bold', textAlign: 'center', textTransform: 'uppercase' }}
               >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Log in'}
+                {props.authDialogType === 'signup' ? 'Sign Up' : 'Sign In'}
               </Typography>
             </Box>
           </Box>
@@ -259,26 +248,32 @@ export default function AuthDialog(props: AuthDialogProps) {
                 size={'large'}
                 sx={{ marginBottom: '1rem' }}
                 onClick={handleSubmit}
+                disabled={isLoading}
               >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Log in'}
+                {props.authDialogType === 'signup' ? 'Sign Up' : 'Go'}
               </StyledButton>
             </Box>
           </Box>
         </DialogActions>
+        {apiErrors && (
+          <Box mb={4}>
+            <ErrorComponent fieldName='apiError' errors={apiErrors} />{' '}
+          </Box>
+        )}
       </Box>
     </Dialog>
   );
 }
 
 function renderFormFields(
-  authDialogType: 'login' | 'signup',
+  authDialogType: 'signin' | 'signup',
   handleValueChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
 ) {
   if (authDialogType === 'signup') {
-    return SignupFields(handleValueChanged, errors);
+    return SignUpFields(handleValueChanged, errors);
   }
-  return LoginFields(handleValueChanged, errors);
+  return SignInFields(handleValueChanged, errors);
 }
 
 const StyledButton = styled(Button)(({ theme }) => ({

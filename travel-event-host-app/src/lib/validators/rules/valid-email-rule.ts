@@ -3,7 +3,7 @@ import { ValidationError } from '../validation-error/validation-error';
 
 export class ValidEmailRule extends BaseRule {
   constructor(fieldName: string) {
-    super('Enter a valid e-mail address', fieldName);
+    super('Enter a valid e-mail address.', fieldName);
   }
 
   validate(value: string): ValidationError | undefined {

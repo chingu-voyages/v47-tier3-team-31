@@ -1,4 +1,4 @@
-import { SecureUser } from '@/types/secureUser';
+import { SecureUser } from '@/types/secure-user';
 
 /**
  *

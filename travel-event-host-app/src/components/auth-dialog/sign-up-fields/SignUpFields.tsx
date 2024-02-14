@@ -4,7 +4,7 @@ import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { CustomTextField, StyledFormFieldSection } from '../custom-fields/CustomFields';
 
-export const SignupFields = (
+export const SignUpFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
 ) => {
@@ -30,14 +30,14 @@ export const SignupFields = (
         <ErrorComponent fieldName='email' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>Name</Typography>
+        <Typography color={theme.palette.primary.thirdColorIceLight}>First name</Typography>
         <CustomTextField
           autoFocus
           required
           margin='dense'
-          id='name'
-          name='name'
-          label='Name'
+          id='firstName'
+          name='firstName'
+          label='First name'
           type='text'
           fullWidth
           variant='outlined'
@@ -46,7 +46,26 @@ export const SignupFields = (
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
         />
-        <ErrorComponent fieldName='name' errors={errors} />
+        <ErrorComponent fieldName='firstName' errors={errors} />
+      </StyledFormFieldSection>
+      <StyledFormFieldSection>
+        <Typography color={theme.palette.primary.thirdColorIceLight}>Last name</Typography>
+        <CustomTextField
+          autoFocus
+          required
+          margin='dense'
+          id='lastName'
+          name='lastName'
+          label='Last name'
+          type='text'
+          fullWidth
+          variant='outlined'
+          autoComplete='name'
+          InputLabelProps={{ shrink: false }}
+          inputProps={{ maxLength: 50 }}
+          onChange={handleInputChanged}
+        />
+        <ErrorComponent fieldName='lastName ' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
         <Typography color={theme.palette.primary.thirdColorIceLight}>Your password</Typography>

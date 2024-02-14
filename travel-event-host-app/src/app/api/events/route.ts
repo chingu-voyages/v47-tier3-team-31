@@ -1,6 +1,6 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserEvent } from '@/models/user-event';
-import { UserEventModel } from '@/schemas/user-event';
+import { EventRepository } from '@/schemas/user-event';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
   await connectMongoDB();
 
-  const newEvent = await UserEventModel.create({
+  const newEvent = await EventRepository.create({
     title,
     description,
     eventCreatorId,
@@ -32,10 +32,11 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  let page: number = parseInt(searchParams.get('page') || '1', 10);
+  let page: number = parseInt(searchParams.get('pageNumber') || '1', 10);
   let pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
 
-  const allEvents = await UserEventModel.aggregate([
+  await connectMongoDB();
+  const allEvents = await EventRepository.aggregate([
     {
       $facet: {
         metadata: [{ $count: 'totalCount' }],
@@ -43,8 +44,6 @@ export async function GET(req: Request) {
       },
     },
   ]);
-
-  await connectMongoDB();
 
   return NextResponse.json(
     { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },

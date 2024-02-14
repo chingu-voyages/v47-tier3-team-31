@@ -1,5 +1,5 @@
 import { connectMongoDB } from '@/lib/mongodb';
-import { UserEventModel } from '@/schemas/user-event';
+import { EventRepository } from '@/schemas/user-event';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
@@ -56,7 +56,7 @@ export async function GET(req: Request) {
     );
   }
 
-  const allEvents = await UserEventModel.aggregate(aggregatePipeline);
+  const allEvents = await EventRepository.aggregate(aggregatePipeline);
 
   if (allEvents[0].data.length > 0) {
     return NextResponse.json(

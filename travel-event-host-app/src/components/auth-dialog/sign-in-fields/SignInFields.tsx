@@ -4,7 +4,7 @@ import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { CustomTextField, StyledFormFieldSection } from '../custom-fields/CustomFields';
 
-export const LoginFields = (
+export const SignInFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
 ) => {

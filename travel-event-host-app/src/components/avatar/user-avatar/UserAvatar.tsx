@@ -1,6 +1,6 @@
 'use client';
 import theme from '@/app/theme';
-import { SecureUser } from '@/types/secureUser';
+import { SecureUser } from '@/types/secure-user';
 import { Box, ButtonBase, Typography, styled } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';

@@ -48,6 +48,7 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
             [theme.breakpoints.down(720)]: {
               flexDirection: 'row-reverse',
               justifyContent: 'space-between',
+              padding: '5px',
             },
           }}
         >
@@ -184,6 +185,6 @@ function CalendarDateComponent({ date }: { date: Date }) {
 const CustomResponsiveTypoGraphy = styled(Typography)(({ theme }) => ({
   fontSize: '0.5rem',
   [theme.breakpoints.up(380)]: {
-    fontSize: '0.7rem',
+    fontSize: '0.9rem',
   },
 }));

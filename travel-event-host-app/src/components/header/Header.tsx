@@ -1,24 +1,44 @@
 'use client';
 import theme from '@/app/theme';
+import { AuthStatus } from '@/lib/auth-status';
+import { useAuthContext } from '@/lib/context';
 import { Language } from '@/lib/language';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, Button, FormControl, IconButton, MenuItem, Select, styled } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  MenuItem,
+  Select,
+  Typography,
+  styled,
+} from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import AuthDialog from '../auth-dialog/AuthDialog';
-import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
+import { HeaderBarAvatar } from '../avatar/header-bar-avatar/HeaderBarAvatar';
+import { CommonButton } from '../common-button/Common-Button';
 import styles from './styles.module.css';
 
 export default function Header() {
+  const { session, status } = useAuthContext();
   const [lang, setLang] = useState<Language>(Language.En);
-  const [status, setStatus] = useState('unauthenticated');
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
-  const [signupDialogOpen, setSignupDialogOpen] = useState<boolean>(false);
-  const [loginDialogOpen, setloginDialogOpen] = useState<boolean>(false);
+  const router = useRouter();
 
-  const userName = 'Angelo';
+  const navigateToMyProfile = () => {
+    // User is authenticated, so we can navigate to their user portal
+    if (status === AuthStatus.Authenticated && session?.user) {
+      router.push(`/users/${session.user._id}`);
+    } else {
+      // User is not authenticated, so we should navigate to the login page
+      router.push('/auth/signin');
+    }
+  };
 
   return (
     <header className={styles.header}>
@@ -30,7 +50,9 @@ export default function Header() {
           >
             <MenuIcon />
           </div>
-          <h1>Backpack</h1>
+          <Typography variant='h4' color={theme.palette.primary.thirdColorIceLight}>
+            BakPak
+          </Typography>
         </div>
         <div className={styles.authBox}>
           <Box>
@@ -76,6 +98,9 @@ export default function Header() {
                 value={lang}
                 onChange={(event) => setLang(event.target.value as Language)}
                 sx={{
+                  '& .MuiSelect-select': {
+                    fontSize: ['0.8rem', '0.8rem', '1rem'],
+                  },
                   '& .MuiInputBase-input': {
                     paddingBottom: '25px',
                   },
@@ -103,14 +128,22 @@ export default function Header() {
               >
                 {/* This will render languages as needed */}
                 {Object.entries(Language).map(([key, value]) => (
-                  <MenuItem key={key} value={value}>
+                  <MenuItem
+                    sx={{
+                      '&.MuiButtonBase-root': {
+                        fontSize: ['0.8rem', '0.8rem', '1rem'],
+                      },
+                    }}
+                    key={key}
+                    value={value}
+                  >
                     {value}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Box>
-          {status === 'loading' ? (
+          {status === AuthStatus.Loading ? (
             <div className={styles.spinnerBox}>
               <CircularProgress
                 variant='indeterminate'
@@ -129,26 +162,44 @@ export default function Header() {
                 thickness={4}
               />
             </div>
-          ) : status === 'authenticated' ? (
+          ) : status === AuthStatus.Authenticated ? (
             <>
               <div className={styles.avatarBox}>
-                <HeaderBarAvatar userName={userName} />
+                {/* Handle signout/sign out here */}
+                <HeaderBarAvatar
+                  userName={session?.user?.firstName || 'Default User'}
+                  onMyProfileClicked={navigateToMyProfile}
+                  onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
+                />
               </div>
             </>
           ) : (
-            <>
-              <p className='mx-[1.5em] cursor-pointer' onClick={() => setloginDialogOpen(true)}>
-                LOGIN
-              </p>
-              <button className='button1' onClick={() => setSignupDialogOpen(true)}>
-                SIGN UP
-              </button>
-            </>
+            <Box
+              sx={{
+                [theme.breakpoints.down(410)]: {
+                  display: 'none',
+                },
+              }}
+            >
+              <AuthBox />
+            </Box>
           )}
         </div>
       </div>
+      {status === AuthStatus.Unauthenticated && (
+        <Box
+          display='none'
+          sx={{
+            [theme.breakpoints.down(410)]: {
+              display: 'block',
+            },
+          }}
+        >
+          <AuthBox />
+        </Box>
+      )}
       <div className={`${styles.overlay} ${navMenuIsOpen ? styles.open : ''}`}></div>
-      <nav className={`${navMenuIsOpen ? styles.open : ''}`}>
+      <nav className={`${navMenuIsOpen ? styles.open : ''} ${styles.navMain}`}>
         <Box
           display='flex'
           justifyContent={'flex-end'}
@@ -177,51 +228,98 @@ export default function Header() {
           }}
         >
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Home</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Upcoming Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/events/search'>Search Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>Create Event</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit' onClick={() => setSignupDialogOpen(false)}>
+            <NavButton variant='text' color='inherit'>
               <Link href='/'>About Us</Link>
             </NavButton>
           </Box>
         </Box>
       </nav>
-      <AuthDialog
-        authDialogType={'signup'}
-        open={signupDialogOpen}
-        onDialogClose={() => setSignupDialogOpen(false)}
-      />
-      <AuthDialog
-        authDialogType={'login'}
-        open={loginDialogOpen}
-        onDialogClose={() => setloginDialogOpen(false)}
-      />
     </header>
   );
 }
 
 const NavButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
-  fontSize: '1.25rem',
-
   [theme.breakpoints.up(610)]: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
   },
 }));
+
+const AuthBox = () => {
+  const router = useRouter();
+  return (
+    <Box
+      display='flex'
+      alignContent={'center'}
+      sx={{
+        [theme.breakpoints.down(410)]: {
+          justifyContent: 'space-around',
+        },
+      }}
+    >
+      <Button
+        onClick={() => router.push('/auth/signin')}
+        sx={{
+          color: theme.palette.primary.thirdColorIceLight,
+          marginRight: '10px',
+
+          [theme.breakpoints.up(610)]: {
+            marginRight: '1.5rem',
+          },
+        }}
+      >
+        <Typography
+          sx={{
+            [theme.breakpoints.down(610)]: {
+              fontSize: '0.8rem',
+            },
+          }}
+        >
+          LOG IN
+        </Typography>
+      </Button>
+
+      <CommonButton
+        onButtonClick={() => router.push('/auth/signup')}
+        label='SIGN UP'
+        textColor={theme.palette.primary.thirdColorIceLight}
+        backgroundColor={theme.palette.primary.primaryColorDarkBlue}
+        borderColor={theme.palette.primary.primaryColorDarkBlue}
+        borderRadius={'5px'}
+        fontWeight='400'
+        additionalStyles={{
+          minWidth: '150px',
+          minHeight: '40px',
+          paddingLeft: '1.5em',
+          paddingRight: '1.5em',
+          [theme.breakpoints.down(610)]: {
+            minWidth: '100px',
+            minHeight: '30px',
+            paddingLeft: '1em',
+            paddingRight: '1em',
+          },
+        }}
+      />
+    </Box>
+  );
+};

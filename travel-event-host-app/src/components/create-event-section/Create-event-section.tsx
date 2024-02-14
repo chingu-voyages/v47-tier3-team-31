@@ -9,13 +9,11 @@ export function CreateEventSection() {
   const theme = useTheme();
   return (
     <Box
+      id='createEventSectionComponent'
       bgcolor={theme.palette.primary.thirdColorIceLight}
       width={'100%'}
       display='flex'
       sx={{
-        [theme.breakpoints.down(720)]: {
-          height: '184px',
-        },
         [theme.breakpoints.down(540)]: {
           flexDirection: 'column',
         },

@@ -5,10 +5,12 @@ const userSchema = new Schema<User>(
   {
     firstName: {
       type: String,
+      required: true,
     },
     imageUrl: String,
     lastName: {
       type: String,
+      required: true,
     },
     email: {
       type: String,
@@ -25,8 +27,7 @@ const userSchema = new Schema<User>(
       coords: { lat: Number, long: Number },
     },
     eventIds: [String],
-
-    admin: {
+    isAdmin: {
       type: Boolean,
       default: false,
     },
@@ -34,4 +35,5 @@ const userSchema = new Schema<User>(
   { timestamps: true },
 );
 
-export const UserModel = mongoose.models.User || mongoose.model<User>('User', userSchema);
+export const UserRepository: mongoose.Model<User> =
+  mongoose.models.User || mongoose.model<User>('User', userSchema);
