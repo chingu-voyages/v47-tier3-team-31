@@ -75,7 +75,7 @@ export default function AuthDialog(props: AuthDialogProps) {
           isRegistering: true,
         });
       } catch (e: any) {
-        console.error(e);
+        console.error(e.message);
         setApiErrors({ apiError: [e.message] });
       } finally {
         setIsLoading(false);
@@ -91,7 +91,7 @@ export default function AuthDialog(props: AuthDialogProps) {
       if (Object.keys(signInValidationErrors).length > 0) {
         return;
       }
-      console.info('Attempting to sign in');
+      console.info('Attempting to sign in...');
       // Complete the signin. The nextAuth signin function will handle the default redirect,
       // or we can specify a redirect URL in the signInUser function
       const res: SignInAPIResponse = await signInUser({
@@ -248,6 +248,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 size={'large'}
                 sx={{ marginBottom: '1rem' }}
                 onClick={handleSubmit}
+                disabled={isLoading}
               >
                 {props.authDialogType === 'signup' ? 'Sign Up' : 'Go'}
               </StyledButton>
