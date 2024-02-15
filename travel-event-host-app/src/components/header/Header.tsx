@@ -16,7 +16,7 @@ import {
   styled,
 } from '@mui/material';
 import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
-import { signOut } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -278,7 +278,7 @@ const AuthBox = () => {
       }}
     >
       <Button
-        onClick={() => router.push('/auth/signin')}
+        onClick={() => signIn()} // This should redirect to the sign in page
         sx={{
           color: theme.palette.primary.thirdColorIceLight,
           marginRight: '10px',
