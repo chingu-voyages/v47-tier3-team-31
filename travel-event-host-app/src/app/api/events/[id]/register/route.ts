@@ -1,18 +1,27 @@
+import { registerUserToEventValidationSchema } from '@/app/api/endpoint-validation/schemas/register-user-to-event-validation.schema';
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-export async function PATCH(req: Request, params: any) {
-  let { userId } = await req.json();
+export async function PATCH(req: Request, { params }: any) {
+  const { id } = params;
+  const requestBody = await req.json();
 
-  const id = params.id;
-  await connectMongoDB();
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
+    return NextResponse.json({ message: `Invalid ObjectId format ${id}` }, { status: 400 });
   }
 
+  // Validate
+  try {
+    await registerUserToEventValidationSchema.validate(requestBody, { abortEarly: false });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+  const { userId } = requestBody;
+
+  await connectMongoDB();
   const eventFound = await EventRepository.findById(id);
 
   if (eventFound) {

@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: any) {
 
   await connectMongoDB();
 
-  const id = params.id;
+  const { id } = params;
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });

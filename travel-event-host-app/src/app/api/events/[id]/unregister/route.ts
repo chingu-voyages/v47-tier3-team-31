@@ -3,10 +3,10 @@ import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-export async function PATCH(req: Request, params: any) {
+export async function PATCH(req: Request, { params }: any) {
   let { userId } = await req.json();
 
-  const id = params.id;
+  const { id } = params;
   await connectMongoDB();
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: any) {
-  const id = params.id;
+  const { id } = params;
 
   await connectMongoDB();
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
