@@ -10,18 +10,10 @@ import { NextResponse } from 'next/server';
 // Fetch the users associated with the event
 export async function GET(req: Request, { params }: any) {
   const { id } = params; // This is the eventId
-  const { searchParams } = new URL(req.url);
-  const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
-
-  // Possible query params are scope (to specify which properties to send back to the client)
-  const scope: string[] = searchParams.getAll('scope');
-
-  if (!isValidObjectId) {
+  if (!mongoose.Types.ObjectId.isValid(id))
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
-  }
 
   await connectMongoDB();
-
   const event: UserEvent | null = await EventRepository.findById(id);
 
   if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
@@ -29,11 +21,7 @@ export async function GET(req: Request, { params }: any) {
   const { participants } = event;
   if (!participants || participants.length === 0) return NextResponse.json([], { status: 200 });
 
-  let selectedUserProperties: string = '-password -admin -email';
-  if (scope.length > 0) {
-    // If there's a scope, change the selected properties to the ones in the scope
-    selectedUserProperties = scope.join(' ').concat(' _id');
-  }
+  let selectedUserProperties: string = '_id firstName lastName';
 
   const users: Partial<SecureUser>[] = await UserRepository.find({
     _id: { $in: participants.map(({ userId }) => userId) },

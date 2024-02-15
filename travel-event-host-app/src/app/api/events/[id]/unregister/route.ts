@@ -1,35 +1,33 @@
+import { userIdValidator } from '@/app/api/endpoint-validation/schemas/user-id-validator.schema';
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(req: Request, { params }: any) {
-  let { userId } = await req.json();
+  const requestBody = await req.json();
+  // TODO: This needs to be middleware
+  try {
+    await userIdValidator.validate(requestBody, { abortEarly: false });
+  } catch (e) {
+    return NextResponse.json(e, { status: 400 });
+  }
 
   const { id } = params;
-  await connectMongoDB();
-  const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
-  if (!isValidObjectId) {
+  if (!mongoose.Types.ObjectId.isValid(id))
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
+
+  await connectMongoDB();
+  const event = await EventRepository.findById(id);
+  if (!event) return NextResponse.json({ message: `Event ${id} not found` }, { status: 404 });
+
+  const { userId } = requestBody;
+
+  if (event.participants.some((p) => p.userId === userId)) {
+    event.participants = event.participants.filter((p) => p.userId !== userId);
+    await event.save();
+    return NextResponse.json({ message: 'User unregistered' }, { status: 200 });
   }
 
-  const eventFound = await EventRepository.findById(id);
-
-  if (eventFound) {
-    const isUserIdPresent = eventFound.participants.some(
-      (participant: { userId: string; timeStamp: Date }) => participant.userId === userId,
-    );
-
-    if (isUserIdPresent) {
-      eventFound.participants = eventFound.participants.filter(
-        (participant: { userId: string; timeStamp: Date }) => participant.userId !== userId,
-      );
-      await eventFound.save();
-      return NextResponse.json({ message: 'User unregistered' }, { status: 200 });
-    }
-
-    return NextResponse.json({ message: 'User no present on event' }, { status: 400 });
-  } else {
-    return NextResponse.json({ message: 'Event does not exist' }, { status: 404 });
-  }
+  return NextResponse.json({ message: `User ${userId} not found on event ${id}` }, { status: 400 });
 }

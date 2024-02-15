@@ -9,11 +9,9 @@ import { NextResponse } from 'next/server';
 // TODO: this route needs to be secured (only the requsting user should be able to see their events)
 export async function GET(req: Request, { params }: any) {
   const { id } = params;
-  const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
 
-  if (!isValidObjectId) {
+  if (!mongoose.Types.ObjectId.isValid(id))
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
-  }
 
   await connectMongoDB();
   // Find the user, then get the events associated with the user
