@@ -3,6 +3,7 @@ import theme from '@/app/theme';
 import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
 
 import { UserEvent } from '@/models/user-event';
+import { useRouter } from 'next/navigation';
 import { CommonButton } from '../common-button/Common-Button';
 import { EventCard } from '../event/event-card/Event-card';
 
@@ -24,9 +25,15 @@ export function EventsSection({
   isLoading,
 }: EventsSectionProps) {
   const theme = useTheme();
-
+  const router = useRouter();
   const handleOnLoadMoreButtonClick = () => {
     onLoadMoreEventsButtonClicked();
+  };
+
+  const handleEventCardClicked = (eventId: string) => {
+    // This should navigate to the event details page
+    if (!eventId) return;
+    router.push(`/events/${eventId}`);
   };
 
   return (
@@ -62,11 +69,7 @@ export function EventsSection({
           },
         }}
       >
-        {isLoading ? (
-          <CircularProgress />
-        ) : (
-          renderEventCards(hostedEvents, handleOnLoadMoreButtonClick)
-        )}
+        {isLoading ? <CircularProgress /> : renderEventCards(hostedEvents, handleEventCardClicked)}
       </Box>
       {/* This will be the button to load more events */}
       <Box display='flex' justifyContent={'center'} mt={3}>
