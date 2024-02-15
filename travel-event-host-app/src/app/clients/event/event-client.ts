@@ -81,3 +81,22 @@ export async function getAllEvents(
     throw new Error(error?.message || 'Error:[102] Cannot fetch events');
   }
 }
+
+export async function registerUserForEvent(eventId: string, userId: string): Promise<void> {
+  const endPoint = `/api/events/${eventId}/register`;
+  try {
+    const response = await fetch(endPoint, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error: Cannot register user for event');
+    }
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error: Cannot register user for event');
+  }
+}
