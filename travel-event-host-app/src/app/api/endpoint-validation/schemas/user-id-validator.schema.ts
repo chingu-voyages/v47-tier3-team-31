@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { object, string } from 'yup';
 
-export const registerUserToEventValidationSchema = object({
+export const userIdValidator = object({
   userId: string()
     .required('userId is required')
     .test('is-valid-object-id', 'Invalid ObjectId format', (value) => {
