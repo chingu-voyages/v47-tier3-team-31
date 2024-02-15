@@ -14,6 +14,5 @@ export interface User {
       long?: number;
     };
   };
-  eventIds: string[];
   isAdmin?: boolean;
 }

@@ -26,7 +26,7 @@ const userSchema = new Schema<User>(
       city: String,
       coords: { lat: Number, long: Number },
     },
-    eventIds: [String],
+
     isAdmin: {
       type: Boolean,
       default: false,
