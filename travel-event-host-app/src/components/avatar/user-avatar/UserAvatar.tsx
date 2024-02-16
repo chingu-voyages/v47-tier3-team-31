@@ -44,13 +44,21 @@ export default function UserAvatar({
           },
         }}
       >
-        <Box
-          borderRadius={'50%'}
-          overflow={'hidden'}
-          borderColor={theme.palette.primary.thirdColorIceLight}
-          border={'2px solid'}
-        >
-          {loadAvatarImage(isErrorImage, setIsErrorImage, MuiAvatarComponent, imageClassName, user)}
+        <Box>
+          <Box
+            borderRadius={'50%'}
+            overflow={'hidden'}
+            borderColor={theme.palette.primary.thirdColorIceLight}
+            border={'2px solid'}
+          >
+            {loadAvatarImage(
+              isErrorImage,
+              setIsErrorImage,
+              MuiAvatarComponent,
+              imageClassName,
+              user,
+            )}
+          </Box>
         </Box>
         {showName && (
           <CustomResponsiveTypoGraphy
