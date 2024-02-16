@@ -1,8 +1,8 @@
 import theme from '@/app/theme';
 import { Box, Typography } from '@mui/material';
 import { ChangeEventHandler } from 'react';
+import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
 import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/CustomFields';
-import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 
 export const SignInFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,

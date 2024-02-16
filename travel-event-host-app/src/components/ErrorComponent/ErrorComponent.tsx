@@ -6,16 +6,27 @@ import { Box, Typography } from '@mui/material';
 export const ErrorComponent = ({
   fieldName,
   errors,
+  errorIconStyles,
+  typographyStyles,
+  containerStyles,
 }: {
   fieldName: string;
   errors: Record<string, string[]>;
+  errorIconStyles?: { [key: string]: string };
+  typographyStyles?: { [key: string]: string };
+  containerStyles?: { [key: string]: string };
 }) => {
   if (fieldName in errors) {
     return (
-      <Box display='flex' gap={'5px'}>
-        <ErrorIcon color='error' />
+      <Box display='flex' sx={{ ...containerStyles }} gap={'5px'}>
+        <ErrorIcon
+          sx={{
+            ...errorIconStyles,
+          }}
+          color='error'
+        />
         {errors[fieldName].map((error, index) => (
-          <Typography key={index} sx={{ color: 'red' }}>
+          <Typography key={index} sx={{ color: 'red', ...typographyStyles }}>
             {error}
           </Typography>
         ))}
