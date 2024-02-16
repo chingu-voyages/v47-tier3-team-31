@@ -1,5 +1,6 @@
 import { Category } from '@/lib/category';
 import { UserEvent } from '@/models/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 
 export interface GetAllEventsAPIResponse {
   events: UserEvent[];
@@ -52,51 +53,87 @@ export async function getEventsBySearchQuery(
  * @param userId the id of the user to get events for
  * @returns {Promise<Event[] | undefined>} an array of events
  */
-export async function getEventsByUserId(userId: string): Promise<UserEvent[] | undefined> {
-  try {
-    const endPoint = `/api/users/${userId}/events`;
-    const response = await fetch(endPoint);
-    return response.json();
-  } catch (error) {
-    throw new Error("Error: Cannot fetch user's events");
-  }
+export async function getEventsByUserId(
+  userId: string,
+  timeline: EventTimeLine = EventTimeLine.ALL,
+  page?: number,
+  pageSize?: number,
+): Promise<UserEvent[] | undefined> {
+  const searchParams = new URLSearchParams();
+  if (page) searchParams.append('page', page.toString());
+  if (pageSize) searchParams.append('pageSize', pageSize.toString());
+  const endPoint = `/api/users/${userId}/events?&timeline=${timeline}&${searchParams.toString()}`;
+  const response = await fetch(endPoint);
+
+  if (response.ok) return response.json();
+
+  throw new Error("Error: Cannot fetch user's events");
 }
 
 export async function getAllEvents(
-  pageNumber: number = 1,
-  pageSize: number = 3,
+  timeline: EventTimeLine = EventTimeLine.ALL,
+  pageNumber?: number,
+  pageSize?: number,
 ): Promise<GetAllEventsAPIResponse> {
-  try {
-    const endPoint = `/api/events?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    const response = await fetch(endPoint);
+  const searchParams = new URLSearchParams();
+  if (pageNumber) searchParams.append('page', pageNumber.toString());
+  if (pageSize) searchParams.append('pageSize', pageSize.toString());
 
-    const data = await response.json();
+  const endPoint = `/api/events?timeline=${timeline}&${searchParams.toString()}`;
+  const response = await fetch(endPoint);
 
-    if (!response.ok) {
-      throw new Error(data?.message || 'Error:[101] Cannot fetch events');
-    }
+  const data = await response.json();
 
+  if (response.ok) {
     return data as GetAllEventsAPIResponse;
-  } catch (error: any) {
-    throw new Error(error?.message || 'Error:[102] Cannot fetch events');
   }
+  throw new Error(data?.message || 'Error:[101] Cannot fetch events');
 }
 
 export async function registerUserForEvent(eventId: string, userId: string): Promise<void> {
   const endPoint = `/api/events/${eventId}/register`;
-  try {
-    const response = await fetch(endPoint, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId }),
-    });
 
-    if (!response.ok) {
-      throw new Error('Error: Cannot register user for event');
-    }
-  } catch (error: any) {
-    throw new Error(error?.message || 'Error: Cannot register user for event');
+  const response = await fetch(endPoint, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error: Cannot register user for event');
   }
+}
+
+export async function unregisterUserForEvent(eventId: string, userId: string): Promise<void> {
+  const endPoint = `/api/events/${eventId}/unregister`;
+
+  const response = await fetch(endPoint, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error: Cannot unregister user for event');
+  }
+}
+
+export async function getEventParticipants(
+  eventId: string,
+): Promise<{ eventId: string; users: { _id: string; firstName: string; lastName: string }[] }> {
+  const endPoint = `/api/events/${eventId}/participants`;
+
+  const response = await fetch(endPoint);
+  if (response.ok) {
+    const data: {
+      eventId: string;
+      users: { _id: string; firstName: string; lastName: string }[];
+    } = await response.json();
+    return data;
+  }
+  throw new Error('Error: Cannot fetch event participants');
 }

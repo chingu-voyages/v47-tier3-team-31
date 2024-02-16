@@ -4,6 +4,7 @@ import { CreateEventSection } from '@/components/create-event-section/Create-eve
 import { EventsSection } from '@/components/events-section/Events-section';
 import { HeroSection } from '@/components/hero/Hero-Section';
 import { UserEvent } from '@/models/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getAllEvents } from './clients/event/event-client';
@@ -21,7 +22,7 @@ export default function Home() {
     setIsLoading(true);
     // Fetch events
     try {
-      const reponse = await getAllEvents(pageNumber);
+      const reponse = await getAllEvents(EventTimeLine.UPCOMING, pageNumber);
       setUserEvents([...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
       setIsLoading(false);
     } catch (error: any) {

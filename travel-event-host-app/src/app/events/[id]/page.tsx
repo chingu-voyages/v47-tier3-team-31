@@ -1,16 +1,26 @@
 'use client';
-import { getEventById } from '@/app/clients/event/event-client';
+import {
+  getEventById,
+  getEventParticipants,
+  registerUserForEvent,
+  unregisterUserForEvent,
+} from '@/app/clients/event/event-client';
 import { getUserById } from '@/app/clients/user/user-client';
 import theme from '@/app/theme';
 import { CommonButton } from '@/components/common-button/Common-Button';
 
+import { ConfirmationDialog } from '@/components/confirmation-dialog/ConfirmationDialog';
 import UserListContainer from '@/components/user-list-container/UserListContainer';
+import { AuthStatus } from '@/lib/auth-status';
+import { useAuthContext } from '@/lib/context';
 import { UserEvent } from '@/models/user-event';
+import CheckIcon from '@mui/icons-material/Check';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-import TravelExploreIcon from '@mui/icons-material/TravelExplore';
-import { Box, CircularProgress, Typography, styled } from '@mui/material';
+import { Alert, Box, CircularProgress, Typography, styled } from '@mui/material';
 import dayjs from 'dayjs';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styles from './styles.module.css';
 interface EventDetailsPageProps {
@@ -19,7 +29,13 @@ interface EventDetailsPageProps {
   };
 }
 
+/* 
+  - Event details page:
+  - Authenticated users: we need to find out if the user is attending the event and render the appropriate button
+  - Unauthenticated users: show the Attend button, but its link should redirect to the sign-in page
+*/
 export default function EventDetailsPage({ params: { id } }: EventDetailsPageProps) {
+  const { session, status } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [userEvent, setUserEvent] = useState<UserEvent | undefined>(undefined); // This is the event context for this page
@@ -27,28 +43,82 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
   // This is the event host user context.
   const [eventHostName, setEventHostName] = useState<string | undefined>(undefined);
   const [hasImageError, setHasImageError] = useState<boolean>(false);
-  const [fetchError, setFetchError] = useState<string | undefined>(undefined);
-
+  const [apiError, setApiError] = useState<string | undefined>(undefined);
+  const [confirmUnregisterDialogOpen, setConfirmUnregisterDialogOpen] = useState<boolean>(false);
+  const [eventParticipants, setEventParticipants] = useState<
+    { _id: string; firstName: string; lastName: string }[]
+  >([]);
+  const router = useRouter();
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedEventData = await getEventById(id);
-        setUserEvent(fetchedEventData);
-        const eventHostInfo = await getUserById(fetchedEventData?.eventCreatorId!, [
-          'firstName',
-          'lastName',
-        ]);
-
-        setEventHostName(`${eventHostInfo?.firstName} ${eventHostInfo?.lastName}`);
-        setIsLoading(false);
-      } catch (e: any) {
-        setFetchError(e.message);
-      }
-    };
-
     fetchEvent();
   }, []);
+
+  const fetchEvent = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedEventData = await getEventById(id);
+      setUserEvent(fetchedEventData);
+      const eventHostInfo = await getUserById(fetchedEventData?.eventCreatorId!, [
+        'firstName',
+        'lastName',
+      ]);
+
+      setEventHostName(`${eventHostInfo?.firstName} ${eventHostInfo?.lastName}`);
+
+      const resEventParticipants = await getEventParticipants(id);
+      setEventParticipants(resEventParticipants.users);
+      setIsLoading(false);
+    } catch (e: any) {
+      console.log(e.message);
+    }
+  };
+
+  const handleAttendButtonClicked = async () => {
+    setIsLoading(true);
+    if (status === AuthStatus.Authenticated) {
+      setApiError(undefined);
+      try {
+        await registerUserForEvent(id, session?.user?._id!);
+        // If ok, refetch the event to get the updated participants list
+
+        setIsLoading(false);
+        await fetchEvent();
+      } catch (error: any) {
+        setApiError(
+          error.message ||
+            'Sorry, we encountered an error and were unable to register you for this event.',
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Redirect user to sign in as they are not authenticated
+      signIn();
+    }
+  };
+
+  const handleUnregisterButtonClicked = () => {
+    // This action will cause a confirmation dialog to appear
+    setConfirmUnregisterDialogOpen(true);
+  };
+
+  const completeUnregistrationAction = async () => {
+    // User has confirmed unregistration and we can proceed
+    setIsLoading(true);
+    try {
+      await unregisterUserForEvent(id, session?.user?._id!);
+      await fetchEvent();
+    } catch (error: any) {
+      setApiError(
+        error.message ||
+          'Sorry, we encountered an error and were unable to unregister you from this event.',
+      );
+    }
+  };
+
+  const isSessionUserAttendingEvent = (): boolean => {
+    return !!userEvent?.participants.find((p) => p.userId === session?.user?._id);
+  };
 
   return (
     <Box>
@@ -151,6 +221,11 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
             </Box>
           )}
         </Box>
+        {apiError && (
+          <Box className='apiErrorsContainer' mb={2}>
+            <Typography color='error'>{apiError}</Typography>
+          </Box>
+        )}
         <Box className='userActionsContainer' mb={3}>
           <Box
             sx={{
@@ -160,40 +235,65 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
               },
             }}
           >
-            <CommonButton
-              label='Attend'
-              textColor={theme.palette.primary.thirdColorIceLight}
-              borderColor={theme.palette.primary.lightIndigo}
-              backgroundColor={theme.palette.primary.lightIndigo}
-              borderRadius={'10px'}
-              baseButtonStyles={{
-                width: '100%',
-                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
-              }}
-            />
-            <CommonButton
-              label='I am going!'
-              textColor={theme.palette.primary.thirdColorIceLight}
-              borderColor={theme.palette.primary.greenConfirmation}
-              backgroundColor={theme.palette.primary.greenConfirmation}
-              borderRadius={'10px'}
-              baseButtonStyles={{
-                width: '100%',
-                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
-              }}
-              startIcon={<TravelExploreIcon />}
-            />
-            <CommonButton
-              label='Unregister from event'
-              variant='text'
-              textColor={theme.palette.primary.burntOrangeCancelError}
-              baseButtonStyles={{
-                width: '100%',
-                textDecoration: 'underline',
-                fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
-              }}
-              startIcon={<NotInterestedIcon />}
-            />
+            {status === AuthStatus.Authenticated && isSessionUserAttendingEvent() ? null : (
+              <CommonButton
+                label='Attend'
+                textColor={theme.palette.primary.thirdColorIceLight}
+                borderColor={theme.palette.primary.lightIndigo}
+                backgroundColor={theme.palette.primary.lightIndigo}
+                borderRadius={'10px'}
+                baseButtonStyles={{
+                  width: '100%',
+                  fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
+                }}
+                onButtonClick={handleAttendButtonClicked}
+                disabled={isLoading}
+              />
+            )}
+            {status === AuthStatus.Authenticated && isSessionUserAttendingEvent() && (
+              <>
+                <Alert
+                  icon={
+                    <CheckIcon
+                      fontSize='inherit'
+                      sx={{
+                        color: theme.palette.primary.thirdColorIceLight,
+                        alignSelf: 'center',
+                        fontWeight: 'heavy',
+                      }}
+                    />
+                  }
+                  severity='success'
+                  sx={{
+                    color: theme.palette.primary.thirdColorIceLight,
+                    backgroundColor: theme.palette.primary.greenConfirmation,
+                    fontWeight: 'bold',
+                    fontSize: ['0.9rem', '1rem', '1.2rem', '1.3rem', '1.4rem'],
+                    width: '100%',
+                    marginBottom: '10px',
+                    '&.MuiPaper-root': {
+                      justifyContent: 'center',
+                    },
+                  }}
+                >
+                  I'm going
+                </Alert>
+
+                <CommonButton
+                  label='Unregister from event'
+                  variant='text'
+                  textColor={theme.palette.primary.burntOrangeCancelError}
+                  baseButtonStyles={{
+                    width: '100%',
+                    textDecoration: 'underline',
+                    fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
+                  }}
+                  startIcon={<NotInterestedIcon />}
+                  onButtonClick={handleUnregisterButtonClicked}
+                  disabled={isLoading}
+                />
+              </>
+            )}
           </Box>
         </Box>
       </StyledContentContainer>
@@ -206,14 +306,28 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
         <UserListContainer
           title={'Attendees'}
           totalUserCount={userEvent?.participants.length || 0}
-          previewUsers={[
-            { firstName: 'hello', lastName: 'world' },
-            { firstName: 'hello', lastName: 'world' },
-            { firstName: 'hello', lastName: 'world' },
-            { firstName: 'hello', lastName: 'world' },
-          ]}
+          previewUsers={eventParticipants}
         />
       </StyledContentContainer>
+      <ConfirmationDialog
+        open={confirmUnregisterDialogOpen}
+        title='Unregister from event'
+        prompt={`Do you want to continue to unregister from ${userEvent?.title || 'this event'}?`}
+        options={[
+          {
+            title: 'Yes',
+            action: () => {
+              setConfirmUnregisterDialogOpen(false);
+              completeUnregistrationAction();
+            },
+          },
+          {
+            title: 'Cancel',
+            action: () => setConfirmUnregisterDialogOpen(false),
+            color: 'error',
+          },
+        ]}
+      />
     </Box>
   );
 }
