@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Avatar, Theme } from '@mui/material';
 
-const CustomGenericMuiAvatar = styled(Avatar)(({ theme }: { theme: Theme }) => ({
+export const CustomGenericMuiAvatar = styled(Avatar)(({ theme }: { theme: Theme }) => ({
   width: '80px',
   height: '80px',
   [theme.breakpoints.up(600)]: {
@@ -17,5 +17,3 @@ const CustomGenericMuiAvatar = styled(Avatar)(({ theme }: { theme: Theme }) => (
     height: '240px',
   },
 }));
-
-export default CustomGenericMuiAvatar;
