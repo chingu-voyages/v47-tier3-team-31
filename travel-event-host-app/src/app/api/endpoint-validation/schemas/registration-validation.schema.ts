@@ -1,7 +1,7 @@
 import { User } from '@/models/user';
 import { ObjectSchema, number, object, string } from 'yup';
 
-interface RegistrationUser extends Omit<User, 'id' | '_id' | 'eventIds' | 'isAdmin' | 'imageUrl'> {}
+interface RegistrationUser extends Omit<User, 'id' | '_id' | 'isAdmin' | 'imageUrl' | 'bio'> {}
 
 export const registrationValidationSchema: ObjectSchema<RegistrationUser> = object({
   firstName: string()

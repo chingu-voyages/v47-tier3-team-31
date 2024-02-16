@@ -8,6 +8,10 @@ const userSchema = new Schema<User>(
       required: true,
     },
     imageUrl: String,
+    bio: {
+      type: String,
+      maxlength: 255,
+    },
     lastName: {
       type: String,
       required: true,
