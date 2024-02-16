@@ -35,19 +35,19 @@ export async function registerUser({
 export async function signInUser({
   email,
   password,
-  redirectUrl = '/',
+  callbackUrl,
   isRegistering = false,
 }: {
   email: string;
   password: string;
-  redirectUrl?: string;
+  callbackUrl?: string;
   isRegistering?: boolean;
 }): Promise<SignInAPIResponse> {
   const res = await signIn('credentials', {
     email,
     password,
     redirect: true,
-    callbackUrl: redirectUrl,
+    callbackUrl: callbackUrl,
   });
 
   if (!res) {

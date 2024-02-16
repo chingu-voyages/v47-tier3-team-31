@@ -97,6 +97,7 @@ export default function AuthDialog(props: AuthDialogProps) {
       const res: SignInAPIResponse = await signInUser({
         email: formValues.email,
         password: formValues.password1,
+        callbackUrl: '/',
       });
 
       if (!res.success) {
