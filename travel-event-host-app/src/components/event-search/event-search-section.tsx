@@ -1,7 +1,7 @@
 'use client';
 import styles from './styles.module.css';
 
-import { getEventsBySearchQuery } from '@/app/clients/event/event-client';
+import { EventClient } from '@/app/clients/event/event-client';
 import { Category } from '@/lib/category';
 
 import { UserEvent } from '@/models/user-event';
@@ -29,7 +29,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
 
   useEffect(() => {
     const fetch = async () => {
-      const eventsResultFetch = await getEventsBySearchQuery(
+      const eventsResultFetch = await EventClient.getEventsBySearchQuery(
         keyword,
         getCheckedCategories(categoryCheckboxState),
       );

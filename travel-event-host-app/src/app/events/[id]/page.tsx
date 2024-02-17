@@ -1,14 +1,10 @@
 'use client';
-import {
-  getEventById,
-  getEventParticipants,
-  registerUserForEvent,
-  unregisterUserForEvent,
-} from '@/app/clients/event/event-client';
-import { getUserById } from '@/app/clients/user/user-client';
+import { EventClient } from '@/app/clients/event/event-client';
+
 import theme from '@/app/theme';
 import { CommonButton } from '@/components/common-button/Common-Button';
 
+import { UserClient } from '@/app/clients/user/user-client';
 import { ConfirmationDialog } from '@/components/confirmation-dialog/ConfirmationDialog';
 import UserListContainer from '@/components/user-list-container/UserListContainer';
 import { AuthStatus } from '@/lib/auth-status';
@@ -56,16 +52,16 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
   const fetchEvent = async () => {
     try {
       setIsLoading(true);
-      const fetchedEventData = await getEventById(id);
+      const fetchedEventData = await EventClient.getEventById(id);
       setUserEvent(fetchedEventData);
-      const eventHostInfo = await getUserById(fetchedEventData?.eventCreatorId!, [
+      const eventHostInfo = await UserClient.getUserById(fetchedEventData?.eventCreatorId!, [
         'firstName',
         'lastName',
       ]);
 
       setEventHostName(`${eventHostInfo?.firstName} ${eventHostInfo?.lastName}`);
 
-      const resEventParticipants = await getEventParticipants(id);
+      const resEventParticipants = await EventClient.getEventParticipants(id);
       setEventParticipants(resEventParticipants.users);
       setIsLoading(false);
     } catch (e: any) {
@@ -78,7 +74,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
     if (status === AuthStatus.Authenticated) {
       setApiError(undefined);
       try {
-        await registerUserForEvent(id, session?.user?._id!);
+        await EventClient.registerUserForEvent(id, session?.user?._id!);
         // If ok, refetch the event to get the updated participants list
 
         setIsLoading(false);
@@ -106,7 +102,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
     // User has confirmed unregistration and we can proceed
     setIsLoading(true);
     try {
-      await unregisterUserForEvent(id, session?.user?._id!);
+      await EventClient.unregisterUserForEvent(id, session?.user?._id!);
       await fetchEvent();
     } catch (error: any) {
       setApiError(

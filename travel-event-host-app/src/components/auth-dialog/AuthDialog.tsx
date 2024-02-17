@@ -1,6 +1,6 @@
 'use client';
 
-import { registerUser, signInUser } from '@/app/clients/auth-client/auth-client';
+import { AuthClient } from '@/app/clients/auth-client/auth-client';
 import { SignInAPIResponse } from '@/app/clients/auth-client/signin-api-response';
 import { signInValidationSchema } from '@/lib/yup-validators/signin/signin-validator';
 import { signUpValidationSchema } from '@/lib/yup-validators/signup/signup-validators';
@@ -58,7 +58,7 @@ export default function AuthDialog(props: AuthDialogProps) {
       // Try to register the user
       try {
         console.info('Attempting to register user...');
-        await registerUser({
+        await AuthClient.registerUser({
           email: formValues.email,
           firstName: formValues.firstName,
           lastName: formValues.lastName,
@@ -77,7 +77,7 @@ export default function AuthDialog(props: AuthDialogProps) {
       try {
         console.info('Signup successful - attempting to signin immediately');
         // Attempt to sign in immediately
-        await signInUser({
+        await AuthClient.signInUser({
           email: formValues.email,
           password: formValues.password1,
           isRegistering: true,
@@ -105,7 +105,7 @@ export default function AuthDialog(props: AuthDialogProps) {
       console.info('Attempting to sign in...');
       // Complete the signin. The nextAuth signin function will handle the default redirect,
       // or we can specify a redirect URL in the signInUser function
-      const res: SignInAPIResponse = await signInUser({
+      const res: SignInAPIResponse = await AuthClient.signInUser({
         email: formValues.email,
         password: formValues.password1,
         callbackUrl: '/',
