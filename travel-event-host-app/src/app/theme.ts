@@ -3,6 +3,11 @@ import { createTheme } from '@mui/material';
 /* 
   Remember when adding/changing any colors or color names to make sure global.css matches with this
 */
+import { Roboto_Flex } from 'next/font/google';
+
+const roboto = Roboto_Flex({
+  subsets: ['latin'],
+});
 
 enum ColorPalette {
   LightPurple = '#E4D9FF',
@@ -36,7 +41,7 @@ declare module '@mui/material/styles' {
 }
 
 const theme = createTheme({
-  typography: {},
+  typography: { fontFamily: roboto.style.fontFamily },
   palette: {
     primary: {
       main: ColorPalette.DarkBlue,
