@@ -1,3 +1,4 @@
+import theme from '@/app/theme';
 import ErrorIcon from '@mui/icons-material/Error';
 import { Box, Typography } from '@mui/material';
 /**
@@ -18,18 +19,30 @@ export const ErrorComponent = ({
 }) => {
   if (fieldName in errors) {
     return (
-      <Box display='flex' sx={{ ...containerStyles }} gap={'5px'}>
-        <ErrorIcon
-          sx={{
-            ...errorIconStyles,
-          }}
-          color='error'
-        />
-        {errors[fieldName].map((error, index) => (
-          <Typography key={index} sx={{ color: 'red', ...typographyStyles }}>
-            {error}
-          </Typography>
-        ))}
+      <Box sx={{ ...containerStyles }} gap={'5px'}>
+        <Box display='flex'>
+          <ErrorIcon
+            sx={{
+              fontSize: '1rem',
+              color: theme.palette.primary.burntOrangeCancelError,
+              ...errorIconStyles,
+            }}
+          />
+          <Box display='flex' flexDirection={'column'}>
+            {errors[fieldName].map((error, index) => (
+              <Typography
+                key={index}
+                sx={{
+                  color: theme.palette.primary.burntOrangeCancelError,
+                  fontSize: '0.7rem',
+                  ...typographyStyles,
+                }}
+              >
+                {error}
+              </Typography>
+            ))}
+          </Box>
+        </Box>
       </Box>
     );
   }
