@@ -308,8 +308,8 @@ const AuthBox = () => {
         borderRadius={'5px'}
         fontWeight='400'
         additionalStyles={{
-          minWidth: '150px',
-          minHeight: '40px',
+          minWidth: '130px',
+          minHeight: '24px',
           paddingLeft: '1.5em',
           paddingRight: '1.5em',
           [theme.breakpoints.down(610)]: {
