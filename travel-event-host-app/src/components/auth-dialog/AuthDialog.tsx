@@ -2,6 +2,10 @@
 
 import { registerUser, signInUser } from '@/app/clients/auth-client/auth-client';
 import { SignInAPIResponse } from '@/app/clients/auth-client/signin-api-response';
+import { signInValidationSchema } from '@/lib/yup-validators/signin/signin-validator';
+import { signUpValidationSchema } from '@/lib/yup-validators/signup/signup-validators';
+import { extractValidationErrors } from '@/lib/yup-validators/utils/extract-validation-errors';
+import CloseIcon from '@mui/icons-material/Close';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -13,17 +17,15 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  IconButton,
   Typography,
   styled,
   useTheme,
 } from '@mui/material';
 import { ChangeEventHandler, useState } from 'react';
-import { ErrorComponent } from './ErrorComponent/ErrorComponent';
+import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { SignInFields } from './sign-in-fields/SignInFields';
 import { SignUpFields } from './sign-up-fields/SignUpFields';
-import { validateLogin } from './validation/sign-in';
-import { validateSignUp } from './validation/sign-up';
-
 /**
  * Dialog used for signup and login
  */
@@ -43,54 +45,63 @@ export default function AuthDialog(props: AuthDialogProps) {
   const handleSubmit = async () => {
     // Validate the signup form
     if (props.authDialogType === 'signup') {
-      const signupValidationErrors: Record<string, string[]> = validateSignUp({
-        email: formValues.email,
-        firstName: formValues.firstName,
-        lastName: formValues.lastName,
-        password1: formValues.password1,
-        password2: formValues.password2,
-      });
-      setErrors(signupValidationErrors); // Show or clear any errors on the form
-
-      if (Object.keys(signupValidationErrors).length > 0) {
-        // There are errors on the form, so we don't submit
+      try {
+        signUpValidationSchema.validateSync(formValues, { abortEarly: false });
+      } catch (err: any) {
+        const validationErrors = extractValidationErrors(err);
+        setErrors(validationErrors);
         return;
       }
 
+      setIsLoading(true);
+
+      // Try to register the user
       try {
-        setIsLoading(true);
+        console.info('Attempting to register user...');
         await registerUser({
           email: formValues.email,
           firstName: formValues.firstName,
           lastName: formValues.lastName,
           password: formValues.password1,
         });
+        console.info('Registration successful');
+      } catch (e: any) {
+        console.error(e.message);
+        setApiErrors({ apiError: [e.message] });
+        return;
+      } finally {
+        setIsLoading(false);
+      }
 
+      // Try to signin immediately
+      try {
         console.info('Signup successful - attempting to signin immediately');
-
         // Attempt to sign in immediately
         await signInUser({
           email: formValues.email,
           password: formValues.password1,
           isRegistering: true,
+          callbackUrl: '/',
         });
+        console.info('Signin successful');
       } catch (e: any) {
         console.error(e.message);
         setApiErrors({ apiError: [e.message] });
+        return;
       } finally {
         setIsLoading(false);
       }
     } else {
-      // Validate the signin form
-      const signInValidationErrors: Record<string, string[]> = validateLogin({
-        email: formValues.email,
-        password: formValues.password1,
-      });
-      setErrors(signInValidationErrors);
-
-      if (Object.keys(signInValidationErrors).length > 0) {
+      try {
+        signInValidationSchema.validateSync(formValues, { abortEarly: false });
+      } catch (err: any) {
+        const validationErrors = extractValidationErrors(err);
+        setErrors(validationErrors);
         return;
+      } finally {
+        setIsLoading(false);
       }
+
       console.info('Attempting to sign in...');
       // Complete the signin. The nextAuth signin function will handle the default redirect,
       // or we can specify a redirect URL in the signInUser function
@@ -124,144 +135,152 @@ export default function AuthDialog(props: AuthDialogProps) {
             margin: 0,
           },
         },
+        marginTop: ['-250px', '-250px', '-260px'],
       }}
     >
-      <DialogTitle sx={{ backgroundColor: theme.palette.primary.secondaryColorDarkBlack }}>
-        <Box>
-          <Box mt={3}>
-            <Box>{/* App logo goes here */}</Box>
-            <Box>
-              <Typography
-                variant='h4'
-                color={theme.palette.primary.thirdColorIceLight}
-                sx={{ fontWeight: 'bold', textAlign: 'center', textTransform: 'uppercase' }}
-              >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Sign In'}
-              </Typography>
+      <>
+        <Box display='flex' justifyContent={'right'}>
+          <IconButton>
+            <CloseIcon sx={{ color: theme.palette.primary.thirdColorIceLight }} />
+          </IconButton>
+        </Box>
+        <DialogTitle sx={{ backgroundColor: theme.palette.primary.secondaryColorDarkBlack }}>
+          <Box>
+            <Box mt={3}>
+              <Box>{/* App logo goes here */}</Box>
+              <Box>
+                <Typography
+                  fontSize={['1.2rem', '1.8rem']}
+                  color={theme.palette.primary.thirdColorIceLight}
+                  sx={{ fontWeight: 'bold', textAlign: 'center', textTransform: 'uppercase' }}
+                >
+                  {props.authDialogType === 'signup' ? 'Sign Up' : 'Sign In'}
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </DialogTitle>
-      <Box
-        ml={'1.5rem'}
-        mr={'1.5rem'}
-        sx={{
-          [theme.breakpoints.down(430)]: {
-            marginLeft: '2px',
-            marginRight: '2px',
-            padding: 0,
-          },
-        }}
-      >
-        <DialogContent
+        </DialogTitle>
+        <Box
+          ml={'1.5rem'}
+          mr={'1.5rem'}
           sx={{
-            backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
             [theme.breakpoints.down(430)]: {
-              padding: '1px',
+              marginLeft: '2px',
+              marginRight: '2px',
+              padding: 0,
             },
           }}
         >
-          <Box
-            className='providerAuthSection'
-            display='flex'
-            flexDirection={'column'}
-            mb={5}
-            mt={5}
-          >
-            <Box alignSelf={'center'} mb={2}>
-              {/* Google sign up button */}
-              <Button
-                variant='outlined'
-                startIcon={<GoogleIcon />}
-                sx={{
-                  '&.MuiButtonBase-root': {
-                    color: theme.palette.primary.thirdColorIceLight,
-                    borderColor: theme.palette.primary.thirdColorIceLight,
-                  },
-                }}
-              >
-                {' '}
-                Continue with Google{' '}
-              </Button>
-            </Box>
-
-            <Box alignSelf={'center'}>
-              {/* Github sign up button */}
-              <Button
-                variant='outlined'
-                startIcon={<GitHubIcon />}
-                sx={{
-                  '&.MuiButtonBase-root': {
-                    color: theme.palette.primary.thirdColorIceLight,
-                    borderColor: theme.palette.primary.thirdColorIceLight,
-                  },
-                }}
-              >
-                {' '}
-                Continue with Github{' '}
-              </Button>
-            </Box>
-          </Box>
-          <Divider
+          <DialogContent
             sx={{
-              marginBottom: 3,
-              '&.MuiDivider-root::before': {
-                borderColor: theme.palette.primary.thirdColorlightBlack,
-              },
-              '&.MuiDivider-root::after': {
-                borderColor: theme.palette.primary.thirdColorlightBlack,
+              backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+              [theme.breakpoints.down(430)]: {
+                padding: '1px',
               },
             }}
           >
-            <Chip
-              label='OR'
-              size='small'
+            <Box
+              className='providerAuthSection'
+              display='flex'
+              flexDirection={'column'}
+              mb={2}
+              mt={2}
+            >
+              <Box alignSelf={'center'} mb={2}>
+                {/* Google sign up button */}
+                <Button
+                  variant='outlined'
+                  startIcon={<GoogleIcon />}
+                  sx={{
+                    '&.MuiButtonBase-root': {
+                      color: theme.palette.primary.thirdColorIceLight,
+                      borderColor: theme.palette.primary.thirdColorIceLight,
+                    },
+                  }}
+                >
+                  {' '}
+                  Continue with Google{' '}
+                </Button>
+              </Box>
+
+              <Box alignSelf={'center'}>
+                {/* Github sign up button */}
+                <Button
+                  variant='outlined'
+                  startIcon={<GitHubIcon />}
+                  sx={{
+                    '&.MuiButtonBase-root': {
+                      color: theme.palette.primary.thirdColorIceLight,
+                      borderColor: theme.palette.primary.thirdColorIceLight,
+                    },
+                  }}
+                >
+                  {' '}
+                  Continue with Github{' '}
+                </Button>
+              </Box>
+            </Box>
+            <Divider
               sx={{
-                '&.MuiChip-root': {
-                  backgroundColor: theme.palette.primary.thirdColorlightBlack,
-                  color: theme.palette.primary.thirdColorIceLight,
-                  opacity: 0.5,
+                marginBottom: 3,
+                '&.MuiDivider-root::before': {
+                  borderColor: theme.palette.primary.thirdColorlightBlack,
+                },
+                '&.MuiDivider-root::after': {
+                  borderColor: theme.palette.primary.thirdColorlightBlack,
                 },
               }}
-            />
-          </Divider>
-          <form>{renderFormFields(props.authDialogType, handleFormValueChanged, errors)}</form>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
-            display: 'block',
-            marginBottom: 3,
-          }}
-        >
-          <Box
-            display='flex'
-            justifyContent={'space-around'}
+            >
+              <Chip
+                label='OR'
+                size='small'
+                sx={{
+                  '&.MuiChip-root': {
+                    backgroundColor: theme.palette.primary.thirdColorlightBlack,
+                    color: theme.palette.primary.thirdColorIceLight,
+                    opacity: 0.5,
+                  },
+                }}
+              />
+            </Divider>
+            <form>{renderFormFields(props.authDialogType, handleFormValueChanged, errors)}</form>
+          </DialogContent>
+          <DialogActions
             sx={{
-              [theme.breakpoints.down(430)]: {
-                flexDirection: 'column',
-              },
+              backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+              display: 'block',
+              marginBottom: 1,
             }}
           >
-            <Box>
-              <StyledButton
-                variant={'contained'}
-                size={'large'}
-                sx={{ marginBottom: '1rem' }}
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {props.authDialogType === 'signup' ? 'Sign Up' : 'Go'}
-              </StyledButton>
+            <Box
+              display='flex'
+              justifyContent={'space-around'}
+              sx={{
+                [theme.breakpoints.down(430)]: {
+                  flexDirection: 'column',
+                },
+              }}
+            >
+              <Box>
+                <StyledButton
+                  variant={'contained'}
+                  size={'large'}
+                  sx={{ marginBottom: '1rem' }}
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                >
+                  {props.authDialogType === 'signup' ? 'Sign Up' : 'Go'}
+                </StyledButton>
+              </Box>
             </Box>
-          </Box>
-        </DialogActions>
-        {apiErrors && (
-          <Box mb={4}>
-            <ErrorComponent fieldName='apiError' errors={apiErrors} />{' '}
-          </Box>
-        )}
-      </Box>
+          </DialogActions>
+          {apiErrors && (
+            <Box mb={4}>
+              <ErrorComponent fieldName='apiError' errors={apiErrors} />{' '}
+            </Box>
+          )}
+        </Box>
+      </>
     </Dialog>
   );
 }

@@ -1,3 +1,9 @@
+import {
+  profileFormHeaderSizes,
+  textInputFieldFontSizes,
+  textInputFieldHeights,
+  textInputPaddings,
+} from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
 import { Box, Typography } from '@mui/material';
 import { ChangeEventHandler } from 'react';
@@ -11,7 +17,14 @@ export const SignInFields = (
   return (
     <Box className='loginFormFields'>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>E-mail</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          E-mail
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -26,11 +39,25 @@ export const SignInFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='email' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>Your password</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          Your password
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -45,6 +72,13 @@ export const SignInFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='password1' errors={errors} />
       </StyledFormFieldSection>

@@ -14,21 +14,17 @@ export async function registerUser({
   lastName: string;
   location?: { country?: string; state?: string; city?: string };
 }): Promise<void> {
-  try {
-    const req = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ firstName, email, password, lastName, location }),
-    });
+  const req = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ firstName, email, password, lastName, location }),
+  });
 
-    const response = await req.json();
-    if (!response.ok) {
-      throw new Error(response.message);
-    }
-  } catch (error: any) {
-    throw new Error(error?.message || 'Error: Cannot register user');
+  if (!req.ok) {
+    const response: any = await req.json();
+    throw new Error(response?.message || 'Error: Cannot register user');
   }
 }
 
