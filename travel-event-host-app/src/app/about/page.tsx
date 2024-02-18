@@ -27,6 +27,11 @@ const AboutUs = () => {
                         </div>
                     </div>
                 </div>
+                <div className={styles.showRightText}>
+                    <p>BakPak brings you unparalleled opportunities to engage with events globally. Whether you wish to host your own event or join exciting gatherings around the world, BakPak provides the platform for seamless participation. Discover local meetups in your city or explore events to uncover the finest activities in a new destination you're visiting.</p>
+                    <p>See our repository for more details.</p>
+                    <p>See our Team Page</p>
+                </div>
             </section>
         </div>
     );
