@@ -183,10 +183,10 @@ export default function Header() {
                 <Link href='/'>Search Events</Link>
               </li>
               <li>
-                <Link href='/'>Create Event</Link>
+                <Link href='/#Create-Event-Section'>Create Event</Link>
               </li>
               <li>
-                <Link href='/'>About Us</Link>
+                <Link href='/about'>About Us</Link>
               </li>
             </ul>
           </li>
