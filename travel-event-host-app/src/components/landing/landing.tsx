@@ -7,9 +7,13 @@ export default function Landing() {
   return (
     <main>
       <HeroSection />
-      <EventsSection />
+      <section id="#Upcoming-Events">
+        <EventsSection />
+      </section>
       <Categories />
-      <CreateEventSection />
+      <section id="Create-Event-Section">
+        <CreateEventSection />
+      </section>
     </main>
   );
 }

@@ -1,0 +1,42 @@
+.aboutsection {
+    background-image: url(/images/aboutus/background.svg);
+    height: 420px;
+    display: flex;
+}
+
+.whiteTitle {
+    font-weight: 700;
+    font-size: 30px;
+    padding: 10px 24px;
+}
+
+.showLeftImages {
+    background-color: var(--light-indigo);
+    width: 120vh;
+}
+
+.imagesSubContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 0 15px;
+}
+
+.images {
+    display: flex;
+    padding: 0.5rem;
+}
+
+.showRightText {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3.5rem;
+    width: fit-content;
+}
+
+.showRightText p {
+    display: flex;
+    font-size: 24px;
+    padding: 10px 40px;
+}
