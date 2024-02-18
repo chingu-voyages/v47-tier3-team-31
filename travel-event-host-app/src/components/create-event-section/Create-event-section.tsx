@@ -13,6 +13,8 @@ export function CreateEventSection() {
       width={'100%'}
       display='flex'
       sx={{
+        margin: '10rem 0',
+        marginBottom: '15rem',
         [theme.breakpoints.down(720)]: {
           height: '184px',
         },

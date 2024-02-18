@@ -10,16 +10,18 @@ import EventCard from '../event/event-card/Event-card';
  * It can be used for recommended events or upcoming events.
  */
 interface EventsSectionProps {
-  title: string;
-  hostedEvents: HostedEvent[];
-  onLoadMoreEventsButtonClicked: () => void;
+  title?: string;
+  hostedEvents?: HostedEvent[];
+  onLoadMoreEventsButtonClicked?: () => void;
   isLoading?: boolean;
 }
 
 export default function EventsSection({
-  title,
-  hostedEvents,
-  onLoadMoreEventsButtonClicked,
+  title = 'Upcoming Events',
+  hostedEvents = [],
+  onLoadMoreEventsButtonClicked = () => {
+    return false;
+  },
   isLoading,
 }: EventsSectionProps) {
   const theme = useTheme(); // This is a MaterialUI hook that allows us to access the MUI theme
@@ -29,12 +31,23 @@ export default function EventsSection({
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        padding: '5%',
+        paddingTop: '3rem',
+        display: 'flex',
+        minHeight: '28rem',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        paddingBottom: 0,
+      }}
+    >
       <Box>
         {/* Header of the events section*/}
         <Typography
-          variant='h5'
-          fontWeight={'bold'}
+          sx={{ marginLeft: '44px', fontSize: '40px' }}
+          variant='h4'
+          fontWeight={600}
           color={theme.palette.primary.primaryColorDarkerBlue}
         >
           {title}
@@ -97,7 +110,11 @@ const renderEventCards = (
 ) => {
   if (hostedEvents.length === 0)
     return (
-      <Typography variant='h5' color={theme.palette.primary.primaryColorDarkerBlue}>
+      <Typography
+        sx={{ margin: 'auto' }}
+        variant='h3'
+        color={theme.palette.primary.primaryColorDarkerBlue}
+      >
         No events to show
       </Typography>
     );
