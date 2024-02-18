@@ -1,3 +1,8 @@
+/**
+ * Takes Yup errors and returns a record of validation errors (fieldName: string[]).
+ * @param errors Yup errors validation data
+ * @returns
+ */
 export function extractValidationErrors(errors: any): Record<string, string[]> {
   const validationErrors: Record<string, string[]> = {};
   for (const error of errors.inner) {

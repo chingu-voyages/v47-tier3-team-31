@@ -15,7 +15,7 @@ const AuthenticationContext = React.createContext<IAuthenticationContext>({
   session: null,
 }); // Creating the  context
 
-export const OnboardingProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthenticationSessionProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
 
   return (

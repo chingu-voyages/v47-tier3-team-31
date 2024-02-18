@@ -7,8 +7,8 @@ import { CommonButton } from '@/components/common-button/Common-Button';
 import { UserClient } from '@/app/clients/user/user-client';
 import { ConfirmationDialog } from '@/components/confirmation-dialog/ConfirmationDialog';
 import UserListContainer from '@/components/user-list-container/UserListContainer';
+import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
-import { useAuthContext } from '@/lib/context';
 import { UserEvent } from '@/models/user-event';
 import CheckIcon from '@mui/icons-material/Check';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
@@ -16,8 +16,8 @@ import { Alert, Box, CircularProgress, Typography, styled } from '@mui/material'
 import dayjs from 'dayjs';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { isEventInPast } from '../helpers/event-utils';
 import styles from './styles.module.css';
 interface EventDetailsPageProps {
   params: {
@@ -44,7 +44,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
   const [eventParticipants, setEventParticipants] = useState<
     { _id: string; firstName: string; lastName: string }[]
   >([]);
-  const router = useRouter();
+
   useEffect(() => {
     fetchEvent();
   }, []);
@@ -272,7 +272,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
                     },
                   }}
                 >
-                  I'm going
+                  {getAttendEventButtonLabel(userEvent!)}
                 </Alert>
 
                 <CommonButton
@@ -286,7 +286,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
                   }}
                   startIcon={<NotInterestedIcon />}
                   onButtonClick={handleUnregisterButtonClicked}
-                  disabled={isLoading}
+                  disabled={isLoading || isEventInPast(userEvent!)}
                 />
               </>
             )}
@@ -327,6 +327,10 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
     </Box>
   );
 }
+
+const getAttendEventButtonLabel = (ev: UserEvent): string => {
+  return isEventInPast(ev) ? 'I went to this' : "I'm going";
+};
 
 // Separated out loading the image just to make the code more readable
 const getEventImage = (

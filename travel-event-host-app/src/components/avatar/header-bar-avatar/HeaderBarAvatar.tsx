@@ -1,5 +1,5 @@
 import theme from '@/app/theme';
-import { useAuthContext } from '@/lib/context';
+import { useAuthContext } from '@/lib/auth-context';
 import { Avatar, Box, ButtonBase, Menu, MenuItem, Typography, styled } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';

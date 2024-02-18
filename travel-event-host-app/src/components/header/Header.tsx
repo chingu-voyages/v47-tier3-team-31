@@ -1,7 +1,8 @@
 'use client';
 import theme from '@/app/theme';
+import { useAppContext } from '@/lib/app-context';
+import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
-import { useAuthContext } from '@/lib/context';
 import { Language } from '@/lib/language';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -29,7 +30,7 @@ export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
   const router = useRouter();
-
+  const { firstName } = useAppContext();
   const navigateToMyProfile = () => {
     // User is authenticated, so we can navigate to their user portal
     if (status === AuthStatus.Authenticated && session?.user) {
@@ -167,7 +168,7 @@ export default function Header() {
               <div className={styles.avatarBox}>
                 {/* Handle signout/sign out here */}
                 <HeaderBarAvatar
-                  userName={session?.user?.firstName || 'Default User'}
+                  userName={firstName || session?.user?.firstName || 'Default User'}
                   onMyProfileClicked={navigateToMyProfile}
                   onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
                 />

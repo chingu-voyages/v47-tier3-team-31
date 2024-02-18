@@ -19,30 +19,36 @@ export const ErrorComponent = ({
 }) => {
   if (fieldName in errors) {
     return (
-      <Box sx={{ ...containerStyles }} gap={'5px'}>
-        <Box display='flex'>
-          <ErrorIcon
-            sx={{
-              fontSize: '1rem',
-              color: theme.palette.primary.burntOrangeCancelError,
-              ...errorIconStyles,
-            }}
-          />
-          <Box display='flex' flexDirection={'column'}>
-            {errors[fieldName].map((error, index) => (
-              <Typography
-                key={index}
-                sx={{
-                  color: theme.palette.primary.burntOrangeCancelError,
-                  fontSize: '0.7rem',
-                  ...typographyStyles,
-                }}
-              >
-                {error}
-              </Typography>
-            ))}
+      <Box
+        display='flex'
+        flexDirection={'column'}
+        sx={{
+          ...containerStyles,
+        }}
+      >
+        {errors[fieldName].map((error, index) => (
+          <Box key={fieldName} display='flex'>
+            <ErrorIcon
+              key={fieldName}
+              sx={{
+                fontSize: '1rem',
+                color: theme.palette.primary.burntOrangeCancelError,
+                ...typographyStyles,
+                ...errorIconStyles,
+              }}
+            />
+            <Typography
+              key={index}
+              sx={{
+                color: theme.palette.primary.burntOrangeCancelError,
+                fontSize: '0.7rem',
+                ...typographyStyles,
+              }}
+            >
+              {error}
+            </Typography>
           </Box>
-        </Box>
+        ))}
       </Box>
     );
   }
