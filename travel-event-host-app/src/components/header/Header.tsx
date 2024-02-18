@@ -10,6 +10,7 @@ import HeaderBarAvatar from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import styles from './styles.module.css';
 import { signOut } from 'next-auth/react';
 import { useOnboardingContext } from '@/lib/context';
+import Image from 'next/image';
 
 export default function Header() {
   const { session, status } = useOnboardingContext();
@@ -38,7 +39,7 @@ export default function Header() {
               <path d='M4 6L20 6' stroke='white' strokeWidth='2' strokeLinecap='round' />
             </svg>
           </div>
-          <h1>Backpack</h1>
+          <Image src='/bakpak-logo1.png' alt='Bakpak Logo' width={140} height={40} />
         </div>
         <div className={styles.authBox}>
           <Box>
