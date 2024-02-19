@@ -1,10 +1,11 @@
 import theme from '@/app/theme';
 import { SecureUser } from '@/types/secure-user';
 import { Box, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import avatarStyles from '../../app/common-styles/avatar-styles.module.css';
 import { CustomGenericMuiAvatar } from '../avatar/custom-generic-user-avatar/CustomGenericUserAvatar';
 import UserAvatar from '../avatar/user-avatar/UserAvatar';
 import { CommonButton } from '../common-button/Common-Button';
-
 interface UserListContainerProps {
   title: string; // the title of the user list (for example, "Attendees")
   totalUserCount: number; // the total number of users
@@ -17,6 +18,14 @@ export default function UserListContainerProps({
   previewUsers,
   totalUserCount,
 }: UserListContainerProps) {
+  const router = useRouter();
+
+  const handleUserAvatarClicked = (userId: string) => {
+    if (userId && userId !== '') {
+      router.push(`/users/${userId}`);
+    }
+  };
+
   return (
     <Box className='userListContainerMain'>
       <Box
@@ -73,7 +82,9 @@ export default function UserListContainerProps({
                 key={index}
                 user={user}
                 MuiAvatarComponent={<CustomGenericMuiAvatar theme={theme} />}
+                imageClassName={avatarStyles.userAvatar}
                 showName={true}
+                onAvatarClicked={() => handleUserAvatarClicked(user._id!)}
               />
             </Box>
           ))}

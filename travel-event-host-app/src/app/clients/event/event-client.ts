@@ -113,7 +113,7 @@ export const EventClient = {
     eventId: string,
   ): Promise<{
     eventId: string;
-    users: { _id: string; firstName: string; lastName: string }[];
+    users: { _id: string; firstName: string; lastName: string; imageUrl: string }[];
   }> => {
     const endPoint = `/api/events/${eventId}/participants`;
 
@@ -121,7 +121,7 @@ export const EventClient = {
     if (response.ok) {
       const data: {
         eventId: string;
-        users: { _id: string; firstName: string; lastName: string }[];
+        users: { _id: string; firstName: string; lastName: string; imageUrl: string }[];
       } = await response.json();
       return data;
     }

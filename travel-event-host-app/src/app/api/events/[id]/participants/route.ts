@@ -21,7 +21,7 @@ export async function GET(req: Request, { params }: any) {
   const { participants } = event;
   if (!participants || participants.length === 0) return NextResponse.json([], { status: 200 });
 
-  let selectedUserProperties: string = '_id firstName lastName';
+  let selectedUserProperties: string = '_id firstName lastName imageUrl';
 
   const users: Partial<SecureUser>[] = await UserRepository.find({
     _id: { $in: participants.map(({ userId }) => userId) },

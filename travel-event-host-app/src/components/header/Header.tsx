@@ -16,13 +16,14 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
+import { circularProgressClasses } from '@mui/material/CircularProgress';
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HeaderBarAvatar } from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import { CommonButton } from '../common-button/Common-Button';
+import { Spinner } from '../spinner/Spinner';
 import styles from './styles.module.css';
 
 export default function Header() {
@@ -30,7 +31,7 @@ export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
   const router = useRouter();
-  const { firstName } = useAppContext();
+  const { firstName, imageUrl } = useAppContext();
   const navigateToMyProfile = () => {
     // User is authenticated, so we can navigate to their user portal
     if (status === AuthStatus.Authenticated && session?.user) {
@@ -146,7 +147,7 @@ export default function Header() {
           </Box>
           {status === AuthStatus.Loading ? (
             <div className={styles.spinnerBox}>
-              <CircularProgress
+              <Spinner
                 variant='indeterminate'
                 disableShrink
                 sx={{
@@ -169,6 +170,7 @@ export default function Header() {
                 {/* Handle signout/sign out here */}
                 <HeaderBarAvatar
                   userName={firstName || session?.user?.firstName || 'Default User'}
+                  imageUrl={imageUrl || session?.user?.imageUrl}
                   onMyProfileClicked={navigateToMyProfile}
                   onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
                 />
