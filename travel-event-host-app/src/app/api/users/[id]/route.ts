@@ -31,8 +31,8 @@ export async function PATCH(req: Request, { params }: any) {
     return NextResponse.json(validationError, { status: 400 });
   }
 
-  // We expect firstName, lastName and bio from the request body and they shall be patched 😏
-  // Bio can be an empty string
+  // We expect firstName, lastName, bio, imageUrl from the request body and they shall be patched 😏
+  // Bio can be an empty string. imageUrl can be null.
   const { firstName, lastName, bio, imageUrl } = requestBody;
 
   const user = await UserRepository.findById(id);
