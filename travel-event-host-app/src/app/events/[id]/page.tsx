@@ -6,13 +6,14 @@ import { CommonButton } from '@/components/common-button/Common-Button';
 
 import { UserClient } from '@/app/clients/user/user-client';
 import { ConfirmationDialog } from '@/components/confirmation-dialog/ConfirmationDialog';
+import { Spinner } from '@/components/spinner/Spinner';
 import UserListContainer from '@/components/user-list-container/UserListContainer';
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
 import CheckIcon from '@mui/icons-material/Check';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-import { Alert, Box, CircularProgress, Typography, styled } from '@mui/material';
+import { Alert, Box, Typography, styled } from '@mui/material';
 import dayjs from 'dayjs';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
@@ -61,8 +62,8 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
 
       setEventHostName(`${eventHostInfo?.firstName} ${eventHostInfo?.lastName}`);
 
-      const resEventParticipants = await EventClient.getEventParticipants(id);
-      setEventParticipants(resEventParticipants.users);
+      const fetchedEventParticipants = await EventClient.getEventParticipants(id);
+      setEventParticipants(fetchedEventParticipants.users);
       setIsLoading(false);
     } catch (e: any) {
       console.log(e.message);
@@ -357,12 +358,4 @@ const StyledContentContainer = styled(Box)(({ theme }) => ({}));
 function formatDate(date: Date): string {
   if (!date) return '';
   return dayjs(date).format('D MMM, YYYY HH:mm A');
-}
-
-function Spinner() {
-  return (
-    <Box display='flex' justifyContent={'center'} pt={2} pb={2}>
-      <CircularProgress sx={{ color: theme.palette.primary.thirdColorIceLight }} />
-    </Box>
-  );
 }

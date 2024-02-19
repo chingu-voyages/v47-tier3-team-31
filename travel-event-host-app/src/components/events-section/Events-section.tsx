@@ -1,11 +1,12 @@
 'use client';
 import theme from '@/app/theme';
-import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 import { UserEvent } from '@/models/user-event';
 import { useRouter } from 'next/navigation';
 import { CommonButton } from '../common-button/Common-Button';
 import { EventCard } from '../event/event-card/Event-card';
+import { Spinner } from '../spinner/Spinner';
 
 /**
  * This component is responsible for rendering the events section on the home page.
@@ -69,7 +70,13 @@ export function EventsSection({
           },
         }}
       >
-        {isLoading ? <CircularProgress /> : renderEventCards(hostedEvents, handleEventCardClicked)}
+        {isLoading ? (
+          <Box display='flex' justifyContent={'center'} width='100%'>
+            <Spinner sx={{ color: theme.palette.primary.primaryColorDarkBlue }} />
+          </Box>
+        ) : (
+          renderEventCards(hostedEvents, handleEventCardClicked)
+        )}
       </Box>
       {/* This will be the button to load more events */}
       <Box display='flex' justifyContent={'center'} mt={3}>
