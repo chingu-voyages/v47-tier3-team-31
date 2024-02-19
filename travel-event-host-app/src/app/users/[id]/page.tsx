@@ -40,8 +40,8 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
     try {
       showLoading && setIsLoading(true);
       const fetchedUser = await UserClient.getUserById(id);
-      const upcomingEvents = await EventClient.getEventsByUserId(id, EventTimeLine.UPCOMING);
-      const userPastEvents = await EventClient.getEventsByUserId(id, EventTimeLine.PAST);
+      const upcomingEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Upcoming);
+      const userPastEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Past);
       setUser(fetchedUser);
       setUpcomingEvents(upcomingEvents!);
       setPastEvents(userPastEvents!);
@@ -64,10 +64,10 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
         });
         await fetchUser(false);
 
-        /* In the headerbar, the user name is generated from the nextAuth session which will not be instantly 
-        updated when the user updates their name (at least without the user refreshing the browser).
-        We store the user's firstName in the AppContext so that we can
-        update it when the user updates their name.
+        /* In the headerbar, the firstName and imageUrl are generated from the nextAuth session which will not be instantly 
+        updated when the user updates their data (at least without the user refreshing the browser).
+        We store the user's firstName and imageUrl in the AppContext so that we can
+        update it when the user updates their info.
         */
         if (dispatch) {
           dispatch({

@@ -22,7 +22,7 @@ export default function Home() {
     setIsLoading(true);
     // Fetch events
     try {
-      const reponse = await EventClient.getAllEvents(EventTimeLine.UPCOMING, pageNumber);
+      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber);
       setUserEvents([...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
       setIsLoading(false);
     } catch (error: any) {

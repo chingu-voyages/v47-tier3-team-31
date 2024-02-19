@@ -1,5 +1,5 @@
 export enum EventTimeLine {
-  PAST = 'past',
-  UPCOMING = 'upcoming',
-  ALL = 'all',
+  Past = 'past',
+  Upcoming = 'upcoming',
+  All = 'all',
 }

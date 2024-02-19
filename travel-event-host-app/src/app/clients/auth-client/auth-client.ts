@@ -47,7 +47,6 @@ export const AuthClient = {
     });
 
     if (!res) {
-      // The error
       if (isRegistering) {
         throw new Error('We have experienced an error. Please contact support.');
       }

@@ -46,7 +46,7 @@ export const EventClient = {
   },
   getEventsByUserId: async (
     userId: string,
-    timeline: EventTimeLine = EventTimeLine.ALL,
+    timeline: EventTimeLine = EventTimeLine.All,
     page?: number,
     pageSize?: number,
   ): Promise<UserEvent[] | undefined> => {
@@ -61,7 +61,7 @@ export const EventClient = {
     throw new Error("Error: Cannot fetch user's events");
   },
   getAllEvents: async (
-    timeline: EventTimeLine = EventTimeLine.ALL,
+    timeline: EventTimeLine = EventTimeLine.All,
     pageNumber?: number,
     pageSize?: number,
   ): Promise<GetAllEventsAPIResponse> => {
@@ -77,7 +77,7 @@ export const EventClient = {
     if (response.ok) {
       return data as GetAllEventsAPIResponse;
     }
-    throw new Error(data?.message || 'Error:[101] Cannot fetch events');
+    throw new Error(data?.message || 'Error: Cannot fetch events');
   },
   registerUserForEvent: async (eventId: string, userId: string): Promise<void> => {
     const endPoint = `/api/events/${eventId}/register`;

@@ -5,7 +5,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 
-export interface FileObjectParams {
+export interface S3PutObjectCommandParams {
   Bucket: string;
   Key: string;
   Body: any;
@@ -24,7 +24,7 @@ export class SpacesFileUploader {
     },
   });
 
-  public async uploadObject(params: FileObjectParams): Promise<PutObjectCommandOutput> {
+  public async uploadObject(params: S3PutObjectCommandParams): Promise<PutObjectCommandOutput> {
     try {
       const data = await this.client.send(new PutObjectCommand(params));
       return data;
