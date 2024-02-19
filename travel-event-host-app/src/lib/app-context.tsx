@@ -5,17 +5,20 @@ import { createContext, useContext, useReducer } from 'react';
 interface AppState {
   firstName: string | undefined;
   lastName: string | undefined;
+  imageUrl: string | undefined;
   dispatch?: React.Dispatch<AppAction>;
 }
 
 const initialState: AppState = {
   firstName: undefined,
   lastName: undefined,
+  imageUrl: undefined,
 };
 
 export enum AppActionTypes {
   SET_FIRST_NAME = 'SET_FIRST_NAME',
   SET_LAST_NAME = 'SET_LAST_NAME',
+  SET_IMAGE_URL = 'SET_IMAGE_URL',
 }
 
 interface AppAction {
@@ -34,6 +37,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return { ...state, firstName: action.payload };
       case AppActionTypes.SET_LAST_NAME:
         return { ...state, lastName: action.payload };
+      case AppActionTypes.SET_IMAGE_URL:
+        return { ...state, imageUrl: action.payload };
     }
   };
 
