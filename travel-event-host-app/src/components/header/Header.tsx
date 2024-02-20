@@ -1,7 +1,7 @@
 'use client';
 import theme from '@/app/theme';
+import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
-import { useAuthContext } from '@/lib/context';
 import { Language } from '@/lib/language';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -15,13 +15,14 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
-import { signOut } from 'next-auth/react';
+import { circularProgressClasses } from '@mui/material/CircularProgress';
+import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HeaderBarAvatar } from '../avatar/header-bar-avatar/HeaderBarAvatar';
 import { CommonButton } from '../common-button/Common-Button';
+import { Spinner } from '../spinner/Spinner';
 import styles from './styles.module.css';
 
 export default function Header() {
@@ -145,7 +146,7 @@ export default function Header() {
           </Box>
           {status === AuthStatus.Loading ? (
             <div className={styles.spinnerBox}>
-              <CircularProgress
+              <Spinner
                 variant='indeterminate'
                 disableShrink
                 sx={{
@@ -168,6 +169,7 @@ export default function Header() {
                 {/* Handle signout/sign out here */}
                 <HeaderBarAvatar
                   userName={session?.user?.firstName || 'Default User'}
+                  imageUrl={session?.user?.imageUrl}
                   onMyProfileClicked={navigateToMyProfile}
                   onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
                 />
@@ -234,7 +236,7 @@ export default function Header() {
           </Box>
           <Box>
             <NavButton variant='text' color='inherit'>
-              <Link href='/'>Upcoming Events</Link>
+              <Link href='/events/upcoming'>Upcoming Events</Link>
             </NavButton>
           </Box>
           <Box>
@@ -278,7 +280,7 @@ const AuthBox = () => {
       }}
     >
       <Button
-        onClick={() => router.push('/auth/signin')}
+        onClick={() => signIn()} // This should redirect to the sign in page
         sx={{
           color: theme.palette.primary.thirdColorIceLight,
           marginRight: '10px',
@@ -308,8 +310,8 @@ const AuthBox = () => {
         borderRadius={'5px'}
         fontWeight='400'
         additionalStyles={{
-          minWidth: '150px',
-          minHeight: '40px',
+          minWidth: '130px',
+          minHeight: '24px',
           paddingLeft: '1.5em',
           paddingRight: '1.5em',
           [theme.breakpoints.down(610)]: {

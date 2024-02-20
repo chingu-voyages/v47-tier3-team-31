@@ -1,14 +1,15 @@
 import theme from '@/app/theme';
 import { SecureUser } from '@/types/secure-user';
-import { Box, Typography, styled } from '@mui/material';
-import CustomGenericMuiAvatar from '../avatar/custom-generic-user-avatar/CustomGenericUserAvatar';
+import { Box, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import avatarStyles from '../../app/common-styles/avatar-styles.module.css';
+import { CustomGenericMuiAvatar } from '../avatar/custom-generic-user-avatar/CustomGenericUserAvatar';
 import UserAvatar from '../avatar/user-avatar/UserAvatar';
 import { CommonButton } from '../common-button/Common-Button';
-
 interface UserListContainerProps {
   title: string; // the title of the user list (for example, "Attendees")
   totalUserCount: number; // the total number of users
-  previewUsers: Partial<SecureUser>[]; // the users to show in the preview (it will never been all users, just a subset of them)
+  previewUsers: Partial<SecureUser>[]; // the users to show in the preview (it will never be all users, just a subset of them)
   onSeeAllClick?: () => void; // the function to call when the "see all" button is clicked
 }
 
@@ -17,6 +18,14 @@ export default function UserListContainerProps({
   previewUsers,
   totalUserCount,
 }: UserListContainerProps) {
+  const router = useRouter();
+
+  const handleUserAvatarClicked = (userId: string) => {
+    if (userId && userId !== '') {
+      router.push(`/users/${userId}`);
+    }
+  };
+
   return (
     <Box className='userListContainerMain'>
       <Box
@@ -51,7 +60,7 @@ export default function UserListContainerProps({
             },
           }}
         >
-          <SeeAllButton customLabel='See all' />
+          {totalUserCount > 4 && <SeeAllButton customLabel='See all' />}
         </Box>
       </Box>
       <Box
@@ -73,7 +82,9 @@ export default function UserListContainerProps({
                 key={index}
                 user={user}
                 MuiAvatarComponent={<CustomGenericMuiAvatar theme={theme} />}
+                imageClassName={avatarStyles.userAvatar}
                 showName={true}
+                onAvatarClicked={() => handleUserAvatarClicked(user._id!)}
               />
             </Box>
           ))}
@@ -87,9 +98,11 @@ export default function UserListContainerProps({
         }}
       >
         {/* for the see all button to be visible for smaller screen sizes at the bottom after the user avatars */}
-        <Box display='flex' justifyContent='center' mt={3}>
-          <SeeAllButton customLabel='See all' />
-        </Box>
+        {totalUserCount > 4 && (
+          <Box display='flex' justifyContent='center' mt={3}>
+            <SeeAllButton customLabel='See all' />
+          </Box>
+        )}
       </Box>
     </Box>
   );
@@ -110,5 +123,3 @@ const SeeAllButton = ({ customLabel, ...rest }: { customLabel: string }) => {
     />
   );
 };
-
-const CustomResponsiveTypoGraphy = styled(Typography)(({ theme }) => ({}));

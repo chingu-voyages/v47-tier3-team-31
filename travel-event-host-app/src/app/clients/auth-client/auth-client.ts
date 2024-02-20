@@ -1,20 +1,20 @@
 import { signIn } from 'next-auth/react';
 import { SignInAPIResponse } from './signin-api-response';
 
-export async function registerUser({
-  firstName,
-  email,
-  password,
-  lastName,
-  location,
-}: {
-  firstName: string;
-  email: string;
-  password: string;
-  lastName: string;
-  location?: { country?: string; state?: string; city?: string };
-}): Promise<void> {
-  try {
+export const AuthClient = {
+  registerUser: async ({
+    firstName,
+    email,
+    password,
+    lastName,
+    location,
+  }: {
+    firstName: string;
+    email: string;
+    password: string;
+    lastName: string;
+    location?: { country?: string; state?: string; city?: string };
+  }): Promise<void> => {
     const req = await fetch('/api/auth/register', {
       method: 'POST',
       headers: {
@@ -23,47 +23,41 @@ export async function registerUser({
       body: JSON.stringify({ firstName, email, password, lastName, location }),
     });
 
-    const response = await req.json();
-    if (!response.ok) {
-      throw new Error(response.message);
+    if (!req.ok) {
+      const response: any = await req.json();
+      throw new Error(response?.message || 'Error: Cannot register user');
     }
-  } catch (error: any) {
-    throw new Error(error?.message || 'Error: Cannot register user');
-  }
-}
-
-export async function signInUser({
-  email,
-  password,
-  redirectUrl = '/',
-  isRegistering = false,
-}: {
-  email: string;
-  password: string;
-  redirectUrl?: string;
-  isRegistering?: boolean;
-}): Promise<SignInAPIResponse> {
-  const res = await signIn('credentials', {
+  },
+  signInUser: async ({
     email,
     password,
-    redirect: true,
-    callbackUrl: redirectUrl,
-  });
+    callbackUrl,
+    isRegistering = false,
+  }: {
+    email: string;
+    password: string;
+    callbackUrl?: string;
+    isRegistering?: boolean;
+  }): Promise<SignInAPIResponse> => {
+    const res = await signIn('credentials', {
+      email,
+      password,
+      callbackUrl: callbackUrl,
+    });
 
-  // The user has just completed the registration flow successfully.
-  // Immeidately sign them in
-  if (isRegistering) {
-    if (res) {
-      if (res.ok) return { success: true };
+    if (!res) {
+      if (isRegistering) {
+        throw new Error('We have experienced an error. Please contact support.');
+      }
+      return {
+        success: false,
+        errors: {
+          apiError: ['An unknown error occured. Please try again.'],
+        },
+      };
     }
-    console.debug(res?.error);
-    throw new Error(
-      "Error: Registration was successful, but we couldn't sign you in. Please try again.",
-    );
-  }
 
-  // This is to handle basic sign in
-  if (res) {
+    // This is to handle basic sign in
     if (res.ok) return { success: true };
     return {
       success: false,
@@ -72,13 +66,5 @@ export async function signInUser({
         password1: ['Please check your credentials and try again'],
       },
     };
-  }
-
-  // If we reached this point, res is undefined - likely some other error occured
-  return {
-    success: false,
-    errors: {
-      apiError: ['An unknown error occured. Please try again.'],
-    },
-  };
-}
+  },
+};

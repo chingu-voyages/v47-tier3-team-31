@@ -1,8 +1,14 @@
+import {
+  profileFormHeaderSizes,
+  textInputFieldFontSizes,
+  textInputFieldHeights,
+  textInputPaddings,
+} from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
 import { Box, Typography } from '@mui/material';
 import { ChangeEventHandler } from 'react';
-import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
-import { CustomTextField, StyledFormFieldSection } from '../custom-fields/CustomFields';
+import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
+import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/CustomFields';
 
 export const SignUpFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
@@ -11,7 +17,14 @@ export const SignUpFields = (
   return (
     <Box className='signupFormFields'>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>E-mail</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          E-mail
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -26,11 +39,25 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='email' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>First name</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          First name
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -45,11 +72,25 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='firstName' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>Last name</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          Last name
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -64,11 +105,25 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
-        <ErrorComponent fieldName='lastName ' errors={errors} />
+        <ErrorComponent fieldName='lastName' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>Your password</Typography>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          Your password
+        </Typography>
         <CustomTextField
           autoFocus
           required
@@ -83,11 +138,23 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='password1' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography color={theme.palette.primary.thirdColorIceLight}>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
           Confirm your password
         </Typography>
         <CustomTextField
@@ -104,6 +171,13 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          sx={{
+            '&&& input': {
+              height: textInputFieldHeights,
+              fontSize: textInputFieldFontSizes,
+              padding: textInputPaddings,
+            },
+          }}
         />
         <ErrorComponent fieldName='password2' errors={errors} />
       </StyledFormFieldSection>

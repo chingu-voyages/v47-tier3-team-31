@@ -5,6 +5,7 @@ export interface User {
   imageUrl?: string;
   email: string;
   password: string;
+  bio?: string;
   location?: {
     country?: string;
     state?: string;
@@ -14,6 +15,5 @@ export interface User {
       long?: number;
     };
   };
-  eventIds: string[];
   isAdmin?: boolean;
 }

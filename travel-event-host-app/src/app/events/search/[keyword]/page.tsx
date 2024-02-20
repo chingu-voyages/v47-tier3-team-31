@@ -1,5 +1,12 @@
 import { EventSearchSection } from '@/components/event-search/event-search-section';
 
-export default function Page({ params }: { params: { keyword: string } }) {
-  return <EventSearchSection keyword={params.keyword} />;
+interface EventSearchByKeywordPageProps {
+  params: {
+    keyword: string;
+  };
+}
+export default function EventSearchByKeywordPage({
+  params: { keyword },
+}: EventSearchByKeywordPageProps) {
+  return <EventSearchSection keyword={keyword} />;
 }

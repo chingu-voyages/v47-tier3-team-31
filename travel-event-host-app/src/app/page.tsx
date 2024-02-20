@@ -4,9 +4,10 @@ import { CreateEventSection } from '@/components/create-event-section/Create-eve
 import { EventsSection } from '@/components/events-section/Events-section';
 import { HeroSection } from '@/components/hero/Hero-Section';
 import { UserEvent } from '@/models/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getAllEvents } from './clients/event/event-client';
+import { EventClient } from './clients/event/event-client';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,7 +22,7 @@ export default function Home() {
     setIsLoading(true);
     // Fetch events
     try {
-      const reponse = await getAllEvents(pageNumber);
+      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber);
       setUserEvents([...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
       setIsLoading(false);
     } catch (error: any) {

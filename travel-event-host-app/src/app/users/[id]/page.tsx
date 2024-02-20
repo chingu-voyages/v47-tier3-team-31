@@ -1,14 +1,17 @@
 'use client';
-import { getEventsByUserId } from '@/app/clients/event/event-client';
-import { getUserById } from '@/app/clients/user/user-client';
+import { EventClient } from '@/app/clients/event/event-client';
+import { UserClient } from '@/app/clients/user/user-client';
 import theme from '@/app/theme';
-import UserAvatar from '@/components/avatar/user-avatar/UserAvatar';
 import { EventsSection } from '@/components/events-section/Events-section';
+import { ProfileEditor } from '@/components/profile-editor/ProfileEditor';
+import { Spinner } from '@/components/spinner/Spinner';
+import { useAuthContext } from '@/lib/auth-context';
+import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { SecureUser } from '@/types/secure-user';
-import { Alert, Avatar, Box, CircularProgress, Theme, styled } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import styles from './styles.module.css';
 
 interface UserPortalPageProps {
   params: {
@@ -24,25 +27,53 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
   const [pastEvents, setPastEvents] = useState<UserEvent[]>([]);
 
   const [error, setError] = useState<string | undefined>(undefined);
-  // Fetch the user by their id when the component mounts
+  const { status, session, update } = useAuthContext();
+
   useEffect(() => {
-    const fetchUser = async () => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async (showLoading: boolean = true) => {
+    try {
+      showLoading && setIsLoading(true);
+      const fetchedUser = await UserClient.getUserById(id);
+      const upcomingEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Upcoming);
+      const userPastEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Past);
+      setUser(fetchedUser);
+      setUpcomingEvents(upcomingEvents!);
+      setPastEvents(userPastEvents!);
+      showLoading && setIsLoading(false);
+    } catch (e: any) {
+      setError(e.message);
+    }
+  };
+
+  const handleProfileUpdate = async (
+    formValues: Record<string, string | null | undefined>,
+    deleteImageUrl?: boolean,
+  ) => {
+    // Send patch request to update the user's profile
+    if (status === AuthStatus.Authenticated) {
       try {
-        setIsLoading(true);
-        const fetchedUser = await getUserById(id);
-        const fetchedEvents = await getEventsByUserId(id);
-        setUser(fetchedUser);
-        setUpcomingEvents(fetchedEvents!);
-        setPastEvents(fetchedEvents!);
-        setIsLoading(false);
+        const { firstName, lastName, bio, imageUrl } = formValues;
+
+        await UserClient.patchUserProfileById(session?.user?._id!, {
+          firstName: firstName!,
+          lastName: lastName!,
+          bio: bio!,
+          imageUrl: imageUrl!,
+          deleteImageUrl,
+        });
+        await fetchUser(false);
+        // Update the session
+        if (update) {
+          await update();
+        }
       } catch (e: any) {
         setError(e.message);
       }
-    };
-
-    // Load the user's events
-    fetchUser();
-  }, []);
+    }
+  };
 
   return (
     <Box>
@@ -58,17 +89,13 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
       >
         <Box display='flex' justifyContent={'center'}>
           {isLoading ? (
-            <CircularProgress />
+            <Spinner />
           ) : (
-            <UserAvatar
-              showName
+            <ProfileEditor
               user={user}
-              imageClassName={styles.userAvatar}
-              MuiAvatarComponent={<CustomGenericMuiAvatar theme={theme} />}
-              nameStyles={{
-                color: theme.palette.primary.thirdColorIceLight,
-                fontWeight: 'bold',
-              }}
+              editDisabled={session?.user?._id !== id}
+              isLoading={isLoading}
+              onProfileUpdate={handleProfileUpdate}
             />
           )}
         </Box>
@@ -84,6 +111,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
           },
         }}
       >
+        {/* Do we want just any user to see some user's upcoming events? */}
         <Box>
           <EventsSection
             title='Upcoming events'
@@ -104,20 +132,3 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
     </Box>
   );
 }
-
-const CustomGenericMuiAvatar = styled(Avatar)(({ theme }: { theme: Theme }) => ({
-  width: '80px',
-  height: '80px',
-  [theme.breakpoints.up(600)]: {
-    width: '100px',
-    height: '100px',
-  },
-  [theme.breakpoints.up(960)]: {
-    width: '140px',
-    height: '140px',
-  },
-  [theme.breakpoints.up(1440)]: {
-    width: '240px',
-    height: '240px',
-  },
-}));

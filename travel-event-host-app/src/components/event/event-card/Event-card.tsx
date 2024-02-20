@@ -92,6 +92,10 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
                   sx={{
                     lineHeight: 1,
                     color: '#6A6A6A',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 6,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
                     [theme.breakpoints.down(420)]: {
                       marginTop: '10px',
                       paddingBottom: '10px',

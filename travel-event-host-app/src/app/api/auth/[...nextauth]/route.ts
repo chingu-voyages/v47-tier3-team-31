@@ -9,11 +9,18 @@ const handler = NextAuth({
     async signIn() {
       return true;
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, trigger }) {
       await connectMongoDB();
 
       const userSession = await UserRepository.findOne({ email: token.email }).select('-password');
 
+      if (trigger === 'update') {
+        token = {
+          ...token,
+          imageUrl: userSession?.imageUrl,
+          firstName: userSession?.firstName,
+        };
+      }
       // Token has the data from sign in (see below in authorize function)
       token = {
         ...token,

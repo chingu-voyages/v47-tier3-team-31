@@ -8,6 +8,10 @@ const userSchema = new Schema<User>(
       required: true,
     },
     imageUrl: String,
+    bio: {
+      type: String,
+      maxlength: 255,
+    },
     lastName: {
       type: String,
       required: true,
@@ -26,7 +30,7 @@ const userSchema = new Schema<User>(
       city: String,
       coords: { lat: Number, long: Number },
     },
-    eventIds: [String],
+
     isAdmin: {
       type: Boolean,
       default: false,

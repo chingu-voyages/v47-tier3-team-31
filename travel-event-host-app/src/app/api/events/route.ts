@@ -1,6 +1,7 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserEvent } from '@/models/user-event';
 import { EventRepository } from '@/schemas/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -28,25 +29,34 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ message: 'event created the id is ' + newEvent.id }, { status: 201 });
 }
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  let page: number = parseInt(searchParams.get('pageNumber') || '1', 10);
-  let pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
+  const timeline: string = searchParams.get('timeline') || EventTimeLine.All;
+  const page: number = parseInt(searchParams.get('page') || '1', 10);
+  const pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
+
+  let pipeline: any[] = [];
+  if (timeline === EventTimeLine.Upcoming) {
+    pipeline = pipeline.concat({
+      $match: { startDate: { $gte: new Date() } },
+    });
+  } else if (timeline === EventTimeLine.Past) {
+    pipeline = pipeline.concat({ $match: { startDate: { $lt: new Date() } } });
+  }
+
+  pipeline = pipeline.concat({
+    $facet: {
+      metadata: [{ $count: 'totalCount' }],
+      data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+    },
+  });
 
   await connectMongoDB();
-  const allEvents = await EventRepository.aggregate([
-    {
-      $facet: {
-        metadata: [{ $count: 'totalCount' }],
-        data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
-      },
-    },
-  ]);
+  const results = await EventRepository.aggregate(pipeline);
 
   return NextResponse.json(
-    { totalCount: allEvents[0].metadata[0].totalCount, events: allEvents[0].data },
+    { totalCount: results[0].metadata[0].totalCount, events: results[0].data },
     { status: 200 },
   );
 }
