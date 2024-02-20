@@ -1,6 +1,7 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserRepository } from '@/schemas/user';
 import { EventRepository } from '@/schemas/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
@@ -14,7 +15,7 @@ export async function GET(req: Request, { params }: any) {
   const page: number = parseInt(searchParams.get('page') || '1', 10);
   const pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
 
-  const timeline: string = searchParams.get('timeline') || 'all';
+  const timeline: string = searchParams.get('timeline') || EventTimeLine.All;
 
   if (!mongoose.Types.ObjectId.isValid(id))
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
@@ -26,9 +27,9 @@ export async function GET(req: Request, { params }: any) {
       'participants.userId': user._id, // Base query defaults to all
     };
 
-    if (timeline === 'upcoming') {
+    if (timeline === EventTimeLine.Upcoming) {
       baseQuery['startDate'] = { $gte: new Date() };
-    } else if (timeline === 'past') {
+    } else if (timeline === EventTimeLine.Past) {
       baseQuery['startDate'] = { $lt: new Date() };
     }
     const userEvents = await EventRepository.find(baseQuery)

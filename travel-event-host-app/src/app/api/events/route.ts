@@ -1,6 +1,7 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserEvent } from '@/models/user-event';
 import { EventRepository } from '@/schemas/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -31,16 +32,16 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  const timeline: string = searchParams.get('timeline') || 'all';
+  const timeline: string = searchParams.get('timeline') || EventTimeLine.All;
   const page: number = parseInt(searchParams.get('page') || '1', 10);
   const pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
 
   let pipeline: any[] = [];
-  if (timeline === 'upcoming') {
+  if (timeline === EventTimeLine.Upcoming) {
     pipeline = pipeline.concat({
       $match: { startDate: { $gte: new Date() } },
     });
-  } else if (timeline === 'past') {
+  } else if (timeline === EventTimeLine.Past) {
     pipeline = pipeline.concat({ $match: { startDate: { $lt: new Date() } } });
   }
 
