@@ -117,6 +117,7 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
     return !!userEvent?.participants.find((p) => p.userId === session?.user?._id);
   };
 
+  console.log(isEventInPast(userEvent!));
   return (
     <Box>
       <StyledContentContainer

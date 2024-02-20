@@ -1,6 +1,5 @@
 'use client';
 import theme from '@/app/theme';
-import { useAppContext } from '@/lib/app-context';
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
 import { Language } from '@/lib/language';
@@ -31,7 +30,7 @@ export default function Header() {
   const [lang, setLang] = useState<Language>(Language.En);
   const [navMenuIsOpen, setnavMenuIsOpen] = useState<boolean>(false);
   const router = useRouter();
-  const { firstName, imageUrl } = useAppContext();
+
   const navigateToMyProfile = () => {
     // User is authenticated, so we can navigate to their user portal
     if (status === AuthStatus.Authenticated && session?.user) {
@@ -169,8 +168,8 @@ export default function Header() {
               <div className={styles.avatarBox}>
                 {/* Handle signout/sign out here */}
                 <HeaderBarAvatar
-                  userName={firstName || session?.user?.firstName || 'Default User'}
-                  imageUrl={imageUrl || session?.user?.imageUrl}
+                  userName={session?.user?.firstName || 'Default User'}
+                  imageUrl={session?.user?.imageUrl}
                   onMyProfileClicked={navigateToMyProfile}
                   onSignOutClicked={() => signOut({ redirect: false, callbackUrl: '/' })}
                 />
@@ -237,7 +236,7 @@ export default function Header() {
           </Box>
           <Box>
             <NavButton variant='text' color='inherit'>
-              <Link href='/'>Upcoming Events</Link>
+              <Link href='/events/upcoming'>Upcoming Events</Link>
             </NavButton>
           </Box>
           <Box>

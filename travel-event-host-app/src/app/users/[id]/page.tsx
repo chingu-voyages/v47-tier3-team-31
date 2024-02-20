@@ -5,7 +5,6 @@ import theme from '@/app/theme';
 import { EventsSection } from '@/components/events-section/Events-section';
 import { ProfileEditor } from '@/components/profile-editor/ProfileEditor';
 import { Spinner } from '@/components/spinner/Spinner';
-import { AppActionTypes, useAppContext } from '@/lib/app-context';
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
@@ -28,9 +27,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
   const [pastEvents, setPastEvents] = useState<UserEvent[]>([]);
 
   const [error, setError] = useState<string | undefined>(undefined);
-  const { status, session } = useAuthContext();
-
-  const { dispatch } = useAppContext();
+  const { status, session, update } = useAuthContext();
 
   useEffect(() => {
     fetchUser();
@@ -51,35 +48,26 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
     }
   };
 
-  const handleProfileUpdate = async (formValues: Record<string, string>) => {
+  const handleProfileUpdate = async (
+    formValues: Record<string, string | null | undefined>,
+    deleteImageUrl?: boolean,
+  ) => {
     // Send patch request to update the user's profile
     if (status === AuthStatus.Authenticated) {
       try {
         const { firstName, lastName, bio, imageUrl } = formValues;
+
         await UserClient.patchUserProfileById(session?.user?._id!, {
-          firstName,
-          lastName,
-          bio,
-          imageUrl,
+          firstName: firstName!,
+          lastName: lastName!,
+          bio: bio!,
+          imageUrl: imageUrl!,
+          deleteImageUrl,
         });
         await fetchUser(false);
-
-        /* In the headerbar, the firstName and imageUrl are generated from the nextAuth session which will not be instantly 
-        updated when the user updates their data (at least without the user refreshing the browser).
-        We store the user's firstName and imageUrl in the AppContext so that we can
-        update it when the user updates their info.
-        */
-        if (dispatch) {
-          dispatch({
-            type: AppActionTypes.SET_FIRST_NAME,
-            payload: firstName,
-          });
-          if (imageUrl) {
-            dispatch({
-              type: AppActionTypes.SET_IMAGE_URL,
-              payload: imageUrl,
-            });
-          }
+        // Update the session
+        if (update) {
+          await update();
         }
       } catch (e: any) {
         setError(e.message);

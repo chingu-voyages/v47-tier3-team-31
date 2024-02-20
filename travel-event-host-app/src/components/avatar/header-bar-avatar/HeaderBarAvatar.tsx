@@ -10,7 +10,7 @@ import styles from './style.module.css';
  */
 interface HeaderBarAvatarProps {
   userName: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   onSignOutClicked?: () => void;
   onMyProfileClicked?: () => void;
 }
@@ -68,7 +68,7 @@ export function HeaderBarAvatar({
               },
             }}
           >
-            {loadAvatarImage(isErrorImage, userName, setIsErrorImage, imageUrl)}
+            {loadAvatarImage(isErrorImage, userName, setIsErrorImage, imageUrl!)}
           </Box>
           <Box
             // Hide the user name on mobile

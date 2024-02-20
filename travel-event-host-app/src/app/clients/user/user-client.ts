@@ -19,7 +19,13 @@ export const UserClient = {
 
   patchUserProfileById: async (
     userId: string,
-    patchInfo: { firstName: string; lastName: string; bio: string; imageUrl?: string },
+    patchInfo: {
+      firstName: string;
+      lastName: string;
+      bio: string;
+      imageUrl?: string | null;
+      deleteImageUrl?: boolean;
+    },
   ): Promise<void> => {
     const endPoint: string = `/api/users/${userId}`;
     const req = await fetch(endPoint, {

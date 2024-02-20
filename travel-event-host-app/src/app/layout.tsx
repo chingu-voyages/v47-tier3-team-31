@@ -6,7 +6,6 @@ import { Roboto_Flex } from 'next/font/google';
 import Header from '@/components/header/Header';
 
 import { Footer } from '@/components/footer/Footer';
-import { AppProvider } from '@/lib/app-context';
 import { AuthenticationSessionProvider } from '@/lib/auth-context';
 import { NextAuthProvider } from '@/providers/nextAuthProvider';
 import './globals.css';
@@ -25,17 +24,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html className='scrollbar1' lang='en'>
       <body className={roboto.className}>
         <NextAuthProvider>
-          <AppProvider>
-            <AuthenticationSessionProvider>
-              <AppRouterCacheProvider>
-                <MuiThemeProvider>
-                  <Header />
-                  {children}
-                  <Footer />
-                </MuiThemeProvider>
-              </AppRouterCacheProvider>
-            </AuthenticationSessionProvider>
-          </AppProvider>
+          <AuthenticationSessionProvider>
+            <AppRouterCacheProvider>
+              <MuiThemeProvider>
+                <Header />
+                {children}
+                <Footer />
+              </MuiThemeProvider>
+            </AppRouterCacheProvider>
+          </AuthenticationSessionProvider>
         </NextAuthProvider>
       </body>
     </html>

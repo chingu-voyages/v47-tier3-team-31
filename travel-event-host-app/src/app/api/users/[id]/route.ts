@@ -33,7 +33,7 @@ export async function PATCH(req: Request, { params }: any) {
 
   // We expect firstName, lastName, bio, imageUrl from the request body and they shall be patched 😏
   // Bio can be an empty string. imageUrl can be null.
-  const { firstName, lastName, bio, imageUrl } = requestBody;
+  const { firstName, lastName, bio, imageUrl, deleteImageUrl } = requestBody;
 
   const user = await UserRepository.findById(id);
   if (!user) return NextResponse.json({ message: `User ${id} not found.` }, { status: 404 });
@@ -41,8 +41,10 @@ export async function PATCH(req: Request, { params }: any) {
   user.firstName = firstName;
   user.lastName = lastName;
   user.bio = bio;
+
   if (imageUrl) user.imageUrl = imageUrl;
 
+  if (deleteImageUrl) user.imageUrl = undefined;
   await user.save();
   return NextResponse.json({ message: `User ${id} updated.` }, { status: 200 });
 }

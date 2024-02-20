@@ -42,7 +42,6 @@ export const AuthClient = {
     const res = await signIn('credentials', {
       email,
       password,
-      redirect: true,
       callbackUrl: callbackUrl,
     });
 

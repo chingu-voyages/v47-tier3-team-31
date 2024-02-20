@@ -5,7 +5,10 @@ import {
   textInputFieldFontSizes,
   textInputFieldHeights,
 } from '@/app/common-styles/form-field-sizes';
-import { FileObjectParams, SpacesFileUploader } from '@/app/integration/spaces-file-uploader';
+import {
+  S3PutObjectCommandParams,
+  SpacesFileUploader,
+} from '@/app/integration/spaces-file-uploader';
 import { generateFilename } from '@/app/integration/utils/generate-filename';
 import { profileUpdateValidationSchema } from '@/lib/yup-validators/profile-update/profile-update-validator';
 import { extractValidationErrors } from '@/lib/yup-validators/utils/extract-validation-errors';
@@ -23,18 +26,21 @@ type EditableProfileFields = 'firstName' | 'lastName' | 'bio' | 'imageUrl';
 interface ProfileEditorProps {
   editDisabled?: boolean;
   user?: Partial<SecureUser>;
-  onProfileUpdate?: (formValues: Record<EditableProfileFields, string>) => void;
+  onProfileUpdate?: (
+    formValues: Record<EditableProfileFields, string | null>,
+    deleteImageUrl?: boolean,
+  ) => void;
   isLoading?: boolean;
 }
 
 const profilNotEditableContentSizes = ['0.7rem', '0.8rem', '0.9rem', '1.2rem', '1.2rem'];
 
 export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEditorProps) {
-  const [formValues, setFormValues] = useState<Record<EditableProfileFields, string>>({
+  const [formValues, setFormValues] = useState<Record<EditableProfileFields, string | null>>({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     bio: user?.bio || '',
-    imageUrl: user?.imageUrl || '',
+    imageUrl: user?.imageUrl || null,
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
@@ -51,7 +57,7 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
     }
 
     // Validation is successful do a callback here with the formValues
-    onProfileUpdate && onProfileUpdate(formValues);
+    onProfileUpdate && onProfileUpdate(formValues as any);
   };
 
   const handleAvatarImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +72,7 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
         2. The 'Key' property is the full path to the file, including the file name. Do not include a leading forward slash.
         3. Remember that NEXTJS environment variables are not available in the browser by default, so we need to use NEXT_PUBLIC_ to make them available.
       */
-      const fileParams: FileObjectParams = {
+      const fileParams: S3PutObjectCommandParams = {
         Bucket: process.env.NEXT_PUBLIC_SPACES_AVATAR_BUCKET_PATH!,
         Key: `user_avatars/${randomFileName}`,
         Body: file,
@@ -76,13 +82,13 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
       try {
         const upLoader: SpacesFileUploader = new SpacesFileUploader();
         await upLoader.uploadObject(fileParams);
-        console.info('Photo was uploaded', cdnResolvePath);
+
         setFormValues({ ...formValues, imageUrl: cdnResolvePath });
         onProfileUpdate &&
           onProfileUpdate({
-            firstName: formValues.firstName,
-            lastName: formValues.lastName,
-            bio: formValues.bio,
+            firstName: formValues.firstName!,
+            lastName: formValues.lastName!,
+            bio: formValues.bio!,
             imageUrl: cdnResolvePath, // We update the imageUrl
           });
       } catch (e: any) {
@@ -92,6 +98,11 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
         e.target.value = '';
       }
     }
+  };
+
+  const handleDeleteImageClick = () => {
+    setFormValues({ ...formValues, imageUrl: null });
+    onProfileUpdate && onProfileUpdate({ ...formValues, imageUrl: null } as any, true);
   };
 
   return (
@@ -128,31 +139,50 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
           />
           {!editDisabled && (
             // Photo upload button
-            <Box display={'flex'} justifyContent={'center'}>
-              <input
-                type='file'
-                accept='image/*'
-                id='icon-button-photo'
-                style={{ display: 'none' }}
-                onChange={handleAvatarImageChange}
-              />
-              <label htmlFor='icon-button-photo'>
-                <Button
-                  variant='outlined'
-                  component='span'
-                  sx={{
-                    color: theme.palette.primary.thirdColorIceLight,
-                    borderColor: theme.palette.primary.thirdColorIceLight,
-                    fontSize: '0.7rem',
-                    textAlign: 'center',
-                    textTransform: 'none',
-                    padding: '5px',
-                    mt: 1,
-                  }}
-                >
-                  Change Avatar
-                </Button>
-              </label>
+            <Box>
+              <Box display={'flex'} justifyContent={'center'}>
+                <input
+                  type='file'
+                  accept='image/*'
+                  id='icon-button-photo'
+                  style={{ display: 'none' }}
+                  onChange={handleAvatarImageChange}
+                />
+                <label htmlFor='icon-button-photo'>
+                  <Button
+                    variant='outlined'
+                    component='span'
+                    sx={{
+                      color: theme.palette.primary.thirdColorIceLight,
+                      borderColor: theme.palette.primary.thirdColorIceLight,
+                      fontSize: '0.7rem',
+                      textAlign: 'center',
+                      textTransform: 'none',
+                      padding: '5px',
+                      mt: 1,
+                    }}
+                  >
+                    Change Avatar
+                  </Button>
+                </label>
+              </Box>
+              {user?.imageUrl && (
+                <Box display={'flex'} justifyContent={'center'} mt={'10px'}>
+                  <Button
+                    onClick={handleDeleteImageClick}
+                    variant='text'
+                    sx={{
+                      color: theme.palette.primary.primaryColorDarkerBlue,
+                      textTransform: 'none',
+                      fontSize: '0.7rem',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Delete image
+                  </Button>
+                </Box>
+              )}
             </Box>
           )}
         </Box>
