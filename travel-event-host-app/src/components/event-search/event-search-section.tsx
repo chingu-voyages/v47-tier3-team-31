@@ -7,9 +7,10 @@ import { Category } from '@/lib/category';
 import { UserEvent } from '@/models/user-event';
 import { Box, MenuItem, Select } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { EventCard } from '../event/event-card/Event-card';
 
+import { Spinner } from '../spinner/Spinner';
 import { EventSearchFilterBox } from './event-search-filter-box/EventSearchFilterBox';
 import { SearchInputField } from './search-input-field/SearchInputField';
 
@@ -23,7 +24,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
   const router = useRouter();
 
   const handleSearch = (searchInput: string) => {
-    const url = `/event/search/${searchInput}`; // Construct the URL
+    const url = `/events/search/${searchInput}`; // Construct the URL
     router.push(url); // Navigate to the URL
   };
 
@@ -80,17 +81,22 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
         <p onClick={() => setFilterBoxIsOpen(true)} className={styles.filterBtn}>
           Filters
         </p>
-        <ul className={styles.eventsGrid}>
-          {resultEventList.length > 0 ? (
-            resultEventList.map((event) => (
-              <li key={event['_id']}>
-                <EventCard hostedEvent={event} />
-              </li>
-            ))
-          ) : (
-            <p className={styles.eventNotFound}>No results</p>
-          )}
-        </ul>
+        <Suspense fallback={<Spinner />}>
+          <ul className={styles.eventsGrid}>
+            {resultEventList.length > 0 ? (
+              resultEventList.map((event) => (
+                <li key={event._id}>
+                  <EventCard
+                    hostedEvent={event}
+                    onCardClick={() => router.push(`/events/${event._id}`)}
+                  />
+                </li>
+              ))
+            ) : (
+              <p className={styles.eventNotFound}>No results</p>
+            )}
+          </ul>
+        </Suspense>
       </Box>
     </section>
   );

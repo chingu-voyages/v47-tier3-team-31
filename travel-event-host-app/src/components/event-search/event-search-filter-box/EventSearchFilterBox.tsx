@@ -92,7 +92,7 @@ export const EventSearchFilterBox = ({
           <MenuItem value='500km'>500km</MenuItem>
           <MenuItem value='1000km'>1000km</MenuItem>
         </Select>
-        <Typography variant='h6'>Categories</Typography>
+        <Typography variant='h6'>Event Type</Typography>
         <FormGroup
           className={styles.filterContainer}
           sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
