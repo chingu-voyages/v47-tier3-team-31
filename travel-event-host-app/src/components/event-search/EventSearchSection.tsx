@@ -29,14 +29,14 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
   };
 
   useEffect(() => {
-    const fetch = async () => {
+    const executeEventSearch = async () => {
       const eventsResultFetch = await EventClient.getEventsBySearchQuery(
         keyword,
         getCheckedCategories(categoryCheckboxState),
       );
       setResultEventList(eventsResultFetch);
     };
-    fetch();
+    executeEventSearch();
   }, [categoryCheckboxState, keyword]);
 
   const getCheckedCategories = (checkboxState: { [key in string]: boolean }): Category[] => {
