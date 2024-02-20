@@ -16,14 +16,14 @@ export default function Home() {
 
   useEffect(() => {
     fetchUserEvents();
-  }, []); // Initial load of user events on the home page
+  }, [pageNumber]); // loading of user events on the home page
 
   const fetchUserEvents = async () => {
     setIsLoading(true);
     // Fetch events
     try {
-      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber);
-      setUserEvents([...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
+      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber, 4);
+      setUserEvents([...userEvents, ...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
       setIsLoading(false);
     } catch (error: any) {
       console.error(error);
@@ -39,7 +39,7 @@ export default function Home() {
           <EventsSection
             title='Upcoming Events'
             hostedEvents={userEvents}
-            onLoadMoreEventsButtonClicked={() => {}}
+            onLoadMoreEventsButtonClicked={() => setPageNumber(pageNumber + 1)}
             isLoading={isLoading}
           />
         </Box>
