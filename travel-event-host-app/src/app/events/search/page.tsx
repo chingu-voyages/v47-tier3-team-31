@@ -1,4 +1,4 @@
-import { EventSearchSection } from '@/components/event-search/event-search-section';
+import { EventSearchSection } from '@/components/event-search/EventSearchSection';
 
 export default function Page() {
   return <EventSearchSection keyword='' />;
