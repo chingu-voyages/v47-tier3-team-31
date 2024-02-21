@@ -22,6 +22,7 @@ import {
   styled,
   useTheme,
 } from '@mui/material';
+import Link from 'next/link';
 import { ChangeEventHandler, useState } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { SignInFields } from './sign-in-fields/SignInFields';
@@ -219,6 +220,13 @@ export default function AuthDialog(props: AuthDialogProps) {
                   Continue with Github{' '}
                 </Button>
               </Box>
+              {props.authDialogType === 'signin' && (
+                <Box alignSelf={'center'} mt={2}>
+                  <Button variant='text' sx={{ color: theme.palette.primary.lightIndigo }}>
+                    <Link href='/auth/signup'>Use Email Instead</Link>
+                  </Button>
+                </Box>
+              )}
             </Box>
             <Divider
               sx={{
