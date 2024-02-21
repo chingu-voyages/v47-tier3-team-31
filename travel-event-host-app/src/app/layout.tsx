@@ -3,9 +3,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
 import { Roboto_Flex } from 'next/font/google';
 
-import Head from 'next/head';
 import Header from '@/components/header/Header';
-import Footer from '@/components/footer/Footer'
+import Footer from '@/components/footer/Footer';
 
 import { OnboardingProvider } from '@/lib/context';
 import { NextAuthProvider } from '@/providers/nextAuthProvider';
@@ -23,9 +22,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html className='scrollbar1' lang='en'>
-      <Head>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-      </Head>
       <body className={roboto.className}>
         <NextAuthProvider>
           <OnboardingProvider>
@@ -33,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <MuiThemeProvider>
                 <Header />
                 {children}
-                <Footer/>
+                <Footer />
               </MuiThemeProvider>
             </AppRouterCacheProvider>
           </OnboardingProvider>
