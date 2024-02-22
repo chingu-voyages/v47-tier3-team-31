@@ -9,7 +9,10 @@ import { SecureUser } from '@/types/secureUser';
 export async function getUserById(userId: string): Promise<SecureUser | undefined> {
   try {
     const response = await fetch(`/api/user/${userId}`);
-    return response.json();
+    if (response.ok) {
+      return response.json();
+    }
+    return undefined;
   } catch (error) {
     throw new Error('Error: Cannot fetch user');
   }
@@ -20,11 +23,15 @@ export async function getUserById(userId: string): Promise<SecureUser | undefine
  * @param userId the id of the user to get events for
  * @returns {Promise<Event[] | undefined>} an array of events
  */
-export async function getEventsByUserId(userId: string): Promise<Event[] | undefined> {
+export async function getEventsByUserId(userId: string): Promise<Event[] | undefined | []> {
   try {
     const response = await fetch(`/api/user/${userId}/events`);
-    return response.json();
+    if (response.ok) {
+      return response.json();
+    }
+    return [];
   } catch (error) {
-    throw new Error("Error: Cannot fetch user's events");
+    //"Error: Cannot fetch user's events"
+    return [];
   }
 }

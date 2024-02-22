@@ -3,7 +3,7 @@ import { Avatar, Box, ButtonBase, Menu, MenuItem, Typography, styled } from '@mu
 import Image from 'next/image';
 import { useState } from 'react';
 import styles from './style.module.css';
-
+import Link from 'next/link';
 /**
  * This header bar has the user's avatar and name, plus a dropdown menu with options like logout.
  */
@@ -113,7 +113,7 @@ export default function HeaderBarAvatar({
             },
           }}
         >
-          {userName}
+          <Link href='/dashboard'>Dashboard</Link>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -127,7 +127,7 @@ export default function HeaderBarAvatar({
             '&.MuiButtonBase-root': {
               fontSize: '1.25rem',
               background: theme.palette.primary.thirdColorlightBlack,
-              color: theme.palette.primary.thirdColorIceLight,
+              color: '#FF9999',
             },
             '&.MuiButtonBase-root:hover': {
               background: theme.palette.primary.secondaryColorDarkBlack,

@@ -39,7 +39,9 @@ export default function Header() {
               <path d='M4 6L20 6' stroke='white' strokeWidth='2' strokeLinecap='round' />
             </svg>
           </div>
-          <Image src='/bakpak-logo1.png' alt='Bakpak Logo' width={140} height={40} />
+          <Link href='/'>
+            <Image src='/bakpak-logo1.png' alt='Bakpak Logo' width={140} height={40} />
+          </Link>
         </div>
         <div className={styles.authBox}>
           <Box>
@@ -177,13 +179,13 @@ export default function Header() {
                 <Link href='/'>Home</Link>
               </li>
               <li>
-                <Link href='/'>Upcoming Events</Link>
+                <Link href='/upcoming-events'>Upcoming Events</Link>
               </li>
               <li>
-                <Link href='/'>Search Events</Link>
+                <Link href='/search-events'>Search Events</Link>
               </li>
               <li>
-                <Link href='/#Create-Event-Section'>Create Event</Link>
+                <Link href='/create-event'>Create Event</Link>
               </li>
               <li>
                 <Link href='/about'>About Us</Link>

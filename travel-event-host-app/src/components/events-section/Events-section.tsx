@@ -108,7 +108,7 @@ const renderEventCards = (
   hostedEvents: HostedEvent[],
   onEventClickAction: (eventId: string) => void,
 ) => {
-  if (hostedEvents.length === 0)
+  if (!hostedEvents || hostedEvents.length === 0)
     return (
       <Typography
         sx={{ margin: 'auto' }}
