@@ -2,18 +2,10 @@
 
 import { Category } from '@/lib/category';
 
+import { CheckboxGroup } from '@/components/checkbox-group/CheckboxGroup';
 import { CategoryDict } from '@/lib/category-dictionary';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  MenuItem,
-  Select,
-  Typography,
-} from '@mui/material';
+import { Box, IconButton, MenuItem, Select, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from '../styles.module.css';
 
@@ -48,10 +40,6 @@ export const EventSearchFilterBox = ({
 
   const handleDistanceChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setDistance(event.target.value);
-  };
-
-  const handleCategoryChange = (event: { target: { name: any; checked: any } }) => {
-    setCategories({ ...categories, [event.target.name]: event.target.checked });
   };
 
   return (
@@ -93,20 +81,13 @@ export const EventSearchFilterBox = ({
           <MenuItem value='1000km'>1000km</MenuItem>
         </Select>
         <Typography variant='h6'>Event Type</Typography>
-        <FormGroup
-          className={styles.filterContainer}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-        >
-          {Object.entries(categories).map(([category, checked]) => (
-            <FormControlLabel
-              key={category}
-              control={
-                <Checkbox checked={checked} onChange={handleCategoryChange} name={category} />
-              }
-              label={CategoryDict[category as Category]}
-            />
-          ))}
-        </FormGroup>
+        {/* Categories check boxes here */}
+        <CheckboxGroup
+          checkBoxElementsStatus={categories}
+          setCheckboxElementsStatus={setCategories}
+          referenceDictionary={CategoryDict}
+          customStyles={styles.filterContainer}
+        />
       </Box>
     </div>
   );
