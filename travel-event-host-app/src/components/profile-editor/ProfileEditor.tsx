@@ -20,6 +20,7 @@ import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { CustomGenericMuiAvatar } from '../avatar/custom-generic-user-avatar/CustomGenericUserAvatar';
 import UserAvatar from '../avatar/user-avatar/UserAvatar';
 import { CustomTextField, StyledFormFieldSection } from '../custom-fields/CustomFields';
+import { ImagePicker } from '../image-picker/ImagePicker';
 
 type EditableProfileFields = 'firstName' | 'lastName' | 'bio' | 'imageUrl';
 
@@ -62,11 +63,15 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
 
   const handleAvatarImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const randomFileName: string = generateFilename(user?._id!);
-
-    const cdnResolvePath = `${process.env.NEXT_PUBLIC_SPACES_AVATAR_CDN_PATH}/user_avatars/${randomFileName}`;
 
     if (file) {
+      // TODO: check this and refactor with proper error display (DRY)
+      if (!file.type.match('image.*')) {
+        console.error('File is not an image');
+        return;
+      }
+      const randomFileName: string = generateFilename(user?._id!);
+      const cdnResolvePath = `${process.env.NEXT_PUBLIC_SPACES_AVATAR_CDN_PATH}/user_avatars/${randomFileName}`;
       /* There are a few gotchyas I've discovered when working with the AWS SDK for S3 and Digital Ocean Spaces:
         1. The 'Bucket' property is the name of the bucket, not the full path to the bucket.
         2. The 'Key' property is the full path to the file, including the file name. Do not include a leading forward slash.
@@ -140,32 +145,7 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
           {!editDisabled && (
             // Photo upload button
             <Box>
-              <Box display={'flex'} justifyContent={'center'}>
-                <input
-                  type='file'
-                  accept='image/*'
-                  id='icon-button-photo'
-                  style={{ display: 'none' }}
-                  onChange={handleAvatarImageChange}
-                />
-                <label htmlFor='icon-button-photo'>
-                  <Button
-                    variant='outlined'
-                    component='span'
-                    sx={{
-                      color: theme.palette.primary.thirdColorIceLight,
-                      borderColor: theme.palette.primary.thirdColorIceLight,
-                      fontSize: '0.7rem',
-                      textAlign: 'center',
-                      textTransform: 'none',
-                      padding: '5px',
-                      mt: 1,
-                    }}
-                  >
-                    Change Avatar
-                  </Button>
-                </label>
-              </Box>
+              <ImagePicker buttonTitle='Choose Image' onImageSelected={handleAvatarImageChange} />
               {user?.imageUrl && (
                 <Box display={'flex'} justifyContent={'center'} mt={'10px'}>
                   <Button
