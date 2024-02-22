@@ -247,7 +247,7 @@ export default function Header() {
           </Box>
           <Box>
             <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
-              <Link href='/'>Create Event</Link>
+              <Link href='/events/create'>Create Event</Link>
             </NavButton>
           </Box>
           <Box>
