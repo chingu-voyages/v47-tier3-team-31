@@ -2,7 +2,6 @@
 import styles from './styles.module.css';
 
 import { EventClient } from '@/app/clients/event/event-client';
-import { Category } from '@/lib/category';
 
 import { UserEvent } from '@/models/user-event';
 import { Box, MenuItem, Select } from '@mui/material';
@@ -10,6 +9,9 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { EventCard } from '../event/event-card/Event-card';
 
+import { Category } from '@/lib/category';
+import { generateInitialCheckboxState } from '../checkbox-group/utils/generate-initial-checkbox-state';
+import { getCheckedElements } from '../checkbox-group/utils/get-checked-elements';
 import { Spinner } from '../spinner/Spinner';
 import { EventSearchFilterBox } from './event-search-filter-box/EventSearchFilterBox';
 import { SearchInputField } from './search-input-field/SearchInputField';
@@ -18,7 +20,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
   const [sortBy, setSortBy] = useState<string>('Date');
   const [resultEventList, setResultEventList] = useState<UserEvent[]>([]);
   const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
-    {},
+    generateInitialCheckboxState(Category),
   );
   const [filterBoxIsOpen, setFilterBoxIsOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -32,22 +34,12 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
     const executeEventSearch = async () => {
       const eventsResultFetch = await EventClient.getEventsBySearchQuery(
         keyword,
-        getCheckedCategories(categoryCheckboxState),
+        getCheckedElements(categoryCheckboxState),
       );
       setResultEventList(eventsResultFetch);
     };
     executeEventSearch();
   }, [categoryCheckboxState, keyword]);
-
-  const getCheckedCategories = (checkboxState: { [key in string]: boolean }): Category[] => {
-    // This gets only the checked categories checkboxes
-    return Object.entries(checkboxState).reduce((acc: Category[], [category, checked]) => {
-      if (checked) {
-        acc.push(category as Category);
-      }
-      return acc;
-    }, []);
-  };
 
   return (
     <section className={styles.section}>

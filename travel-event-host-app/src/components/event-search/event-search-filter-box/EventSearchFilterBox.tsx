@@ -1,21 +1,11 @@
 'use client';
 
-import { Category } from '@/lib/category';
-
 import { CheckboxGroup } from '@/components/checkbox-group/CheckboxGroup';
 import { CategoryDict } from '@/lib/category-dictionary';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, MenuItem, Select, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from '../styles.module.css';
-
-const updateCategories = () => {
-  let updateCategories: { [key in string]: boolean } = {};
-
-  Object.values(Category).map((category: string) => (updateCategories[category] = false));
-
-  return updateCategories;
-};
 
 export const EventSearchFilterBox = ({
   setCategories,
@@ -30,9 +20,6 @@ export const EventSearchFilterBox = ({
 }) => {
   const [day, setDay] = useState('Any day');
   const [distance, setDistance] = useState('Any distance');
-  useEffect(() => {
-    setCategories(updateCategories());
-  }, []);
 
   const handleDayChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setDay(event.target.value);
@@ -81,7 +68,7 @@ export const EventSearchFilterBox = ({
           <MenuItem value='1000km'>1000km</MenuItem>
         </Select>
         <Typography variant='h6'>Event Type</Typography>
-        {/* Categories check boxes here */}
+        {/* Categories checkboxes here */}
         <CheckboxGroup
           checkBoxElementsStatus={categories}
           setCheckboxElementsStatus={setCategories}
