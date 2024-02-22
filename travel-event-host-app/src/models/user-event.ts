@@ -1,4 +1,4 @@
-import Category from '@/lib/category';
+import { Category } from '@/lib/category';
 
 export interface UserEvent {
   _id: string;
