@@ -22,7 +22,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
   const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
     generateInitialCheckboxState(Category),
   );
-  const [filterBoxIsOpen, setFilterBoxIsOpen] = useState<boolean>(false);
+  const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSearch = (searchInput: string) => {
@@ -44,15 +44,15 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
   return (
     <section className={styles.section}>
       <div
-        onClick={() => setFilterBoxIsOpen(false)}
-        className={`${styles.overlay} ${filterBoxIsOpen ? styles.open : ''}`}
+        onClick={() => setIsFilterBoxOpen(false)}
+        className={`${styles.overlay} ${isFilterBoxOpen ? styles.open : ''}`}
       ></div>
 
       <EventSearchFilterBox
-        filterBoxIsOpen={filterBoxIsOpen}
+        filterBoxIsOpen={isFilterBoxOpen}
         setCategories={setCategoryCheckboxState}
         categories={categoryCheckboxState}
-        setFilterBoxIsOpen={setFilterBoxIsOpen}
+        setFilterBoxIsOpen={setIsFilterBoxOpen}
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', gap: '2em' }}>
@@ -70,7 +70,7 @@ export function EventSearchSection({ keyword }: { keyword: string }) {
             <MenuItem value='Date'>Date</MenuItem>
           </Select>
         </Box>
-        <p onClick={() => setFilterBoxIsOpen(true)} className={styles.filterBtn}>
+        <p onClick={() => setIsFilterBoxOpen(true)} className={styles.filterBtn}>
           Filters
         </p>
         <Suspense fallback={<Spinner />}>
