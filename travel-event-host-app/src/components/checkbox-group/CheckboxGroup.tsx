@@ -21,7 +21,7 @@ export function CheckboxGroup({
   };
 
   return (
-    <Box className={customStyles} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Box className={customStyles}>
       {Object.entries(checkBoxElementsStatus).map(([element, checked]) => (
         <FormControlLabel
           key={element}
