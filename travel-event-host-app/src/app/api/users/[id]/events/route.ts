@@ -4,11 +4,11 @@ import { EventRepository } from '@/schemas/user-event';
 import { EventTimeLine } from '@/types/event-timeline';
 
 import mongoose from 'mongoose';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // This route will return all the events for a user.
 // Search query can specify 'timeline' ('upcoming'| 'past' | 'all') and 'pageSize' and 'page'
-export async function GET(req: Request, { params }: any) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
   const { searchParams } = new URL(req.url);
 

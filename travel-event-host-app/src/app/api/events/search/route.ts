@@ -1,8 +1,8 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page: number = parseInt(searchParams.get('page') || '1', 10);
   const pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);

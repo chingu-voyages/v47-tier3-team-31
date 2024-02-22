@@ -1,9 +1,9 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: any) {
+export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 
   await connectMongoDB();

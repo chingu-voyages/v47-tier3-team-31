@@ -1,10 +1,10 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { UserRepository } from '@/schemas/user';
 import bcrypt from 'bcrypt';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { registrationValidationSchema } from '../../endpoint-validation/schemas/registration-validation.schema';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const requestBody = await req.json();
 
   // TODO: Validation. Needs to be refactored. it should be middleware

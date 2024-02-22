@@ -5,10 +5,10 @@ import { UserRepository } from '@/schemas/user';
 import { EventRepository } from '@/schemas/user-event';
 import { SecureUser } from '@/types/secure-user';
 import mongoose from 'mongoose';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Fetch the users associated with the event
-export async function GET(req: Request, { params }: any) {
+export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params; // This is the eventId
   if (!mongoose.Types.ObjectId.isValid(id))
     return NextResponse.json({ message: 'Invalid ObjectId format' }, { status: 400 });
