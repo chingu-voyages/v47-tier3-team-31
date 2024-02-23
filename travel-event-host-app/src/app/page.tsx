@@ -3,9 +3,12 @@ import { CategoriesSection } from '@/components/categories-section/CategoriesSec
 import { CreateEventSection } from '@/components/create-event-section/Create-event-section';
 import { EventsSection } from '@/components/events-section/Events-section';
 import { HeroSection } from '@/components/hero/Hero-Section';
+import { useAuthContext } from '@/lib/auth-context';
+import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
 import { EventTimeLine } from '@/types/event-timeline';
 import { Box } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EventClient } from './clients/event/event-client';
 
@@ -13,6 +16,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userEvents, setUserEvents] = useState<UserEvent[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
+
+  const { status } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     fetchUserEvents();
@@ -31,6 +37,17 @@ export default function Home() {
     }
   };
 
+  const handleCreateEventButtonClicked = async () => {
+    // If the user is authenticated, redirect to the create event page
+    // otherwise, redirect to the login page
+    if (status === AuthStatus.Authenticated) {
+      router.push('/events/create');
+      return;
+    }
+
+    router.push('/auth/signin');
+  };
+
   return (
     <Box>
       <Box id='enclosure' marginLeft={[0, 0, '10%', '20%']} marginRight={[0, 0, '10%', '20%']}>
@@ -47,7 +64,7 @@ export default function Home() {
           <CategoriesSection />
         </Box>
         <Box>
-          <CreateEventSection />
+          <CreateEventSection onCreateEventButtonClick={handleCreateEventButtonClicked} />
         </Box>
       </Box>
     </Box>
