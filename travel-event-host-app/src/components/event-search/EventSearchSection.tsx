@@ -10,23 +10,31 @@ import { Suspense, useEffect, useState } from 'react';
 import { EventCard } from '../event/event-card/Event-card';
 
 import { Category } from '@/lib/category';
-import { generateInitialCheckboxState } from '../checkbox-group/utils/generate-initial-checkbox-state';
+import {
+  generateInitialCheckboxState,
+  loadCheckboxStateFromLocalStorage,
+} from '../checkbox-group/utils/generate-initial-checkbox-state';
 import { getCheckedElements } from '../checkbox-group/utils/get-checked-elements';
 import { Spinner } from '../spinner/Spinner';
 import { EventSearchFilterBox } from './event-search-filter-box/EventSearchFilterBox';
 import { SearchInputField } from './search-input-field/SearchInputField';
 
-export function EventSearchSection({ keyword }: { keyword: string }) {
+interface EventSearchSectionProps {
+  keyword: string;
+}
+
+export function EventSearchSection({ keyword }: EventSearchSectionProps) {
   const [sortBy, setSortBy] = useState<string>('Date');
   const [resultEventList, setResultEventList] = useState<UserEvent[]>([]);
   const [categoryCheckboxState, setCategoryCheckboxState] = useState<{ [key in string]: boolean }>(
-    generateInitialCheckboxState(Category),
+    loadCheckboxStateFromLocalStorage() || generateInitialCheckboxState(Category),
   );
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSearch = (searchInput: string) => {
     const url = `/events/search/${searchInput}`; // Construct the URL
+    localStorage.setItem('categoryCheckboxState', JSON.stringify(categoryCheckboxState));
     router.push(url); // Navigate to the URL
   };
 

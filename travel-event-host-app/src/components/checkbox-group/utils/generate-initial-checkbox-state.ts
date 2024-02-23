@@ -8,3 +8,11 @@ export function generateInitialCheckboxState(fromObject: Object): { [key in stri
   Object.values(fromObject).map((element: string) => (state[element] = false));
   return state;
 }
+
+export function loadCheckboxStateFromLocalStorage(): { [key in string]: boolean } | null {
+  const state = localStorage.getItem('categoryCheckboxState');
+  if (state) {
+    return JSON.parse(state);
+  }
+  return null;
+}
