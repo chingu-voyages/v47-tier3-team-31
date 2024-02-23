@@ -223,7 +223,7 @@ export default function AuthDialog(props: AuthDialogProps) {
               {props.authDialogType === 'signin' && (
                 <Box alignSelf={'center'} mt={2}>
                   <Button variant='text' sx={{ color: theme.palette.primary.lightIndigo }}>
-                    <Link href='/auth/signup'>Use Email Instead</Link>
+                    <Link href='/auth/signup'>Signup with e-mail</Link>
                   </Button>
                 </Box>
               )}
