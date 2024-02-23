@@ -4,7 +4,7 @@ import styles from './hero-section.module.css';
 export const HeroSection = () => {
   return (
     <div className={styles.crowdImageContainer}>
-      <Image src='/images/hero/crowd.svg' alt='crowd' className={styles.crowdImage} fill />
+      <Image src='/images/hero/crowd.svg' alt='crowd' className={`${styles.crowdImage} object-cover object-center  max-h-[700px]`} fill />
       <div className={`${styles.overlayArea} w-screen !max-w-full`} >
         <div className={`${styles.overlayContentContainer} sm:mt-10 md:mt-20 lg:mt-44`}>
           <div className='headerContainer'>
