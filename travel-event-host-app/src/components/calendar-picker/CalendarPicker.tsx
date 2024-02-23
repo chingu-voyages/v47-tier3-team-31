@@ -8,8 +8,16 @@ interface CalendarPickerProps {
   containerStyles?: React.CSSProperties;
   value: dayjs.Dayjs | null;
   onDateTimeChange?: (date: dayjs.Dayjs | null) => void;
+  disablePast?: boolean;
+  minDate?: dayjs.Dayjs;
 }
-export function CalendarPicker({ containerStyles, value, onDateTimeChange }: CalendarPickerProps) {
+export function CalendarPicker({
+  containerStyles,
+  value,
+  onDateTimeChange,
+  disablePast,
+  minDate,
+}: CalendarPickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ ...containerStyles }}>
@@ -17,6 +25,8 @@ export function CalendarPicker({ containerStyles, value, onDateTimeChange }: Cal
           slotProps={{ textField: { onKeyDown: (e) => e.preventDefault() } }} // This is to stop the user from entering keyboard input
           value={value}
           onChange={(date) => onDateTimeChange && onDateTimeChange(date)}
+          disablePast={disablePast}
+          minDate={minDate}
           sx={{
             '&&& input': {
               backgroundColor: 'white',

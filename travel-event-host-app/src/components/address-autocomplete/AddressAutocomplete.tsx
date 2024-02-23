@@ -9,11 +9,13 @@ import { CustomTextField } from '../custom-fields/CustomFields';
 interface AddressAutocompleteProps {
   textFieldStyles?: any;
   onLocationSelected?: (place: google.maps.places.PlaceResult) => void;
+  componentName: string;
 }
 
 export function AddressAutocomplete({
   textFieldStyles,
   onLocationSelected,
+  componentName,
 }: AddressAutocompleteProps) {
   const { ref: materialRef } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
@@ -30,8 +32,8 @@ export function AddressAutocomplete({
     <CustomTextField
       placeholder='Search for a location'
       required
-      id='location'
-      name='location'
+      id={componentName}
+      name={componentName}
       type='text'
       autoComplete='location'
       fullWidth
