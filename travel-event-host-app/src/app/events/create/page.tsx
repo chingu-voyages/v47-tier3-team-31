@@ -1,58 +1,86 @@
 'use client';
+import { EventClient } from '@/app/clients/event/event-client';
 import {
   profileFormHeaderSizes,
   textInputFieldFontSizes,
   textInputFieldHeights,
   textInputPaddings,
 } from '@/app/common-styles/form-field-sizes';
+import { getAddressDataFromGeocoderResult } from '@/app/integration/google-maps-api/address-helper';
+import {
+  S3PutObjectCommandParams,
+  SpacesFileUploader,
+} from '@/app/integration/spaces-file-uploader';
+import { generateFilename } from '@/app/integration/utils/generate-filename';
 import theme from '@/app/theme';
 import { ErrorComponent } from '@/components/ErrorComponent/ErrorComponent';
 import { AddressAutocomplete } from '@/components/address-autocomplete/AddressAutocomplete';
 import { CalendarPicker } from '@/components/calendar-picker/CalendarPicker';
+import { CheckboxGroup } from '@/components/checkbox-group/CheckboxGroup';
+import { generateInitialCheckboxState } from '@/components/checkbox-group/utils/generate-initial-checkbox-state';
+import { getCheckedElements } from '@/components/checkbox-group/utils/get-checked-elements';
 import { CommonButton } from '@/components/common-button/Common-Button';
 import { CustomTextField, StyledFormFieldSection } from '@/components/custom-fields/CustomFields';
 import { ImagePicker } from '@/components/image-picker/ImagePicker';
+import { Spinner } from '@/components/spinner/Spinner';
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
+import { Category } from '@/lib/category';
+import { CategoryDict } from '@/lib/category-dictionary';
+import {
+  eventCreateValidationSchema,
+  eventCreationCategoriesSchema,
+} from '@/lib/yup-validators/event/event-create-validation.schema';
+import { extractValidationErrors } from '@/lib/yup-validators/utils/extract-validation-errors';
 import { Box, Button, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
+import styles from './styles.module.css';
+import { geocoderResultValidationSchema } from './validators/geocoder-result-validation-schema';
 /**
  Event creation page. Only authenticated users can create events. If the user is not authenticated, redirect to the login page.
  */
 
-interface EventPageFormValues {
+interface CreateEventPageFormValues {
   title: string;
   description: string;
   startDate: dayjs.Dayjs | null;
   endDate: dayjs.Dayjs | null;
-  eventImage: File | null;
+  imageFile: File | null;
+  geocoderResult: google.maps.GeocoderResult | null;
 }
 
 export default function CreateEventPage() {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 
-  const [formValues, setFormValues] = useState<EventPageFormValues>({
+  // This is the state that holds the checked status of the category checkboxes
+  // I separated it from the formValues state because it's a different type of state
+  // Maybe we can combine them into one state if we can figure out a way to do it
+  const [categoryCheckboxesState, setCategoryCheckboxesState] = useState<{
+    [key in string]: boolean;
+  }>(generateInitialCheckboxState(Category));
+
+  const [formValues, setFormValues] = useState<CreateEventPageFormValues>({
     title: '',
     description: '',
     startDate: dayjs(),
     endDate: dayjs(),
-    eventImage: null,
+    imageFile: null,
+    geocoderResult: null,
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { status, session } = useAuthContext();
   const router = useRouter();
 
   if (status === AuthStatus.Unauthenticated) {
-    return router.replace('/auth/signin'); // Doublo check this
+    return router.replace('/auth/signin');
   }
 
   const handleInputChanged = (e: any) => {
-    // Do something
     setFormValues((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -67,7 +95,7 @@ export default function CreateEventPage() {
         console.error('File is not an image');
         return;
       }
-      setFormValues((prev) => ({ ...prev, eventImage: file }));
+      setFormValues((prev) => ({ ...prev, imageFile: file }));
       const fileReader = new FileReader();
 
       fileReader.onload = (e) => {
@@ -81,9 +109,73 @@ export default function CreateEventPage() {
     //
   };
 
-  const handleSubmitCreateEvent = () => {
-    // Validate
+  const handleSubmitCreateEvent = async () => {
+    // Client-side validation of the location (the google geocoder data can't be empty)
+    setIsLoading(true);
+    try {
+      geocoderResultValidationSchema.validateSync(formValues, { abortEarly: false });
+    } catch (err: any) {
+      const extractedErrors = extractValidationErrors(err);
+      console.error('extracted geocoder errors', extractedErrors);
+      setErrors(extractValidationErrors(err));
+      return;
+    }
+
+    let data: any = {
+      ...formValues,
+      // Convert the date to ISODateString
+      startDate: formValues.startDate?.toISOString()!,
+      endDate: formValues.endDate?.toISOString(),
+      categories: getCheckedElements(categoryCheckboxesState),
+      location: {
+        ...getAddressDataFromGeocoderResult(formValues.geocoderResult!),
+      },
+    };
+
+    try {
+      eventCreateValidationSchema.validateSync(data, { abortEarly: false });
+      eventCreationCategoriesSchema.validateSync(data, { abortEarly: false });
+    } catch (err: any) {
+      console.error(err);
+      setErrors(extractValidationErrors(err));
+      return;
+    }
+
+    if (formValues.imageFile) {
+      const randomFileName: string = generateFilename(session?.user?._id);
+
+      const fileParams: S3PutObjectCommandParams = {
+        Bucket: process.env.NEXT_PUBLIC_SPACES_AVATAR_BUCKET_PATH!,
+        Key: `event_images/${randomFileName}`,
+        Body: formValues.imageFile,
+        ACL: 'public-read',
+      };
+      const cdnResolvePath = `${process.env.NEXT_PUBLIC_SPACES_AVATAR_CDN_PATH}/event_images/${randomFileName}`;
+      try {
+        console.info('Attempting to load image to s3');
+        const upLoader: SpacesFileUploader = new SpacesFileUploader();
+        await upLoader.uploadObject(fileParams);
+        data = {
+          ...data,
+          imageUrl: cdnResolvePath,
+        };
+        console.log('image uploaded', cdnResolvePath);
+      } catch (e: any) {
+        console.error('S3 upload error', e.message);
+      }
+    }
+
+    try {
+      const res = await EventClient.postCreateEvent(data);
+      console.info('Event posted to API...redirecting to event page', res._id);
+      router.push(`/events/${res._id}`);
+    } catch (e: any) {
+      console.error('Error creating event', e.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <Box
       p={'5%'}
@@ -202,7 +294,9 @@ export default function CreateEventPage() {
                 containerStyles={{ marginTop: 1 }}
                 value={formValues.startDate}
                 onDateTimeChange={(date) => setFormValues((prev) => ({ ...prev, startDate: date }))}
+                disablePast={true}
               />
+              <ErrorComponent fieldName='startDate' errors={errors} />
             </Box>
             <Box>
               <Typography
@@ -217,8 +311,29 @@ export default function CreateEventPage() {
                 containerStyles={{ marginTop: 1 }}
                 value={formValues.endDate}
                 onDateTimeChange={(date) => setFormValues((prev) => ({ ...prev, endDate: date }))}
+                minDate={formValues.startDate!}
               />
+              <ErrorComponent fieldName='endDate' errors={errors} />
             </Box>
+          </Box>
+        </StyledFormFieldSection>
+        <StyledFormFieldSection>
+          <Box id='categories-section'>
+            <Typography
+              color={theme.palette.primary.thirdColorIceLight}
+              sx={{
+                fontSize: profileFormHeaderSizes,
+                mb: 1,
+              }}
+            >
+              Tag the event with categories (optional)
+            </Typography>
+            <CheckboxGroup
+              referenceDictionary={CategoryDict}
+              checkBoxElementsStatus={categoryCheckboxesState}
+              setCheckboxElementsStatus={setCategoryCheckboxesState}
+              customStyles={styles.checkboxGroup}
+            />
           </Box>
         </StyledFormFieldSection>
         <StyledFormFieldSection sx={{ mt: 2, mb: 2 }}>
@@ -232,7 +347,16 @@ export default function CreateEventPage() {
             >
               Where is this event taking place?
             </Typography>
-            <AddressAutocomplete onLocationSelected={(location) => console.log(location)} />
+            <AddressAutocomplete
+              componentName={'geocoderResult'}
+              onLocationSelected={(location) =>
+                setFormValues((prev) => ({
+                  ...prev,
+                  geocoderResult: location as any,
+                }))
+              }
+            />
+            <ErrorComponent fieldName='geocoderResult' errors={errors} />
           </Box>
         </StyledFormFieldSection>
         <StyledFormFieldSection>
@@ -262,22 +386,27 @@ export default function CreateEventPage() {
           </Box>
         </StyledFormFieldSection>
         <StyledFormFieldSection>
-          <Box id='user-actions' mt={5} display='flex' gap={3} justifyContent={'right'}>
-            <Button sx={{ textTransform: 'none' }}>
-              <Typography sx={{ color: theme.palette.primary.burntOrangeCancelError }}>
-                Cancel
-              </Typography>
-            </Button>
-            <CommonButton
-              variant='outlined'
-              label='Create Event'
-              borderColor={theme.palette.primary.greenConfirmation}
-              textColor={theme.palette.primary.greenConfirmation}
-              onButtonClick={handleSubmitCreateEvent}
-              borderRadius={'2px'}
-              borderWidth={'1px'}
-            />
-          </Box>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <Box id='user-actions' mt={5} display='flex' gap={3} justifyContent={'right'}>
+              <Button sx={{ textTransform: 'none' }}>
+                <Typography sx={{ color: theme.palette.primary.burntOrangeCancelError }}>
+                  Cancel
+                </Typography>
+              </Button>
+              <CommonButton
+                variant='outlined'
+                label='Create Event'
+                borderColor={theme.palette.primary.greenConfirmation}
+                textColor={theme.palette.primary.greenConfirmation}
+                onButtonClick={handleSubmitCreateEvent}
+                borderRadius={'2px'}
+                borderWidth={'1px'}
+                disabled={isLoading}
+              />
+            </Box>
+          )}
         </StyledFormFieldSection>
       </Box>
     </Box>

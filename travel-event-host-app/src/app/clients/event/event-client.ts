@@ -127,4 +127,36 @@ export const EventClient = {
     }
     throw new Error('Error: Cannot fetch event participants');
   },
+  postCreateEvent: async ({
+    title,
+    description,
+    imageUrl,
+    location,
+    categories,
+    startDate,
+    endDate,
+  }: Partial<UserEvent>): Promise<{ _id: string }> => {
+    const endPoint = `/api/events`;
+    const response = await fetch(endPoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        imageUrl,
+        location,
+        categories,
+        startDate,
+        endDate,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Error: Cannot create event');
+    }
+    const res = await response.json();
+    console.log('res', res);
+    return res;
+  },
 };
