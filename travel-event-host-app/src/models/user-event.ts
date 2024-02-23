@@ -14,10 +14,12 @@ export interface UserEvent {
     country: string;
     state: string;
     city: string;
+    formattedAddress: string;
     coords: {
       lat: number;
-      long: number;
+      lng: number;
     };
+    place_id: string;
   };
   startDate: Date;
   endDate: Date;

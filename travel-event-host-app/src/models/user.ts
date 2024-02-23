@@ -12,8 +12,9 @@ export interface User {
     city?: string;
     coords?: {
       lat?: number;
-      long?: number;
+      lng?: number;
     };
+    place_id: string;
   };
   isAdmin?: boolean;
 }
