@@ -5,7 +5,7 @@ export const HeroSection = () => {
   return (
     <div className={styles.crowdImageContainer}>
       <Image src='/images/hero/crowd.svg' alt='crowd' className={styles.crowdImage} fill />
-      <div className={styles.overlayArea}>
+      <div className={`${styles.overlayArea} w-screen !max-w-full`} >
         <div className={`${styles.overlayContentContainer} sm:mt-10 md:mt-20 lg:mt-44`}>
           <div className='headerContainer'>
             <p className='heroTextHeader font-bold text-1xl sm:text-xl md:text-3xl lg:text-5xl'>
