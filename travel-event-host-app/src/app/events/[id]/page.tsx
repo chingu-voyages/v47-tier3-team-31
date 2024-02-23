@@ -11,6 +11,7 @@ import UserListContainer from '@/components/user-list-container/UserListContaine
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
+import { DeleteForever } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { Alert, Box, Typography, styled } from '@mui/material';
@@ -113,8 +114,16 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
     }
   };
 
+  const handleDeleteEventButtonClicked = async () => {
+    // This action will cause a confirmation dialog to appear
+  };
+
   const isSessionUserAttendingEvent = (): boolean => {
     return !!userEvent?.participants.find((p) => p.userId === session?.user?._id);
+  };
+
+  const isSessionUserEventHost = (): boolean => {
+    return userEvent?.eventCreatorId === session?.user?._id;
   };
 
   return (
@@ -291,6 +300,20 @@ export default function EventDetailsPage({ params: { id } }: EventDetailsPagePro
                     disabled={isLoading || (userEvent && isEventInPast(userEvent))}
                   />
                 </>
+              )}
+              {status === AuthStatus.Authenticated && isSessionUserEventHost() && (
+                <CommonButton
+                  label='Delete this event'
+                  variant='text'
+                  textColor={theme.palette.primary.burntOrangeCancelError}
+                  baseButtonStyles={{
+                    width: '100%',
+                    fontSize: ['0.8rem', '0.8rem', '1rem', '1.2rem', '1.4rem'],
+                  }}
+                  startIcon={<DeleteForever />}
+                  onButtonClick={handleDeleteEventButtonClicked}
+                  disabled={isLoading || (userEvent && isEventInPast(userEvent))}
+                />
               )}
             </Box>
           </Box>
