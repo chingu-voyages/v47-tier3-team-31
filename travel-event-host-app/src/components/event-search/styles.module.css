@@ -50,6 +50,12 @@
 .filterBox {
   min-width: 276px;
 }
+.filterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 1em;
+}
 @media (max-width: 800px) {
   .closeIcon {
     display: block !important;
@@ -83,7 +89,7 @@
     display: block;
   }
   .filterContainer {
-    flex-direction: row !important;
+    margin-bottom: 1em;
   }
 }
 @media (max-width: 719px) {

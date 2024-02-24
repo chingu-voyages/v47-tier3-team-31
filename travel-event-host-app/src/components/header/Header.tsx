@@ -32,6 +32,7 @@ export default function Header() {
   const router = useRouter();
 
   const navigateToMyProfile = () => {
+    setnavMenuIsOpen(false);
     // User is authenticated, so we can navigate to their user portal
     if (status === AuthStatus.Authenticated && session?.user) {
       router.push(`/users/${session.user._id}`);
@@ -230,27 +231,27 @@ export default function Header() {
           }}
         >
           <Box>
-            <NavButton variant='text' color='inherit'>
+            <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
               <Link href='/'>Home</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit'>
+            <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
               <Link href='/events/upcoming'>Upcoming Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit'>
+            <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
               <Link href='/events/search'>Search Events</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit'>
-              <Link href='/'>Create Event</Link>
+            <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
+              <Link href='/events/create'>Create Event</Link>
             </NavButton>
           </Box>
           <Box>
-            <NavButton variant='text' color='inherit'>
+            <NavButton variant='text' color='inherit' onClick={() => setnavMenuIsOpen(false)}>
               <Link href='/'>About Us</Link>
             </NavButton>
           </Box>

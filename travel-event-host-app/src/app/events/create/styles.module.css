@@ -1,0 +1,6 @@
+.checkboxGroup {
+  background-color: var(--third-color-ice-light);
+  color: black;
+  padding: 1em;
+  border-radius: 5px;
+}

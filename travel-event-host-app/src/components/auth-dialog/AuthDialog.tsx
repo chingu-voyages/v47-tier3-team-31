@@ -2,6 +2,7 @@
 
 import { AuthClient } from '@/app/clients/auth-client/auth-client';
 import { SignInAPIResponse } from '@/app/clients/auth-client/signin-api-response';
+import { getLocationPostDataFromGeocoderResult } from '@/app/integration/google-maps-api/address-helper';
 import { signInValidationSchema } from '@/lib/yup-validators/signin/signin-validator';
 import { signUpValidationSchema } from '@/lib/yup-validators/signup/signup-validators';
 import { extractValidationErrors } from '@/lib/yup-validators/utils/extract-validation-errors';
@@ -22,7 +23,9 @@ import {
   styled,
   useTheme,
 } from '@mui/material';
-import { ChangeEventHandler, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { SignInFields } from './sign-in-fields/SignInFields';
 import { SignUpFields } from './sign-up-fields/SignUpFields';
@@ -37,32 +40,54 @@ interface AuthDialogProps {
 
 export default function AuthDialog(props: AuthDialogProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [formValues, setFormValues] = useState<
+    Record<string, string | google.maps.GeocoderResult | null>
+  >({ firstName: '', lastName: '', email: '', password1: '', password2: '', location: null });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiErrors, setApiErrors] = useState<Record<string, string[]> | undefined>(undefined); // Errors returned from the API [
   const theme = useTheme();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const errorMessage = searchParams.get('error');
+
+    if (errorMessage) {
+      setErrors({
+        email: ['Please check your credentials and try again'],
+        password1: ['Please check your credentials and try again'],
+      });
+      setApiErrors({ apiError: ['We could not sign you in.'] });
+    }
+  }, []);
 
   const handleSubmit = async () => {
     // Validate the signup form
     if (props.authDialogType === 'signup') {
+      console.log('49 signup', formValues);
       try {
         signUpValidationSchema.validateSync(formValues, { abortEarly: false });
       } catch (err: any) {
         const validationErrors = extractValidationErrors(err);
+        console.log('54 validationError', validationErrors);
         setErrors(validationErrors);
         return;
       }
 
       setIsLoading(true);
 
-      // Try to register the user
+      // Try to register the user. Google location data needs to be adapted.
       try {
         console.info('Attempting to register user...');
         await AuthClient.registerUser({
-          email: formValues.email,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          password: formValues.password1,
+          email: formValues.email as string,
+          firstName: formValues.firstName as string,
+          lastName: formValues.lastName as string,
+          password: formValues.password1 as string,
+          location: {
+            ...getLocationPostDataFromGeocoderResult(
+              formValues.location as google.maps.GeocoderResult,
+            ),
+          },
         });
         console.info('Registration successful');
       } catch (e: any) {
@@ -78,8 +103,8 @@ export default function AuthDialog(props: AuthDialogProps) {
         console.info('Signup successful - attempting to signin immediately');
         // Attempt to sign in immediately
         await AuthClient.signInUser({
-          email: formValues.email,
-          password: formValues.password1,
+          email: formValues.email as string,
+          password: formValues.password1 as string,
           isRegistering: true,
           callbackUrl: '/',
         });
@@ -106,8 +131,8 @@ export default function AuthDialog(props: AuthDialogProps) {
       // Complete the signin. The nextAuth signin function will handle the default redirect,
       // or we can specify a redirect URL in the signInUser function
       const res: SignInAPIResponse = await AuthClient.signInUser({
-        email: formValues.email,
-        password: formValues.password1,
+        email: formValues.email as string,
+        password: formValues.password1 as string,
         callbackUrl: '/',
       });
 
@@ -119,7 +144,7 @@ export default function AuthDialog(props: AuthDialogProps) {
   };
 
   const handleFormValueChanged = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    setFormValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
@@ -135,7 +160,7 @@ export default function AuthDialog(props: AuthDialogProps) {
             margin: 0,
           },
         },
-        marginTop: ['-250px', '-250px', '-260px'],
+        marginTop: ['50px', '50px', '60px'],
       }}
     >
       <>
@@ -219,6 +244,13 @@ export default function AuthDialog(props: AuthDialogProps) {
                   Continue with Github{' '}
                 </Button>
               </Box>
+              {props.authDialogType === 'signin' && (
+                <Box alignSelf={'center'} mt={2}>
+                  <Button variant='text' sx={{ color: theme.palette.primary.lightIndigo }}>
+                    <Link href='/auth/signup'>Signup with e-mail</Link>
+                  </Button>
+                </Box>
+              )}
             </Box>
             <Divider
               sx={{
@@ -243,7 +275,9 @@ export default function AuthDialog(props: AuthDialogProps) {
                 }}
               />
             </Divider>
-            <form>{renderFormFields(props.authDialogType, handleFormValueChanged, errors)}</form>
+            <form>
+              {renderFormFields(props.authDialogType, handleFormValueChanged, formValues, errors)}
+            </form>
           </DialogContent>
           <DialogActions
             sx={{
@@ -288,12 +322,13 @@ export default function AuthDialog(props: AuthDialogProps) {
 function renderFormFields(
   authDialogType: 'signin' | 'signup',
   handleValueChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
+  formValues: Record<string, string | google.maps.GeocoderResult | null>,
   errors: Record<string, string[]>,
 ) {
   if (authDialogType === 'signup') {
-    return SignUpFields(handleValueChanged, errors);
+    return SignUpFields(handleValueChanged, errors, formValues as Record<string, string>);
   }
-  return SignInFields(handleValueChanged, errors);
+  return SignInFields(handleValueChanged, errors, formValues as Record<string, string>);
 }
 
 const StyledButton = styled(Button)(({ theme }) => ({

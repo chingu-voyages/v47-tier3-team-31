@@ -5,7 +5,10 @@ import Image from 'next/image';
 import { CommonButton } from '../common-button/Common-Button';
 import styles from './create-event.module.css';
 
-export function CreateEventSection() {
+interface CreateEventSectionProps {
+  onCreateEventButtonClick?: () => void;
+}
+export function CreateEventSection({ onCreateEventButtonClick }: CreateEventSectionProps) {
   const theme = useTheme();
   return (
     <Box
@@ -80,6 +83,7 @@ export function CreateEventSection() {
         >
           <CommonButton
             label='Create Event'
+            onButtonClick={() => onCreateEventButtonClick && onCreateEventButtonClick()}
             textColor={theme.palette.primary.thirdColorIceLight}
             backgroundColor={theme.palette.primary.primaryColorDarkBlue}
             borderColor={theme.palette.primary.thirdColorIceLight}

@@ -5,6 +5,7 @@ import {
   textInputPaddings,
 } from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
+import { AddressAutocomplete } from '@/components/address-autocomplete/AddressAutocomplete';
 import { Box, Typography } from '@mui/material';
 import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
@@ -13,6 +14,7 @@ import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/Cus
 export const SignUpFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
+  formValues: Record<string, string>,
 ) => {
   return (
     <Box className='signupFormFields'>
@@ -39,6 +41,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.email}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -72,6 +75,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.firstName}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -105,6 +109,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.lastName}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -138,6 +143,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.password1}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -171,6 +177,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.password2}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -180,6 +187,29 @@ export const SignUpFields = (
           }}
         />
         <ErrorComponent fieldName='password2' errors={errors} />
+      </StyledFormFieldSection>
+      <StyledFormFieldSection>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          Where are you located?
+        </Typography>
+        <AddressAutocomplete
+          componentName='location'
+          onLocationSelected={(location) =>
+            handleInputChanged &&
+            handleInputChanged({ target: { name: 'location', value: location } } as any)
+          }
+        />
+        <Box>
+          <ErrorComponent fieldName='location.address_components' errors={errors} />
+          <ErrorComponent fieldName='location.formatted_address' errors={errors} />
+          <ErrorComponent fieldName='location.place_id' errors={errors} />
+        </Box>
+        <ErrorComponent fieldName='location' errors={errors} />
       </StyledFormFieldSection>
     </Box>
   );

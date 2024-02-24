@@ -7,6 +7,6 @@ declare module 'next-auth' {
     id?: string;
   }
   interface Session {
-    user?: Partial<User>;
+    user?: DefaultUser & Partial<User> & { _id: string };
   }
 }

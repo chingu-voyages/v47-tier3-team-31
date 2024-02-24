@@ -5,7 +5,7 @@ import { SecureUser } from '@/types/secure-user';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: any) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   await connectMongoDB();
 
   const { id } = params;
@@ -18,7 +18,7 @@ export async function GET(req: Request, { params }: any) {
   return NextResponse.json({ message: `User ${id} not found.` }, { status: 404 });
 }
 
-export async function PATCH(req: Request, { params }: any) {
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   if (!mongoose.Types.ObjectId.isValid(id))

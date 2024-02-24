@@ -17,7 +17,13 @@ export const EventClient = {
       throw new Error('Error: Cannot fetch event');
     }
   },
-  getEventsBySearchQuery: async (keyword: string, categories: Category[]): Promise<UserEvent[]> => {
+  getEventsBySearchQuery: async (
+    keyword?: string,
+    categories?: Category[],
+    eventCreatorId?: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<UserEvent[]> => {
     try {
       const searchParams = new URLSearchParams();
 
@@ -30,6 +36,13 @@ export const EventClient = {
       if (keyword) {
         searchParams.append('keyword', keyword);
       }
+
+      if (eventCreatorId) {
+        searchParams.append('eventCreatorId', eventCreatorId);
+      }
+
+      if (page) searchParams.append('page', page.toString());
+      if (pageSize) searchParams.append('pageSize', pageSize.toString());
 
       const endPoint = `/api/events/search?${searchParams.toString()}`;
 
@@ -126,5 +139,37 @@ export const EventClient = {
       return data;
     }
     throw new Error('Error: Cannot fetch event participants');
+  },
+  postCreateEvent: async ({
+    title,
+    description,
+    imageUrl,
+    location,
+    categories,
+    startDate,
+    endDate,
+  }: Partial<UserEvent>): Promise<{ _id: string }> => {
+    const endPoint = `/api/events`;
+    const response = await fetch(endPoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        imageUrl,
+        location,
+        categories,
+        startDate,
+        endDate,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Error: Cannot create event');
+    }
+    const res = await response.json();
+    console.log('res', res);
+    return res;
   },
 };

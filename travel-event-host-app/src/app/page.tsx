@@ -3,9 +3,12 @@ import { CategoriesSection } from '@/components/categories-section/CategoriesSec
 import { CreateEventSection } from '@/components/create-event-section/Create-event-section';
 import { EventsSection } from '@/components/events-section/Events-section';
 import { HeroSection } from '@/components/hero/Hero-Section';
+import { useAuthContext } from '@/lib/auth-context';
+import { AuthStatus } from '@/lib/auth-status';
 import { UserEvent } from '@/models/user-event';
 import { EventTimeLine } from '@/types/event-timeline';
 import { Box } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EventClient } from './clients/event/event-client';
 
@@ -14,21 +17,35 @@ export default function Home() {
   const [userEvents, setUserEvents] = useState<UserEvent[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
+  const { status } = useAuthContext();
+  const router = useRouter();
+
   useEffect(() => {
     fetchUserEvents();
-  }, []); // Initial load of user events on the home page
+  }, [pageNumber]); // loading of user events on the home page
 
   const fetchUserEvents = async () => {
     setIsLoading(true);
     // Fetch events
     try {
-      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber);
-      setUserEvents([...reponse.events]); // TODO: This may be a bug, we may need to append the events to the existing events
+      const reponse = await EventClient.getAllEvents(EventTimeLine.Upcoming, pageNumber, 4);
+      setUserEvents([...userEvents, ...reponse.events]);
       setIsLoading(false);
     } catch (error: any) {
       console.error(error);
       setIsLoading(false);
     }
+  };
+
+  const handleCreateEventButtonClicked = async () => {
+    // If the user is authenticated, redirect to the create event page
+    // otherwise, redirect to the login page
+    if (status === AuthStatus.Authenticated) {
+      router.push('/events/create');
+      return;
+    }
+
+    router.push('/auth/signin');
   };
 
   return (
@@ -39,7 +56,7 @@ export default function Home() {
           <EventsSection
             title='Upcoming Events'
             hostedEvents={userEvents}
-            onLoadMoreEventsButtonClicked={() => {}}
+            onLoadMoreEventsButtonClicked={() => setPageNumber(pageNumber + 1)}
             isLoading={isLoading}
           />
         </Box>
@@ -47,7 +64,7 @@ export default function Home() {
           <CategoriesSection />
         </Box>
         <Box>
-          <CreateEventSection />
+          <CreateEventSection onCreateEventButtonClick={handleCreateEventButtonClicked} />
         </Box>
       </Box>
     </Box>

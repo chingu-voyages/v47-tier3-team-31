@@ -27,9 +27,9 @@ export const ErrorComponent = ({
         }}
       >
         {errors[fieldName].map((error, index) => (
-          <Box key={fieldName} display='flex'>
+          <Box key={`${index}_${fieldName}`} display='flex'>
             <ErrorIcon
-              key={fieldName}
+              key={`${index}_${fieldName}`}
               sx={{
                 fontSize: '1rem',
                 color: theme.palette.primary.burntOrangeCancelError,

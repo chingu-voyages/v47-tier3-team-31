@@ -1,29 +1,11 @@
 'use client';
 
-import { Category } from '@/lib/category';
-
+import { CheckboxGroup } from '@/components/checkbox-group/CheckboxGroup';
 import { CategoryDict } from '@/lib/category-dictionary';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  MenuItem,
-  Select,
-  Typography,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Box, IconButton, MenuItem, Select, Typography } from '@mui/material';
+import { useState } from 'react';
 import styles from '../styles.module.css';
-
-const updateCategories = () => {
-  let updateCategories: { [key in string]: boolean } = {};
-
-  Object.values(Category).map((category: string) => (updateCategories[category] = false));
-
-  return updateCategories;
-};
 
 export const EventSearchFilterBox = ({
   setCategories,
@@ -38,9 +20,6 @@ export const EventSearchFilterBox = ({
 }) => {
   const [day, setDay] = useState('Any day');
   const [distance, setDistance] = useState('Any distance');
-  useEffect(() => {
-    setCategories(updateCategories());
-  }, []);
 
   const handleDayChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setDay(event.target.value);
@@ -48,10 +27,6 @@ export const EventSearchFilterBox = ({
 
   const handleDistanceChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setDistance(event.target.value);
-  };
-
-  const handleCategoryChange = (event: { target: { name: any; checked: any } }) => {
-    setCategories({ ...categories, [event.target.name]: event.target.checked });
   };
 
   return (
@@ -93,20 +68,13 @@ export const EventSearchFilterBox = ({
           <MenuItem value='1000km'>1000km</MenuItem>
         </Select>
         <Typography variant='h6'>Event Type</Typography>
-        <FormGroup
-          className={styles.filterContainer}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-        >
-          {Object.entries(categories).map(([category, checked]) => (
-            <FormControlLabel
-              key={category}
-              control={
-                <Checkbox checked={checked} onChange={handleCategoryChange} name={category} />
-              }
-              label={CategoryDict[category as Category]}
-            />
-          ))}
-        </FormGroup>
+        {/* Categories checkboxes here */}
+        <CheckboxGroup
+          state={categories}
+          setStateFunction={setCategories}
+          dictionary={CategoryDict}
+          customStyles={styles.filterContainer}
+        />
       </Box>
     </div>
   );

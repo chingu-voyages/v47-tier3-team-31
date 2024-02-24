@@ -2,34 +2,60 @@ import { connectMongoDB } from '@/lib/mongodb';
 import { UserEvent } from '@/models/user-event';
 import { EventRepository } from '@/schemas/user-event';
 import { EventTimeLine } from '@/types/event-timeline';
-import { NextResponse } from 'next/server';
 
+import { getServerSession } from 'next-auth';
+import { NextRequest, NextResponse } from 'next/server';
+import {
+  eventCreateValidationSchema,
+  eventCreationCategoriesSchema,
+  eventLocationRouteValidationSchema,
+} from '../../../lib/yup-validators/event/event-create-validation.schema';
+import authOptions from '../auth/auth-options';
 export async function POST(req: Request) {
-  let {
-    title,
-    description = '',
-    eventCreatorId, // This should come from the session
-    location,
-    startDate,
-    endDate,
-    categories,
-  } = (await req.json()) as Partial<UserEvent>;
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+  const requestBody = await req.json();
+
+  // Validate
+  try {
+    await eventCreateValidationSchema.validate(requestBody, { abortEarly: false });
+  } catch (e) {
+    return NextResponse.json(e, { status: 400 });
+  }
+
+  try {
+    await eventCreationCategoriesSchema.validate(requestBody, { abortEarly: false });
+  } catch (e) {
+    return NextResponse.json(e, { status: 400 });
+  }
+
+  try {
+    await eventLocationRouteValidationSchema.validate(requestBody, { abortEarly: false });
+  } catch (e) {
+    return NextResponse.json(e, { status: 400 });
+  }
+
+  const { title, description, location, startDate, endDate, categories, imageUrl } =
+    requestBody as Partial<UserEvent>;
 
   await connectMongoDB();
 
   const newEvent = await EventRepository.create({
     title,
     description,
-    eventCreatorId,
     location,
     startDate,
     endDate,
     categories,
+    imageUrl,
+    eventCreatorId: session.user._id,
   });
 
-  return NextResponse.json({ message: 'event created the id is ' + newEvent.id }, { status: 201 });
+  return NextResponse.json({ _id: newEvent.id }, { status: 201 });
 }
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
   const timeline: string = searchParams.get('timeline') || EventTimeLine.All;
@@ -37,6 +63,7 @@ export async function GET(req: Request) {
   const pageSize: number = parseInt(searchParams.get('pageSize') || '50', 10);
 
   let pipeline: any[] = [];
+
   if (timeline === EventTimeLine.Upcoming) {
     pipeline = pipeline.concat({
       $match: { startDate: { $gte: new Date() } },

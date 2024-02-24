@@ -1,5 +1,19 @@
 .userEventImage {
   position: relative !important;
-  width: 200px;
-  height: 100px;
+  width: 240px !important;
+  height: 135px !important;
+}
+
+@media only screen and (min-width: 600px) {
+  .userEventImage {
+    width: 400px !important;
+    height: 225px !important;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .userEventImage {
+    width: 600px !important;
+    height: 337.5px !important;
+  }
 }

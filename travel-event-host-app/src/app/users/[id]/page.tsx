@@ -24,6 +24,7 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
   const [user, setUser] = useState<SecureUser | undefined>(undefined);
 
   const [upcomingEvents, setUpcomingEvents] = useState<UserEvent[]>([]);
+  const [hostedEvents, setHostedEvents] = useState<UserEvent[]>([]);
   const [pastEvents, setPastEvents] = useState<UserEvent[]>([]);
 
   const [error, setError] = useState<string | undefined>(undefined);
@@ -39,9 +40,13 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
       const fetchedUser = await UserClient.getUserById(id);
       const upcomingEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Upcoming);
       const userPastEvents = await EventClient.getEventsByUserId(id, EventTimeLine.Past);
+      // Get the events hosted by the user
+      const hostedEvents = await EventClient.getEventsBySearchQuery(undefined, undefined, id);
+
       setUser(fetchedUser);
       setUpcomingEvents(upcomingEvents!);
       setPastEvents(userPastEvents!);
+      setHostedEvents(hostedEvents!);
       showLoading && setIsLoading(false);
     } catch (e: any) {
       setError(e.message);
@@ -112,6 +117,16 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
         }}
       >
         {/* Do we want just any user to see some user's upcoming events? */}
+        {hostedEvents && hostedEvents.length > 0 && (
+          <Box>
+            <EventsSection
+              title="Events I'm hosting"
+              hostedEvents={hostedEvents}
+              onLoadMoreEventsButtonClicked={() => {}}
+              isLoading={isLoading}
+            />
+          </Box>
+        )}
         <Box>
           <EventsSection
             title='Upcoming events'

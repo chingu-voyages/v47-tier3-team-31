@@ -2,9 +2,9 @@ import { userIdValidator } from '@/app/api/endpoint-validation/schemas/user-id-v
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
 import mongoose from 'mongoose';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function PATCH(req: Request, { params }: any) {
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
   const requestBody = await req.json();
   // Validate request body for userId
