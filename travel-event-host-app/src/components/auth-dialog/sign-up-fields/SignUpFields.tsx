@@ -1,15 +1,12 @@
-import {
-  profileFormHeaderSizes,
-  textInputFieldFontSizes,
-  textInputFieldHeights,
-  textInputPaddings,
-} from '@/app/common-styles/form-field-sizes';
-import theme from '@/app/theme';
 import { AddressAutocomplete } from '@/components/address-autocomplete/AddressAutocomplete';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
-import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/CustomFields';
+import {
+  CustomTextField,
+  FormFieldLabel,
+  StyledFormFieldSection,
+} from '../../custom-fields/CustomFields';
 
 export const SignUpFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
@@ -19,14 +16,7 @@ export const SignUpFields = (
   return (
     <Box className='signupFormFields'>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          E-mail
-        </Typography>
+        <FormFieldLabel>E-mail</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -42,25 +32,11 @@ export const SignUpFields = (
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
           value={formValues.email}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='email' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          First name
-        </Typography>
+        <FormFieldLabel>First name</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -76,25 +52,11 @@ export const SignUpFields = (
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
           value={formValues.firstName}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='firstName' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          Last name
-        </Typography>
+        <FormFieldLabel>Last name</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -110,25 +72,11 @@ export const SignUpFields = (
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
           value={formValues.lastName}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='lastName' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          Your password
-        </Typography>
+        <FormFieldLabel>Your password</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -144,25 +92,11 @@ export const SignUpFields = (
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
           value={formValues.password1}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='password1' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          Confirm your password
-        </Typography>
+        <FormFieldLabel>Confirm your password</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -178,25 +112,11 @@ export const SignUpFields = (
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
           value={formValues.password2}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='password2' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          Where are you located?
-        </Typography>
+        <FormFieldLabel marginBottom={'6px'}>Where are you located?</FormFieldLabel>
         <AddressAutocomplete
           componentName='location'
           onLocationSelected={(location) =>

@@ -45,7 +45,7 @@ export const AuthClient = {
       callbackUrl: callbackUrl,
     });
 
-    if (!res) {
+    if (res === null) {
       if (isRegistering) {
         throw new Error('We have experienced an error. Please contact support.');
       }
@@ -58,7 +58,7 @@ export const AuthClient = {
     }
 
     // This is to handle basic sign in
-    if (res.ok) return { success: true };
+    if (res?.ok) return { success: true };
     return {
       success: false,
       errors: {

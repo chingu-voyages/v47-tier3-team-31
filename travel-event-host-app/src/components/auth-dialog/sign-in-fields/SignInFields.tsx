@@ -1,14 +1,11 @@
-import {
-  profileFormHeaderSizes,
-  textInputFieldFontSizes,
-  textInputFieldHeights,
-  textInputPaddings,
-} from '@/app/common-styles/form-field-sizes';
-import theme from '@/app/theme';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
-import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/CustomFields';
+import {
+  CustomTextField,
+  FormFieldLabel,
+  StyledFormFieldSection,
+} from '../../custom-fields/CustomFields';
 
 export const SignInFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
@@ -18,14 +15,7 @@ export const SignInFields = (
   return (
     <Box className='loginFormFields'>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          E-mail
-        </Typography>
+        <FormFieldLabel>E-mail</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -41,25 +31,11 @@ export const SignInFields = (
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
           value={formValues.email}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='email' errors={errors} />
       </StyledFormFieldSection>
       <StyledFormFieldSection>
-        <Typography
-          color={theme.palette.primary.thirdColorIceLight}
-          sx={{
-            fontSize: profileFormHeaderSizes,
-          }}
-        >
-          Your password
-        </Typography>
+        <FormFieldLabel>Your password</FormFieldLabel>
         <CustomTextField
           autoFocus
           required
@@ -75,13 +51,6 @@ export const SignInFields = (
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
           value={formValues.password1}
-          sx={{
-            '&&& input': {
-              height: textInputFieldHeights,
-              fontSize: textInputFieldFontSizes,
-              padding: textInputPaddings,
-            },
-          }}
         />
         <ErrorComponent fieldName='password1' errors={errors} />
       </StyledFormFieldSection>

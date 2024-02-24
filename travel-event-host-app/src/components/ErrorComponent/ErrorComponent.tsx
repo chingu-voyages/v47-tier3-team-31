@@ -1,3 +1,4 @@
+import { errorMessageFontSizes } from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
 import ErrorIcon from '@mui/icons-material/Error';
 import { Box, Typography } from '@mui/material';
@@ -31,8 +32,10 @@ export const ErrorComponent = ({
             <ErrorIcon
               key={`${index}_${fieldName}`}
               sx={{
-                fontSize: '1rem',
+                fontSize: errorMessageFontSizes,
                 color: theme.palette.primary.burntOrangeCancelError,
+                marginRight: '5px',
+                alignSelf: 'center',
                 ...typographyStyles,
                 ...errorIconStyles,
               }}
@@ -41,7 +44,7 @@ export const ErrorComponent = ({
               key={index}
               sx={{
                 color: theme.palette.primary.burntOrangeCancelError,
-                fontSize: '0.7rem',
+                fontSize: errorMessageFontSizes,
                 ...typographyStyles,
               }}
             >
