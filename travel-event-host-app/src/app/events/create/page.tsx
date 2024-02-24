@@ -329,9 +329,9 @@ export default function CreateEventPage() {
               Tag the event with categories (optional)
             </Typography>
             <CheckboxGroup
-              referenceDictionary={CategoryDict}
-              checkBoxElementsStatus={categoryCheckboxesState}
-              setCheckboxElementsStatus={setCategoryCheckboxesState}
+              state={categoryCheckboxesState}
+              dictionary={CategoryDict}
+              setStateFunction={setCategoryCheckboxesState}
               customStyles={styles.checkboxGroup}
             />
           </Box>

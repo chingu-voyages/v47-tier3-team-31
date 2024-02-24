@@ -70,9 +70,9 @@ export const EventSearchFilterBox = ({
         <Typography variant='h6'>Event Type</Typography>
         {/* Categories checkboxes here */}
         <CheckboxGroup
-          checkBoxElementsStatus={categories}
-          setCheckboxElementsStatus={setCategories}
-          referenceDictionary={CategoryDict}
+          state={categories}
+          setStateFunction={setCategories}
+          dictionary={CategoryDict}
           customStyles={styles.filterContainer}
         />
       </Box>
