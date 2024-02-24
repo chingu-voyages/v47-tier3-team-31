@@ -14,6 +14,7 @@ import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/Cus
 export const SignUpFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
+  formValues: Record<string, string>,
 ) => {
   return (
     <Box className='signupFormFields'>
@@ -40,6 +41,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.email}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -73,6 +75,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.firstName}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -106,6 +109,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 50 }}
           onChange={handleInputChanged}
+          value={formValues.lastName}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -139,6 +143,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.password1}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -172,6 +177,7 @@ export const SignUpFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.password2}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,

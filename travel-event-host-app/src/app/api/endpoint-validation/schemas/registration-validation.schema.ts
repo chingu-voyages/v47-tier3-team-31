@@ -14,14 +14,15 @@ export const registrationValidationSchema: ObjectSchema<RegistrationUser> = obje
     .max(50, 'lastName is too long'),
   email: string().email('Invalid email address').required('email is required'),
   location: object({
-    country: string().optional(),
-    state: string().optional(),
-    city: string().optional(),
+    country: string().required(),
+    state: string().required(),
+    city: string().required(),
+    place_id: string().required(),
     coords: object({
-      lat: number().optional(),
-      long: number().optional(),
-    }).optional(),
-  }).optional(),
+      lat: number().required(),
+      lng: number().required(),
+    }).required(),
+  }).required(),
   password: string()
     .required('password is required')
     .min(8, 'password is too short')

@@ -13,6 +13,7 @@ import { CustomTextField, StyledFormFieldSection } from '../../custom-fields/Cus
 export const SignInFields = (
   handleInputChanged: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
   errors: Record<string, string[]>,
+  formValues: Record<string, string>,
 ) => {
   return (
     <Box className='loginFormFields'>
@@ -39,6 +40,7 @@ export const SignInFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.email}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,
@@ -72,6 +74,7 @@ export const SignInFields = (
           InputLabelProps={{ shrink: false }}
           inputProps={{ maxLength: 30 }}
           onChange={handleInputChanged}
+          value={formValues.password1}
           sx={{
             '&&& input': {
               height: textInputFieldHeights,

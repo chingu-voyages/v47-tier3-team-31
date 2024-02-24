@@ -1,5 +1,6 @@
-import { object, ref, string } from 'yup';
+import { array, object, ref, string } from 'yup';
 
+// This is front end validation schema for sign up form
 export const signUpValidationSchema = object({
   email: string().required('Email is required').email('Email is invalid'),
   password1: string()
@@ -25,4 +26,10 @@ export const signUpValidationSchema = object({
     .test((value) => {
       return /[\p{Letter}\s]+/gu.test(value);
     }),
+  location: object({
+    address_components: array().required('Address components  missing'),
+    formatted_address: string().required('Formatted address missing'),
+    geometry: object({}).required('geoloc information missing'),
+    place_id: string().required('place id missing'),
+  }).required('Please select your location'),
 });
