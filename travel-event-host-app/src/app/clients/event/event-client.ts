@@ -17,7 +17,13 @@ export const EventClient = {
       throw new Error('Error: Cannot fetch event');
     }
   },
-  getEventsBySearchQuery: async (keyword: string, categories: Category[]): Promise<UserEvent[]> => {
+  getEventsBySearchQuery: async (
+    keyword?: string,
+    categories?: Category[],
+    eventCreatorId?: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<UserEvent[]> => {
     try {
       const searchParams = new URLSearchParams();
 
@@ -30,6 +36,13 @@ export const EventClient = {
       if (keyword) {
         searchParams.append('keyword', keyword);
       }
+
+      if (eventCreatorId) {
+        searchParams.append('eventCreatorId', eventCreatorId);
+      }
+
+      if (page) searchParams.append('page', page.toString());
+      if (pageSize) searchParams.append('pageSize', pageSize.toString());
 
       const endPoint = `/api/events/search?${searchParams.toString()}`;
 

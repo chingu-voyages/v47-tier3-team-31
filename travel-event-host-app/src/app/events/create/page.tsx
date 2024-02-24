@@ -6,7 +6,7 @@ import {
   textInputFieldHeights,
   textInputPaddings,
 } from '@/app/common-styles/form-field-sizes';
-import { getAddressDataFromGeocoderResult } from '@/app/integration/google-maps-api/address-helper';
+import { getLocationPostDataFromGeocoderResult } from '@/app/integration/google-maps-api/address-helper';
 import {
   S3PutObjectCommandParams,
   SpacesFileUploader,
@@ -128,7 +128,7 @@ export default function CreateEventPage() {
       endDate: formValues.endDate?.toISOString(),
       categories: getCheckedElements(categoryCheckboxesState),
       location: {
-        ...getAddressDataFromGeocoderResult(formValues.geocoderResult!),
+        ...getLocationPostDataFromGeocoderResult(formValues.geocoderResult!),
       },
     };
 
