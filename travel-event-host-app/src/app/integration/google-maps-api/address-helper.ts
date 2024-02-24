@@ -1,4 +1,6 @@
-export const getAddressDataFromGeocoderResult = (geocoderResult: google.maps.GeocoderResult) => {
+export const getLocationPostDataFromGeocoderResult = (
+  geocoderResult: google.maps.GeocoderResult,
+) => {
   const addressComponents = geocoderResult.address_components;
   const country = extractCountry(addressComponents);
   const state = extractState(addressComponents);
