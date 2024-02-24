@@ -5,6 +5,7 @@ import {
   textInputPaddings,
 } from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
+import { AddressAutocomplete } from '@/components/address-autocomplete/AddressAutocomplete';
 import { Box, Typography } from '@mui/material';
 import { ChangeEventHandler } from 'react';
 import { ErrorComponent } from '../../ErrorComponent/ErrorComponent';
@@ -180,6 +181,29 @@ export const SignUpFields = (
           }}
         />
         <ErrorComponent fieldName='password2' errors={errors} />
+      </StyledFormFieldSection>
+      <StyledFormFieldSection>
+        <Typography
+          color={theme.palette.primary.thirdColorIceLight}
+          sx={{
+            fontSize: profileFormHeaderSizes,
+          }}
+        >
+          Where are you located?
+        </Typography>
+        <AddressAutocomplete
+          componentName='location'
+          onLocationSelected={(location) =>
+            handleInputChanged &&
+            handleInputChanged({ target: { name: 'location', value: location } } as any)
+          }
+        />
+        <Box>
+          <ErrorComponent fieldName='location.address_components' errors={errors} />
+          <ErrorComponent fieldName='location.formatted_address' errors={errors} />
+          <ErrorComponent fieldName='location.place_id' errors={errors} />
+        </Box>
+        <ErrorComponent fieldName='location' errors={errors} />
       </StyledFormFieldSection>
     </Box>
   );
