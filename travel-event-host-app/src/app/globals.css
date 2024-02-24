@@ -35,3 +35,7 @@ body {
     min-width: 8em;
   }
 }
+
+.pac-container {
+  z-index: 1600 !important;
+}
