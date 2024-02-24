@@ -11,8 +11,6 @@ export function generateInitialCheckboxState(fromObject: Object): { [key in stri
 
 export function loadCheckboxStateFromLocalStorage(): { [key in string]: boolean } | null {
   const state = localStorage.getItem('categoryCheckboxState');
-  if (state) {
-    return JSON.parse(state);
-  }
+  if (state) return JSON.parse(state);
   return null;
 }
