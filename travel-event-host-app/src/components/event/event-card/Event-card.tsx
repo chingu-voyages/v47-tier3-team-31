@@ -122,10 +122,7 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
 */
 function getEventImage(imageUrl?: string): string {
   if (imageUrl) return imageUrl;
-
-  const mockImageCount = 3; // number of mock event images in the mock-images folder
-  const randomImageNumber = Math.floor(Math.random() * mockImageCount) + 1; // random number between 1 and however many mock images there are
-  return `/images/event/mock-images/mock-image-0${randomImageNumber}.svg`; // returns the path to the random mock event image
+  return `/images/event/mock-images/mock-image-01.svg`; // returns the path to the random mock event image
 }
 
 /**

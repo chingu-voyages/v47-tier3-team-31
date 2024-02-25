@@ -33,7 +33,7 @@ export default function UserAvatar({
   const [isErrorImage, setIsErrorImage] = useState<boolean>(false);
 
   return (
-    <Box>
+    <Box display='flex' justifyContent={'center'}>
       <ButtonBase
         onClick={handleAvatarClicked}
         sx={{

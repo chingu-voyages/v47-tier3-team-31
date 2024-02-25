@@ -146,6 +146,7 @@ export function ProfileEditor({
           justifyContent={'center'}
           alignSelf={'center'}
           width={'100%'}
+          flexDirection={'column'}
         >
           <UserAvatar
             user={user}
@@ -158,8 +159,10 @@ export function ProfileEditor({
           />
           {!editDisabled && (
             // Photo upload button
-            <Box>
-              <ImagePicker buttonTitle='Choose Image' onImageSelected={handleAvatarImageChange} />
+            <Box display='flex' justifyContent={'center'} flexDirection={'column'}>
+              <Box>
+                <ImagePicker buttonTitle='Choose Image' onImageSelected={handleAvatarImageChange} />
+              </Box>
               {user?.imageUrl && (
                 <Box display={'flex'} justifyContent={'center'} mt={'10px'}>
                   <Button
@@ -186,6 +189,7 @@ export function ProfileEditor({
           flexDirection={'column'}
           gap={1}
           pr={'1%'}
+          width={'100%'}
           sx={{
             [theme.breakpoints.down(430)]: {
               marginTop: 2,

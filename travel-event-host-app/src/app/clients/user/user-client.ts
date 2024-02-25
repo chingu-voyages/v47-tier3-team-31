@@ -1,3 +1,4 @@
+import { LocationData } from '@/models/location';
 import { SecureUser } from '@/types/secure-user';
 
 export const UserClient = {
@@ -38,6 +39,20 @@ export const UserClient = {
 
     if (!req.ok) {
       throw new Error('Error: Cannot patch user profile');
+    }
+  },
+  patchUserLocationById: async (userId: string, locationData: LocationData): Promise<void> => {
+    const endPoint: string = `/api/users/${userId}/location`;
+    const req = await fetch(endPoint, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(locationData),
+    });
+
+    if (!req.ok) {
+      throw new Error('Error: Cannot patch user location');
     }
   },
 };
