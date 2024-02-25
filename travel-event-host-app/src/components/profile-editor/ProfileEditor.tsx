@@ -1,9 +1,6 @@
 import theme from '@/app/theme';
 
-import {
-  profileFormHeaderSizes,
-  textInputFieldFontSizes,
-} from '@/app/common-styles/form-field-sizes';
+import { profileFormHeaderSizes } from '@/app/common-styles/form-field-sizes';
 import {
   S3PutObjectCommandParams,
   SpacesFileUploader,
@@ -16,16 +13,18 @@ import { Box, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import avatarStyles from '../../app/common-styles/avatar-styles.module.css';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
+import { AddressAutocomplete } from '../address-autocomplete/AddressAutocomplete';
 import { CustomGenericMuiAvatar } from '../avatar/custom-generic-user-avatar/CustomGenericUserAvatar';
 import UserAvatar from '../avatar/user-avatar/UserAvatar';
 import { CustomTextField, StyledFormFieldSection } from '../custom-fields/CustomFields';
 import { ImagePicker } from '../image-picker/ImagePicker';
 
-type EditableProfileFields = 'firstName' | 'lastName' | 'bio' | 'imageUrl';
+type EditableProfileFields = 'firstName' | 'lastName' | 'bio' | 'imageUrl' | 'location';
 
 interface ProfileEditorProps {
   editDisabled?: boolean;
   user?: Partial<SecureUser>;
+  onLocationUpdate?: (location: google.maps.places.PlaceResult | null) => void;
   onProfileUpdate?: (
     formValues: Record<EditableProfileFields, string | null>,
     deleteImageUrl?: boolean,
@@ -33,14 +32,20 @@ interface ProfileEditorProps {
   isLoading?: boolean;
 }
 
-const profilNotEditableContentSizes = ['0.7rem', '0.8rem', '0.9rem', '1.2rem', '1.2rem'];
+const profilNotEditableContentSizes = ['0.9rem', '0.9rem', '1rem', '1.2rem', '1.2rem'];
 
-export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEditorProps) {
+export function ProfileEditor({
+  editDisabled,
+  user,
+  onProfileUpdate,
+  onLocationUpdate,
+}: ProfileEditorProps) {
   const [formValues, setFormValues] = useState<Record<EditableProfileFields, string | null>>({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     bio: user?.bio || '',
     imageUrl: user?.imageUrl || null,
+    location: editDisabled ? formatUserLocation(user!) : user?.location?.formattedAddress || '',
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
@@ -58,6 +63,10 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
 
     // Validation is successful do a callback here with the formValues
     onProfileUpdate && onProfileUpdate(formValues as any);
+  };
+
+  const handleLocationUpdate = (location: google.maps.places.PlaceResult | null) => {
+    onLocationUpdate && onLocationUpdate(location);
   };
 
   const handleAvatarImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +103,7 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
             lastName: formValues.lastName!,
             bio: formValues.bio!,
             imageUrl: cdnResolvePath, // We update the imageUrl
-          });
+          } as any);
       } catch (e: any) {
         console.error(e.message);
       } finally {
@@ -131,7 +140,13 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
           },
         }}
       >
-        <Box className='avatarContainer' alignSelf={'center'}>
+        <Box
+          className='avatarContainer'
+          display={'flex'}
+          justifyContent={'center'}
+          alignSelf={'center'}
+          width={'100%'}
+        >
           <UserAvatar
             user={user}
             MuiAvatarComponent={<CustomGenericMuiAvatar theme={theme} />}
@@ -275,6 +290,44 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
             </StyledFormFieldSection>
           </Box>
           <Box>
+            {/* Location */}
+            <StyledFormFieldSection>
+              {editDisabled ? (
+                <Typography
+                  sx={{
+                    fontSize: profilNotEditableContentSizes,
+                    color: theme.palette.primary.charcoal,
+                  }}
+                >
+                  {formatUserLocation(user!)}
+                </Typography>
+              ) : (
+                <Box>
+                  <Box>
+                    {/* Show the formatted address */}
+                    <Typography
+                      sx={{
+                        fontSize: profilNotEditableContentSizes,
+                        color: theme.palette.primary.charcoal,
+                      }}
+                    >
+                      {user?.location?.formattedAddress || 'No location'}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    {/* Google address field allowing user to change their address */}
+                    <AddressAutocomplete
+                      componentName='location'
+                      onLocationSelected={(location) => {
+                        handleLocationUpdate(location);
+                      }}
+                    />
+                  </Box>
+                </Box>
+              )}
+            </StyledFormFieldSection>
+          </Box>
+          <Box>
             <StyledFormFieldSection
               sx={{
                 '& .MuiFormControl-root': {
@@ -314,16 +367,6 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
                     onChange={(e) =>
                       setFormValues({ ...formValues, [e.target.name]: e.target.value })
                     }
-                    sx={{
-                      '& .MuiInputBase-input': {
-                        fontSize: textInputFieldFontSizes,
-                      },
-                      '&.MuiOutlinedInput-root': {
-                        '&&& input': {
-                          width: '100%',
-                        },
-                      },
-                    }}
                   />
                   <ErrorComponent
                     fieldName='bio'
@@ -340,4 +383,8 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
       </Box>
     </Box>
   );
+}
+
+function formatUserLocation(user: Partial<SecureUser>) {
+  return user?.location?.city ? `${user.location.city}, ${user.location.country}` : 'No location';
 }

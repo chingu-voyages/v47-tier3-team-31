@@ -1,5 +1,6 @@
+import { locationUpdateValidationSchema } from '@/lib/yup-validators/profile-update/location-update/location-update-validator';
 import { User } from '@/models/user';
-import { ObjectSchema, number, object, string } from 'yup';
+import { ObjectSchema, object, string } from 'yup';
 
 interface RegistrationUser extends Omit<User, 'id' | '_id' | 'isAdmin' | 'imageUrl' | 'bio'> {}
 
@@ -13,16 +14,7 @@ export const registrationValidationSchema: ObjectSchema<RegistrationUser> = obje
     .min(2, 'lastName is too short')
     .max(50, 'lastName is too long'),
   email: string().email('Invalid email address').required('email is required'),
-  location: object({
-    country: string().required(),
-    state: string().required(),
-    city: string().required(),
-    place_id: string().required(),
-    coords: object({
-      lat: number().required(),
-      lng: number().required(),
-    }).required(),
-  }).required(),
+  location: locationUpdateValidationSchema,
   password: string()
     .required('password is required')
     .min(8, 'password is too short')

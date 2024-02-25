@@ -1,4 +1,5 @@
 import { Category } from '@/lib/category';
+import { LocationData } from './location';
 
 export interface UserEvent {
   _id: string;
@@ -10,17 +11,7 @@ export interface UserEvent {
     userId: string;
     timeStamp: Date;
   }[];
-  location: {
-    country: string;
-    state: string;
-    city: string;
-    formattedAddress: string;
-    coords: {
-      lat: number;
-      lng: number;
-    };
-    place_id: string;
-  };
+  location: LocationData;
   startDate: Date;
   endDate: Date;
   categories: Category[];

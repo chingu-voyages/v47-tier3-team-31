@@ -1,3 +1,5 @@
+import { LocationData } from './location';
+
 export interface User {
   _id: string;
   firstName: string;
@@ -6,15 +8,6 @@ export interface User {
   email: string;
   password: string;
   bio?: string;
-  location?: {
-    country?: string;
-    state?: string;
-    city?: string;
-    coords?: {
-      lat?: number;
-      lng?: number;
-    };
-    place_id: string;
-  };
+  location?: LocationData;
   isAdmin?: boolean;
 }
