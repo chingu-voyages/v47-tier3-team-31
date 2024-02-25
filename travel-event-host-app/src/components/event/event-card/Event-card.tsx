@@ -100,9 +100,12 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
                       marginTop: '10px',
                       paddingBottom: '10px',
                     },
+                    [theme.breakpoints.down(380)]: {
+                      WebkitLineClamp: 3,
+                    },
                   }}
                 >
-                  {hostedEvent.description || 'Mock event description'}
+                  {hostedEvent.description}
                 </CustomResponsiveTypoGraphy>
               </Box>
             </Box>
@@ -187,7 +190,7 @@ function CalendarDateComponent({ date }: { date: Date }) {
 
 // This will handle the responsive typography for the event card title and description
 const CustomResponsiveTypoGraphy = styled(Typography)(({ theme }) => ({
-  fontSize: '0.5rem',
+  fontSize: '0.7rem',
   [theme.breakpoints.up(380)]: {
     fontSize: '0.9rem',
   },
