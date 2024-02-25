@@ -15,7 +15,6 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import { circularProgressClasses } from '@mui/material/CircularProgress';
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -42,6 +41,19 @@ export default function Header() {
     }
   };
 
+  if (status === AuthStatus.Loading)
+    return (
+      <Box
+        display='flex'
+        justifyContent={'center'}
+        bgcolor={theme.palette.primary.secondaryColorDarkBlack}
+        paddingTop={'1%'}
+        paddingBottom={'1%'}
+      >
+        <Spinner variant='indeterminate' />
+      </Box>
+    );
+
   return (
     <header className={styles.header}>
       <div>
@@ -53,7 +65,7 @@ export default function Header() {
             <MenuIcon />
           </div>
           <Typography variant='h4' color={theme.palette.primary.thirdColorIceLight}>
-            BakPak
+            Bakpak
           </Typography>
         </div>
         <div className={styles.authBox}>
@@ -145,26 +157,7 @@ export default function Header() {
               </Select>
             </FormControl>
           </Box>
-          {status === AuthStatus.Loading ? (
-            <div className={styles.spinnerBox}>
-              <Spinner
-                variant='indeterminate'
-                disableShrink
-                sx={{
-                  color: (theme) => (theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'),
-                  animationDuration: '550ms',
-                  position: 'absolute',
-                  left: 0,
-                  [`& .${circularProgressClasses.circle}`]: {
-                    strokeLinecap: 'round',
-                  },
-                }}
-                className='static'
-                size={40}
-                thickness={4}
-              />
-            </div>
-          ) : status === AuthStatus.Authenticated ? (
+          {status === AuthStatus.Authenticated ? (
             <>
               <div className={styles.avatarBox}>
                 {/* Handle signout/sign out here */}

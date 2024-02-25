@@ -9,6 +9,7 @@ interface ImagePickerProps {
   containerProps?: any;
 }
 
+const buttonFontSizes = ['0.7rem', '0.8rem', '0.9rem'];
 export function ImagePicker({
   buttonTitle,
   onImageSelected,
@@ -34,12 +35,14 @@ export function ImagePicker({
             fontSize: '0.7rem',
             textAlign: 'center',
             textTransform: 'none',
-            padding: '5px',
             mt: 1,
+            padding: [1],
             ...buttonProps,
           }}
         >
-          <Typography sx={{ ...rest.buttonTypographyProps }}>{buttonTitle}</Typography>
+          <Typography sx={{ fontSize: buttonFontSizes, ...rest.buttonTypographyProps }}>
+            {buttonTitle}
+          </Typography>
         </Button>
       </label>
     </Box>

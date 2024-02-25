@@ -3,7 +3,6 @@ import theme from '@/app/theme';
 import {
   profileFormHeaderSizes,
   textInputFieldFontSizes,
-  textInputFieldHeights,
 } from '@/app/common-styles/form-field-sizes';
 import {
   S3PutObjectCommandParams,
@@ -199,40 +198,36 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
                   {user?.firstName}
                 </Typography>
               ) : (
-                <>
-                  <Typography
-                    sx={{
-                      fontSize: profileFormHeaderSizes,
-                    }}
-                    color={theme.palette.primary.thirdColorIceLight}
-                  >
-                    First Name
-                  </Typography>
+                <Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: profileFormHeaderSizes,
+                      }}
+                      color={theme.palette.primary.thirdColorIceLight}
+                    >
+                      First Name
+                    </Typography>
 
-                  <CustomTextField
-                    placeholder='First Name'
-                    name='firstName'
-                    value={formValues.firstName}
-                    onBlur={handleFormFieldBlur}
-                    onChange={(e) =>
-                      setFormValues({ ...formValues, [e.target.name]: e.target.value })
-                    }
-                    sx={{
-                      width: '100%',
-                      '&&& input': {
-                        maxHeight: textInputFieldHeights,
-                        fontSize: textInputFieldFontSizes,
-                      },
-                    }}
-                  />
-                  <ErrorComponent
-                    fieldName='firstName'
-                    errors={formErrors}
-                    typographyStyles={{
-                      color: 'red',
-                    }}
-                  />
-                </>
+                    <CustomTextField
+                      placeholder='First Name'
+                      name='firstName'
+                      value={formValues.firstName}
+                      onBlur={handleFormFieldBlur}
+                      fullWidth
+                      onChange={(e) =>
+                        setFormValues({ ...formValues, [e.target.name]: e.target.value })
+                      }
+                    />
+                    <ErrorComponent
+                      fieldName='firstName'
+                      errors={formErrors}
+                      typographyStyles={{
+                        color: 'red',
+                      }}
+                    />
+                  </Box>
+                </Box>
               )}
             </StyledFormFieldSection>
             <StyledFormFieldSection>
@@ -247,39 +242,35 @@ export function ProfileEditor({ editDisabled, user, onProfileUpdate }: ProfileEd
                   {user?.lastName}
                 </Typography>
               ) : (
-                <>
-                  <Typography
-                    sx={{
-                      fontSize: profileFormHeaderSizes,
-                    }}
-                    color={theme.palette.primary.thirdColorIceLight}
-                  >
-                    Last Name
-                  </Typography>
-                  <CustomTextField
-                    placeholder='Last Name'
-                    name='lastName'
-                    onBlur={handleFormFieldBlur}
-                    onChange={(e) =>
-                      setFormValues({ ...formValues, [e.target.name]: e.target.value })
-                    }
-                    value={formValues.lastName}
-                    sx={{
-                      width: '100%',
-                      '&&& input': {
-                        maxHeight: textInputFieldHeights,
-                        fontSize: textInputFieldFontSizes,
-                      },
-                    }}
-                  />
-                  <ErrorComponent
-                    fieldName='lastName'
-                    errors={formErrors}
-                    typographyStyles={{
-                      color: 'red',
-                    }}
-                  />
-                </>
+                <Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: profileFormHeaderSizes,
+                      }}
+                      color={theme.palette.primary.thirdColorIceLight}
+                    >
+                      Last Name
+                    </Typography>
+                    <CustomTextField
+                      placeholder='Last Name'
+                      name='lastName'
+                      onBlur={handleFormFieldBlur}
+                      onChange={(e) =>
+                        setFormValues({ ...formValues, [e.target.name]: e.target.value })
+                      }
+                      value={formValues.lastName}
+                      fullWidth
+                    />
+                    <ErrorComponent
+                      fieldName='lastName'
+                      errors={formErrors}
+                      typographyStyles={{
+                        color: 'red',
+                      }}
+                    />
+                  </Box>
+                </Box>
               )}
             </StyledFormFieldSection>
           </Box>

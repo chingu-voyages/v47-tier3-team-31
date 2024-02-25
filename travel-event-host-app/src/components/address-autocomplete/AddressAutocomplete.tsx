@@ -1,20 +1,13 @@
-import {
-  textInputFieldFontSizes,
-  textInputFieldHeights,
-  textInputPaddings,
-} from '@/app/common-styles/form-field-sizes';
 import { useState } from 'react';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { CustomTextField } from '../custom-fields/CustomFields';
 
 interface AddressAutocompleteProps {
-  textFieldStyles?: any;
   onLocationSelected?: (place: google.maps.places.PlaceResult) => void;
   componentName: string;
 }
 
 export function AddressAutocomplete({
-  textFieldStyles,
   onLocationSelected,
   componentName,
 }: AddressAutocompleteProps) {
@@ -54,15 +47,6 @@ export function AddressAutocomplete({
           setTextFieldValue('');
           onLocationSelected && onLocationSelected(null as any);
         }
-      }}
-      sx={{
-        '& .MuiInputBase-root': {},
-        '&&& input': {
-          height: textInputFieldHeights,
-          padding: textInputPaddings,
-        },
-        fontSize: textInputFieldFontSizes,
-        ...textFieldStyles,
       }}
     />
   );

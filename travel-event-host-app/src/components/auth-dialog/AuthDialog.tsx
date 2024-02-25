@@ -24,7 +24,7 @@ import {
   useTheme,
 } from '@mui/material';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { SignInFields } from './sign-in-fields/SignInFields';
@@ -47,7 +47,7 @@ export default function AuthDialog(props: AuthDialogProps) {
   const [apiErrors, setApiErrors] = useState<Record<string, string[]> | undefined>(undefined); // Errors returned from the API [
   const theme = useTheme();
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   useEffect(() => {
     const errorMessage = searchParams.get('error');
 
@@ -165,19 +165,29 @@ export default function AuthDialog(props: AuthDialogProps) {
     >
       <>
         <Box display='flex' justifyContent={'right'}>
-          <IconButton>
+          <IconButton onClick={() => router.back()}>
             <CloseIcon sx={{ color: theme.palette.primary.thirdColorIceLight }} />
           </IconButton>
         </Box>
-        <DialogTitle sx={{ backgroundColor: theme.palette.primary.secondaryColorDarkBlack }}>
+        <DialogTitle
+          sx={{
+            backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
+            paddingTop: 0,
+            paddingBottom: 0,
+          }}
+        >
           <Box>
-            <Box mt={3}>
+            <Box mt={2}>
               <Box>{/* App logo goes here */}</Box>
               <Box>
                 <Typography
                   fontSize={['1.2rem', '1.8rem']}
                   color={theme.palette.primary.thirdColorIceLight}
-                  sx={{ fontWeight: 'bold', textAlign: 'center', textTransform: 'uppercase' }}
+                  sx={{
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                  }}
                 >
                   {props.authDialogType === 'signup' ? 'Sign Up' : 'Sign In'}
                 </Typography>
