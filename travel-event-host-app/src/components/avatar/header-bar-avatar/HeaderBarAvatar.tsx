@@ -1,6 +1,16 @@
+import { textInputFieldFontSizes } from '@/app/common-styles/form-field-sizes';
 import theme from '@/app/theme';
 import { useAuthContext } from '@/lib/auth-context';
-import { Avatar, Box, ButtonBase, Menu, MenuItem, Typography, styled } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  Menu,
+  MenuItem,
+  MenuItemProps,
+  Typography,
+  styled,
+} from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
 import styles from './style.module.css';
@@ -90,6 +100,13 @@ export function HeaderBarAvatar({
           'aria-labelledby': 'basic-button',
         }}
         sx={{
+          [theme.breakpoints.down(430)]: {
+            '&&& .MuiPaper-root': {
+              left: '0 !important',
+              width: '100%',
+              marginTop: '20px',
+            },
+          },
           '& .MuiMenu-list': {
             background: theme.palette.primary.thirdColorlightBlack,
             padding: 0,
@@ -105,7 +122,7 @@ export function HeaderBarAvatar({
               display: 'none',
             },
             '&.MuiButtonBase-root': {
-              fontSize: '0.8rem',
+              fontSize: textInputFieldFontSizes,
               color: theme.palette.primary.greyDisabled,
             },
             '&.MuiButtonBase-root:hover': {
@@ -113,13 +130,33 @@ export function HeaderBarAvatar({
             },
           }}
         >
-          {userName}
+          <Box width={'100%'} textAlign={'center'} p={1}>
+            {userName}
+          </Box>
         </MenuItem>
         {/* Add more menu options here as needed */}
         {status === 'authenticated' && (
-          <CustomMenuItem onClick={handleMyProfileClicked}>My Profile</CustomMenuItem>
+          <CustomMenuItem
+            onClick={handleMyProfileClicked}
+            sx={{
+              '&.MuiButtonBase-root': {
+                fontSize: textInputFieldFontSizes,
+              },
+            }}
+          >
+            My Profile
+          </CustomMenuItem>
         )}
-        <CustomMenuItem onClick={handleSignoutClicked}>Sign out</CustomMenuItem>
+        <CustomMenuItem
+          onClick={handleSignoutClicked}
+          sx={{
+            '&.MuiButtonBase-root': {
+              fontSize: textInputFieldFontSizes,
+            },
+          }}
+        >
+          Sign out
+        </CustomMenuItem>
       </Menu>
     </Box>
   );
@@ -158,7 +195,11 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   height: '32px',
 }));
 
-const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
+const CustomMenuItem = (props: MenuItemProps) => {
+  return <StyledMenuItem {...props} />;
+};
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   '&.MuiList-root': {
     background: theme.palette.primary.thirdColorlightBlack,
   },
