@@ -100,9 +100,12 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
                       marginTop: '10px',
                       paddingBottom: '10px',
                     },
+                    [theme.breakpoints.down(380)]: {
+                      WebkitLineClamp: 3,
+                    },
                   }}
                 >
-                  {hostedEvent.description || 'Mock event description'}
+                  {hostedEvent.description}
                 </CustomResponsiveTypoGraphy>
               </Box>
             </Box>
@@ -119,10 +122,7 @@ export function EventCard({ hostedEvent, onCardClick }: EventCardProps) {
 */
 function getEventImage(imageUrl?: string): string {
   if (imageUrl) return imageUrl;
-
-  const mockImageCount = 3; // number of mock event images in the mock-images folder
-  const randomImageNumber = Math.floor(Math.random() * mockImageCount) + 1; // random number between 1 and however many mock images there are
-  return `/images/event/mock-images/mock-image-0${randomImageNumber}.svg`; // returns the path to the random mock event image
+  return `/images/event/mock-images/mock-image-01.svg`; // returns the path to the random mock event image
 }
 
 /**
@@ -187,7 +187,7 @@ function CalendarDateComponent({ date }: { date: Date }) {
 
 // This will handle the responsive typography for the event card title and description
 const CustomResponsiveTypoGraphy = styled(Typography)(({ theme }) => ({
-  fontSize: '0.5rem',
+  fontSize: '0.7rem',
   [theme.breakpoints.up(380)]: {
     fontSize: '0.9rem',
   },
