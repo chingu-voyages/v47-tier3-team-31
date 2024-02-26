@@ -1,0 +1,50 @@
+.mainContentBody {
+  display: flex;
+  justify-content: space-between;
+  height: 600px;
+  flex-direction: column;
+}
+
+.aboutUsImage {
+  position: relative !important;
+  width: 310px !important;
+  height: 175px !important;
+}
+
+
+.textContainer {
+  background: conic-gradient(from 0deg at 50% 50%, #3E4B93 0deg, #192256 0.54deg, #202A62 13.29deg, #3E4B93 360deg);
+  padding: 1rem;
+}
+
+.leftSection {
+  padding: 1rem;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 610px) {
+  .aboutUsImageContainer {
+    display: none;
+  }
+  .mainContentBody {
+    justify-content: stretch;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  .mainContentBody {
+    flex-direction: unset ;
+  }
+  .mainContentBody {
+    height: 620px;
+  }
+  .textContainer {
+    padding-top: 100px;
+  }
+}
+
+@media only screen and (max-width: 2236px) {
+  .img04 {
+    display: none;
+  }
+}
