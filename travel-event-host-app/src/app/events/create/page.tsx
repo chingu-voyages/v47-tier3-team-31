@@ -22,6 +22,7 @@ import { getCheckedElements } from '@/components/checkbox-group/utils/get-checke
 import { CommonButton } from '@/components/common-button/Common-Button';
 import { CustomTextField, StyledFormFieldSection } from '@/components/custom-fields/CustomFields';
 import { ImagePicker } from '@/components/image-picker/ImagePicker';
+import { SampleImageLoader } from '@/components/image-picker/utils/sample-image-loader';
 import { Spinner } from '@/components/spinner/Spinner';
 import { useAuthContext } from '@/lib/auth-context';
 import { AuthStatus } from '@/lib/auth-status';
@@ -37,7 +38,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import styles from './styles.module.css';
+import styles from '../../common-styles/checkbox-group-styles.module.css';
 import { geocoderResultValidationSchema } from './validators/geocoder-result-validation-schema';
 /**
  Event creation page. Only authenticated users can create events. If the user is not authenticated, redirect to the login page.
@@ -88,25 +89,7 @@ export default function CreateEventPage() {
   };
 
   const handleEventImageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // TODO: refactor this type of validation so it's DRY as it's used in the profile update component
-      if (!file.type.match('image.*')) {
-        console.error('File is not an image');
-        return;
-      }
-      setFormValues((prev) => ({ ...prev, imageFile: file }));
-      const fileReader = new FileReader();
-
-      fileReader.onload = (e) => {
-        // Set content in state
-        setImagePreview(e.target?.result as string);
-      };
-
-      fileReader.readAsDataURL(file);
-    }
-
-    //
+    SampleImageLoader.load(e, setFormValues, setImagePreview);
   };
 
   const handleSubmitCreateEvent = async () => {
@@ -186,6 +169,8 @@ export default function CreateEventPage() {
           mt: 5,
         },
       }}
+      marginLeft={[0, '10%', '15%', '20%', '30%']}
+      marginRight={[0, '10%', '15%', '20%', '30%']}
     >
       <Box
         className='eventCreate_styledForm'
@@ -202,212 +187,216 @@ export default function CreateEventPage() {
             Create an event
           </Typography>
         </Box>
-        <StyledFormFieldSection>
-          <Typography
-            color={theme.palette.primary.thirdColorIceLight}
-            sx={{
-              fontSize: profileFormHeaderSizes,
-            }}
-          >
-            Title
-          </Typography>
-          <CustomTextField
-            placeholder='Event Title'
-            required
-            id='title'
-            name='title'
-            type='text'
-            autoComplete='title'
-            inputProps={{ maxLength: 155 }}
-            onChange={handleInputChanged}
-            fullWidth
-            value={formValues.title}
-            sx={{
-              '&&& input': {
-                height: textInputFieldHeights,
-                padding: textInputPaddings,
-              },
-              fontSize: textInputFieldFontSizes,
-            }}
-          />
-          <ErrorComponent fieldName='title' errors={errors} />
-        </StyledFormFieldSection>
-        <StyledFormFieldSection>
-          <Typography
-            color={theme.palette.primary.thirdColorIceLight}
-            sx={{
-              fontSize: profileFormHeaderSizes,
-            }}
-          >
-            Description
-          </Typography>
-          <CustomTextField
-            placeholder='Event Description'
-            required
-            multiline
-            minRows={3}
-            maxRows={3}
-            inputProps={{ maxLength: 255 }}
-            id='description'
-            name='description'
-            type='text'
-            autoComplete='description'
-            onChange={handleInputChanged}
-            fullWidth
-            value={formValues.description}
-            sx={{
-              '&&& input': {
-                height: textInputFieldHeights,
+        <form>
+          <StyledFormFieldSection>
+            <Typography
+              color={theme.palette.primary.thirdColorIceLight}
+              sx={{
+                fontSize: profileFormHeaderSizes,
+              }}
+            >
+              Title
+            </Typography>
+            <CustomTextField
+              autoComplete='title'
+              fullWidth
+              id='title'
+              inputProps={{ maxLength: 155 }}
+              name='title'
+              onChange={handleInputChanged}
+              placeholder='Event Title'
+              required
+              type='text'
+              value={formValues.title}
+              sx={{
+                '&&& input': {
+                  height: textInputFieldHeights,
+                  padding: textInputPaddings,
+                },
                 fontSize: textInputFieldFontSizes,
-                padding: textInputPaddings,
-              },
-              '&.MuiFormControl-root': {
-                backgroundColor: 'white',
-              },
-            }}
-          />
-          <ErrorComponent fieldName='description' errors={errors} />
-        </StyledFormFieldSection>
-        <StyledFormFieldSection>
-          <Box
-            display='flex'
-            width={'100%'}
-            gap={2}
-            justifyContent={'space-between'}
-            sx={{
-              [theme.breakpoints.down('md')]: {
-                flexDirection: 'column',
-              },
-            }}
-          >
-            <Box>
-              <Typography
-                color={theme.palette.primary.thirdColorIceLight}
-                sx={{
-                  fontSize: profileFormHeaderSizes,
-                  alignContent: 'center',
-                }}
-              >
-                Event Starts
-              </Typography>
-              <CalendarPicker
-                containerStyles={{ marginTop: 1 }}
-                value={formValues.startDate}
-                onDateTimeChange={(date) => setFormValues((prev) => ({ ...prev, startDate: date }))}
-                disablePast={true}
-              />
-              <ErrorComponent fieldName='startDate' errors={errors} />
-            </Box>
-            <Box>
-              <Typography
-                color={theme.palette.primary.thirdColorIceLight}
-                sx={{
-                  fontSize: profileFormHeaderSizes,
-                }}
-              >
-                Event Ends
-              </Typography>
-              <CalendarPicker
-                containerStyles={{ marginTop: 1 }}
-                value={formValues.endDate}
-                onDateTimeChange={(date) => setFormValues((prev) => ({ ...prev, endDate: date }))}
-                minDate={formValues.startDate!}
-              />
-              <ErrorComponent fieldName='endDate' errors={errors} />
-            </Box>
-          </Box>
-        </StyledFormFieldSection>
-        <StyledFormFieldSection>
-          <Box id='categories-section'>
-            <Typography
-              color={theme.palette.primary.thirdColorIceLight}
-              sx={{
-                fontSize: profileFormHeaderSizes,
-                mb: 1,
               }}
-            >
-              Tag the event with categories (optional)
-            </Typography>
-            <CheckboxGroup
-              state={categoryCheckboxesState}
-              dictionary={CategoryDict}
-              setStateFunction={setCategoryCheckboxesState}
-              customStyles={styles.checkboxGroup}
             />
-          </Box>
-        </StyledFormFieldSection>
-        <StyledFormFieldSection sx={{ mt: 2, mb: 2 }}>
-          <Box>
+            <ErrorComponent fieldName='title' errors={errors} />
+          </StyledFormFieldSection>
+          <StyledFormFieldSection>
             <Typography
               color={theme.palette.primary.thirdColorIceLight}
               sx={{
                 fontSize: profileFormHeaderSizes,
-                mb: 1,
               }}
             >
-              Where is this event taking place?
+              Description
             </Typography>
-            <AddressAutocomplete
-              componentName={'geocoderResult'}
-              onLocationSelected={(location) =>
-                setFormValues((prev) => ({
-                  ...prev,
-                  geocoderResult: location as any,
-                }))
-              }
+            <CustomTextField
+              autoComplete='description'
+              fullWidth
+              id='description'
+              inputProps={{ maxLength: 255 }}
+              maxRows={3}
+              minRows={3}
+              multiline
+              name='description'
+              onChange={handleInputChanged}
+              placeholder='Event Description'
+              required
+              type='text'
+              value={formValues.description}
+              sx={{
+                '&&& input': {
+                  height: textInputFieldHeights,
+                  fontSize: textInputFieldFontSizes,
+                  padding: textInputPaddings,
+                },
+                '&.MuiFormControl-root': {
+                  backgroundColor: 'white',
+                },
+              }}
             />
-            <ErrorComponent fieldName='geocoderResult' errors={errors} />
-          </Box>
-        </StyledFormFieldSection>
-        <StyledFormFieldSection>
-          {imagePreview && (
-            <Box id='event-image-container'>
-              <Image src={imagePreview} alt='Event Image' height={169} width={300} />
-            </Box>
-          )}
-          <Box maxWidth={'300px'} id='event-image-container'>
-            <Typography
-              color={theme.palette.primary.thirdColorIceLight}
+            <ErrorComponent fieldName='description' errors={errors} />
+          </StyledFormFieldSection>
+          <StyledFormFieldSection>
+            <Box
+              display='flex'
+              width={'100%'}
+              gap={2}
+              justifyContent={'space-between'}
               sx={{
-                fontSize: profileFormHeaderSizes,
+                [theme.breakpoints.down('md')]: {
+                  flexDirection: 'column',
+                },
               }}
             >
-              Upload an image (optional)
-            </Typography>
-            <Box>
-              <ImagePicker
-                buttonTitle='Choose Image'
-                onImageSelected={handleEventImageChanged}
-                containerProps={{ display: 'block' }}
-                buttonTypographyProps={textInputFieldFontSizes}
-                buttonProps={{ padding: '5px' }}
-              />
-            </Box>
-          </Box>
-        </StyledFormFieldSection>
-        <StyledFormFieldSection>
-          {isLoading ? (
-            <Spinner />
-          ) : (
-            <Box id='user-actions' mt={5} display='flex' gap={3} justifyContent={'right'}>
-              <Button sx={{ textTransform: 'none' }}>
-                <Typography sx={{ color: theme.palette.primary.burntOrangeCancelError }}>
-                  Cancel
+              <Box>
+                <Typography
+                  color={theme.palette.primary.thirdColorIceLight}
+                  sx={{
+                    fontSize: profileFormHeaderSizes,
+                    alignContent: 'center',
+                  }}
+                >
+                  Event Starts
                 </Typography>
-              </Button>
-              <CommonButton
-                variant='outlined'
-                label='Create Event'
-                borderColor={theme.palette.primary.greenConfirmation}
-                textColor={theme.palette.primary.greenConfirmation}
-                onButtonClick={handleSubmitCreateEvent}
-                borderRadius={'2px'}
-                borderWidth={'1px'}
-                disabled={isLoading}
+                <CalendarPicker
+                  containerStyles={{ marginTop: 1 }}
+                  value={formValues.startDate}
+                  onDateTimeChange={(date) =>
+                    setFormValues((prev) => ({ ...prev, startDate: date }))
+                  }
+                  disablePast={true}
+                />
+                <ErrorComponent fieldName='startDate' errors={errors} />
+              </Box>
+              <Box>
+                <Typography
+                  color={theme.palette.primary.thirdColorIceLight}
+                  sx={{
+                    fontSize: profileFormHeaderSizes,
+                  }}
+                >
+                  Event Ends
+                </Typography>
+                <CalendarPicker
+                  containerStyles={{ marginTop: 1 }}
+                  value={formValues.endDate}
+                  onDateTimeChange={(date) => setFormValues((prev) => ({ ...prev, endDate: date }))}
+                  minDate={formValues.startDate!}
+                />
+                <ErrorComponent fieldName='endDate' errors={errors} />
+              </Box>
+            </Box>
+          </StyledFormFieldSection>
+          <StyledFormFieldSection>
+            <Box id='categories-section'>
+              <Typography
+                color={theme.palette.primary.thirdColorIceLight}
+                sx={{
+                  fontSize: profileFormHeaderSizes,
+                  mb: 1,
+                }}
+              >
+                Tag the event with categories (optional)
+              </Typography>
+              <CheckboxGroup
+                state={categoryCheckboxesState}
+                dictionary={CategoryDict}
+                setStateFunction={setCategoryCheckboxesState}
+                customStyles={styles.checkboxGroup}
               />
             </Box>
-          )}
-        </StyledFormFieldSection>
+          </StyledFormFieldSection>
+          <StyledFormFieldSection sx={{ mt: 2, mb: 2 }}>
+            <Box>
+              <Typography
+                color={theme.palette.primary.thirdColorIceLight}
+                sx={{
+                  fontSize: profileFormHeaderSizes,
+                  mb: 1,
+                }}
+              >
+                Where is this event taking place?
+              </Typography>
+              <AddressAutocomplete
+                componentName={'geocoderResult'}
+                onLocationSelected={(location) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    geocoderResult: location as any,
+                  }))
+                }
+              />
+              <ErrorComponent fieldName='geocoderResult' errors={errors} />
+            </Box>
+          </StyledFormFieldSection>
+          <StyledFormFieldSection>
+            {imagePreview && (
+              <Box id='event-image-container'>
+                <Image src={imagePreview} alt='Event Image' height={169} width={300} />
+              </Box>
+            )}
+            <Box maxWidth={'300px'} id='event-image-container'>
+              <Typography
+                color={theme.palette.primary.thirdColorIceLight}
+                sx={{
+                  fontSize: profileFormHeaderSizes,
+                }}
+              >
+                Upload an image (optional)
+              </Typography>
+              <Box>
+                <ImagePicker
+                  buttonTitle='Choose Image'
+                  onImageSelected={handleEventImageChanged}
+                  containerProps={{ display: 'block' }}
+                  buttonTypographyProps={textInputFieldFontSizes}
+                  buttonProps={{ padding: '5px' }}
+                />
+              </Box>
+            </Box>
+          </StyledFormFieldSection>
+          <StyledFormFieldSection>
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <Box id='user-actions' mt={5} display='flex' gap={3} justifyContent={'right'}>
+                <Button sx={{ textTransform: 'none' }}>
+                  <Typography sx={{ color: theme.palette.primary.burntOrangeCancelError }}>
+                    Cancel
+                  </Typography>
+                </Button>
+                <CommonButton
+                  variant='outlined'
+                  label='Create Event'
+                  borderColor={theme.palette.primary.greenConfirmation}
+                  textColor={theme.palette.primary.greenConfirmation}
+                  onButtonClick={handleSubmitCreateEvent}
+                  borderRadius={'2px'}
+                  borderWidth={'1px'}
+                  disabled={isLoading}
+                />
+              </Box>
+            )}
+          </StyledFormFieldSection>
+        </form>
       </Box>
     </Box>
   );
