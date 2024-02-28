@@ -7,6 +7,15 @@ export interface GetAllEventsAPIResponse {
   totalCount: number;
 }
 
+export interface EventSearchQueryArgs {
+  keyword?: string;
+  categories?: Category[];
+  eventCreatorId?: string;
+  page?: number;
+  pageSize?: number;
+  timeline?: EventTimeLine;
+}
+
 export const EventClient = {
   getEventById: async (id: string): Promise<UserEvent | undefined> => {
     try {
@@ -17,13 +26,14 @@ export const EventClient = {
       throw new Error('Error: Cannot fetch event');
     }
   },
-  getEventsBySearchQuery: async (
-    keyword?: string,
-    categories?: Category[],
-    eventCreatorId?: string,
-    page?: number,
-    pageSize?: number,
-  ): Promise<UserEvent[]> => {
+  getEventsBySearchQuery: async ({
+    keyword,
+    categories,
+    eventCreatorId,
+    page,
+    pageSize,
+    timeline = EventTimeLine.All,
+  }: EventSearchQueryArgs): Promise<UserEvent[]> => {
     try {
       const searchParams = new URLSearchParams();
 
@@ -43,6 +53,8 @@ export const EventClient = {
 
       if (page) searchParams.append('page', page.toString());
       if (pageSize) searchParams.append('pageSize', pageSize.toString());
+
+      if (timeline) searchParams.append('timeline', timeline);
 
       const endPoint = `/api/events/search?${searchParams.toString()}`;
 
