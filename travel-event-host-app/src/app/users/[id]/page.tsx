@@ -68,13 +68,12 @@ export default function UserPortalPage({ params: { id } }: UserPortalPageProps) 
 
   const fetchUserHostedEvents = async () => {
     try {
-      const fetchedHostedEvents = await EventClient.getEventsBySearchQuery(
-        undefined,
-        undefined,
-        id,
-        hostedEventsPageNumber,
-        3,
-      );
+      const fetchedHostedEvents = await EventClient.getEventsBySearchQuery({
+        eventCreatorId: id,
+        timeline: EventTimeLine.Upcoming,
+        page: hostedEventsPageNumber,
+        pageSize: 3,
+      });
       setHostedEvents([...hostedEvents, ...fetchedHostedEvents!]);
     } catch (e: any) {
       setError(e.message);
