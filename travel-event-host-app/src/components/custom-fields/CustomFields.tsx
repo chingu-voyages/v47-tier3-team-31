@@ -17,7 +17,6 @@ import {
 export const CustomTextField = (props: TextFieldProps) => {
   return (
     <StyledTextField
-      {...props}
       sx={{
         '& .MuiInputBase-root': {
           fontSize: textInputFieldFontSizes,
@@ -27,6 +26,7 @@ export const CustomTextField = (props: TextFieldProps) => {
           padding: textInputPaddings,
         },
       }}
+      {...props}
     />
   );
 };
