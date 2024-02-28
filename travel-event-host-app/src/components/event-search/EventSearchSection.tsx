@@ -40,10 +40,10 @@ export function EventSearchSection({ keyword }: EventSearchSectionProps) {
 
   useEffect(() => {
     const executeEventSearch = async () => {
-      const eventsResultFetch = await EventClient.getEventsBySearchQuery(
+      const eventsResultFetch = await EventClient.getEventsBySearchQuery({
         keyword,
-        getCheckedElements(categoryCheckboxState),
-      );
+        categories: getCheckedElements(categoryCheckboxState),
+      });
       setResultEventList(eventsResultFetch);
     };
     executeEventSearch();
