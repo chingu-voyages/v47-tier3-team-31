@@ -14,3 +14,14 @@ export function loadCheckboxStateFromLocalStorage(): { [key in string]: boolean 
   if (state) return JSON.parse(state);
   return null;
 }
+
+/* Take in a list of slugs and the enum associated with the slugs. The slugs will render their checkboxes as checked,
+and the other enums will render their checkboxes as unchecked */
+export function generateInitialCheckboxStateFromArray(
+  elements: string[],
+  fromObject: Object,
+): { [key in string]: boolean } {
+  let state: { [key in string]: boolean } = {};
+  Object.values(fromObject).map((el: string) => (state[el] = elements.includes(el)));
+  return state;
+}
