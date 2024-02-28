@@ -1,5 +1,6 @@
 import { connectMongoDB } from '@/lib/mongodb';
 import { EventRepository } from '@/schemas/user-event';
+import { EventTimeLine } from '@/types/event-timeline';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
   const keyword = searchParams.get('keyword');
   const categories: string[] = searchParams.getAll('category');
   const eventCreatorId = searchParams.get('eventCreatorId');
-
+  const timeline = searchParams.get('timeline') as EventTimeLine | null;
   await connectMongoDB();
 
   let aggregatePipeline: any[] = [];
@@ -78,6 +79,44 @@ export async function GET(req: NextRequest) {
       );
     }
   }
+  if (timeline && timeline !== EventTimeLine.All) {
+    // Create a timeline query object
+    let timelineQuery: any = {};
+    switch (timeline) {
+      case EventTimeLine.Upcoming:
+        timelineQuery = { startDate: { $gte: new Date() } };
+        break;
+      case EventTimeLine.Past:
+        timelineQuery = { startDate: { $lt: new Date() } };
+        break;
+    }
+
+    // Add a timeline query to the search
+    if (aggregatePipeline.length > 0) {
+      if (aggregatePipeline[0].$match.$or) {
+        aggregatePipeline[0].$match = {
+          $and: [...aggregatePipeline[0].$match.$or, timelineQuery],
+        };
+      } else {
+        aggregatePipeline[0].$match = {
+          $and: [aggregatePipeline[0].$match, timelineQuery],
+        };
+      }
+    } else {
+      aggregatePipeline = aggregatePipeline.concat(
+        {
+          $match: timelineQuery,
+        },
+        {
+          $facet: {
+            metadata: [{ $count: 'totalCount' }],
+            data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+          },
+        },
+      );
+    }
+  }
+
   if (aggregatePipeline.length === 0) {
     return NextResponse.json(
       { ...nullSearchResponse, message: 'No events found. Aggregation empty' },
