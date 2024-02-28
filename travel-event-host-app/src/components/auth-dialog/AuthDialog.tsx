@@ -13,10 +13,6 @@ import {
   Box,
   Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Divider,
   IconButton,
   Typography,
@@ -27,6 +23,12 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
+import {
+  StyledDialog,
+  StyledDialogActions,
+  StyledDialogContent,
+  StyledDialogTitle,
+} from '../StyledDialog/StyledDialog';
 import { SignInFields } from './sign-in-fields/SignInFields';
 import { SignUpFields } from './sign-up-fields/SignUpFields';
 /**
@@ -148,34 +150,14 @@ export default function AuthDialog(props: AuthDialogProps) {
   };
 
   return (
-    <Dialog
-      open={props.open}
-      sx={{
-        '& .MuiPaper-root': {
-          backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
-          width: '100%',
-        },
-        [theme.breakpoints.down(430)]: {
-          '& .MuiPaper-root': {
-            margin: 0,
-          },
-        },
-        marginTop: ['50px', '50px', '60px'],
-      }}
-    >
+    <StyledDialog open={props.open}>
       <>
         <Box display='flex' justifyContent={'right'}>
           <IconButton onClick={() => router.back()}>
             <CloseIcon sx={{ color: theme.palette.primary.thirdColorIceLight }} />
           </IconButton>
         </Box>
-        <DialogTitle
-          sx={{
-            backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
-            paddingTop: 0,
-            paddingBottom: 0,
-          }}
-        >
+        <StyledDialogTitle>
           <Box>
             <Box mt={2}>
               <Box>{/* App logo goes here */}</Box>
@@ -194,7 +176,7 @@ export default function AuthDialog(props: AuthDialogProps) {
               </Box>
             </Box>
           </Box>
-        </DialogTitle>
+        </StyledDialogTitle>
         <Box
           ml={'1.5rem'}
           mr={'1.5rem'}
@@ -206,14 +188,7 @@ export default function AuthDialog(props: AuthDialogProps) {
             },
           }}
         >
-          <DialogContent
-            sx={{
-              backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
-              [theme.breakpoints.down(430)]: {
-                padding: '1px',
-              },
-            }}
-          >
+          <StyledDialogContent>
             <Box
               className='providerAuthSection'
               display='flex'
@@ -288,14 +263,8 @@ export default function AuthDialog(props: AuthDialogProps) {
             <form>
               {renderFormFields(props.authDialogType, handleFormValueChanged, formValues, errors)}
             </form>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              backgroundColor: theme.palette.primary.secondaryColorDarkBlack,
-              display: 'block',
-              marginBottom: 1,
-            }}
-          >
+          </StyledDialogContent>
+          <StyledDialogActions>
             <Box
               display='flex'
               justifyContent={'space-around'}
@@ -317,7 +286,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 </StyledButton>
               </Box>
             </Box>
-          </DialogActions>
+          </StyledDialogActions>
           {apiErrors && (
             <Box mb={4}>
               <ErrorComponent fieldName='apiError' errors={apiErrors} />{' '}
@@ -325,7 +294,7 @@ export default function AuthDialog(props: AuthDialogProps) {
           )}
         </Box>
       </>
-    </Dialog>
+    </StyledDialog>
   );
 }
 
